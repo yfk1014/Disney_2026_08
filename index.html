@@ -3,42 +3,43 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#FFB7CE">
+<meta name="theme-color" content="#1D6FB8">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="ふたり旅">
-<title>ふたり旅のしおり</title>
+<meta name="apple-mobile-web-app-title" content="Disney 2026">
+<title>Disney 2026 Summer</title>
 <style>
 :root{
-  --pink:#FFB7CE;--pink-l:#FFEDF3;--pink-d:#D9527E;
-  --sky:#A8DDF0;--sky-l:#E6F6FC;--sky-d:#2E86A8;
-  --yellow:#FFDE7A;--yellow-l:#FFF7DE;--yellow-d:#B47F00;
-  --mint:#AEE5C8;--mint-l:#E8F8F0;--mint-d:#2E9160;
-  --lav:#CDBDF0;--lav-l:#F1ECFC;--lav-d:#6B4FB0;
-  --ink:#4A4453;--ink-l:#8B8496;--line:#EDE8F0;
+  --pink:#1D6FB8;--pink-l:#E9F2FB;--pink-d:#0E4F8C;
+  --sky:#57C4D8;--sky-l:#E6F7FA;--sky-d:#12718A;
+  --yellow:#F2CE74;--yellow-l:#FBF3DF;--yellow-d:#8C6612;
+  --mint:#7FD1C0;--mint-l:#E6F7F3;--mint-d:#1B7768;
+  --lav:#8095DB;--lav-l:#ECEFFB;--lav-d:#36499B;
+  --org:#FFB870;--org-l:#FFE7CE;--org-d:#A55200;
+  --ink:#22374B;--ink-l:#6B8095;--line:#DCE6F0;
   --font:"Hiragino Maru Gothic ProN","ヒラギノ丸ゴ ProN W4","Zen Maru Gothic","M PLUS Rounded 1c",-apple-system,"Segoe UI",sans-serif;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;}
-body{background:#FBF7F4;font-family:var(--font);color:var(--ink);font-size:15px;line-height:1.6;padding-bottom:86px;}
+body{background:#F4F8FC;font-family:var(--font);color:var(--ink);font-size:15px;line-height:1.6;padding-bottom:86px;}
 body.noscroll{overflow:hidden;touch-action:none;}
-.wrap{max-width:520px;margin:0 auto;padding:0 14px;}
-header{background:linear-gradient(180deg,var(--pink-l),#FBF7F4);padding:calc(env(safe-area-inset-top) + 14px) 0 10px;}
+.wrap{max-width:560px;margin:0 auto;padding:0 14px;}
+header{background:linear-gradient(180deg,#DCEBF9,#F4F8FC);padding:calc(env(safe-area-inset-top) + 14px) 0 10px;}
 header .wrap{display:flex;align-items:center;gap:10px;}
-header h1{font-size:18px;margin:0;color:var(--pink-d);letter-spacing:.04em;flex:1;}
+header h1{font-size:17px;margin:0;color:var(--pink-d);letter-spacing:.04em;flex:1;}
 header .me{font-size:11px;background:#fff;border:1.5px solid var(--pink);color:var(--pink-d);border-radius:999px;padding:5px 12px;}
 .tabbar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;padding:6px 0 calc(env(safe-area-inset-bottom) + 6px);z-index:40;}
-.tabbar button{flex:1;border:0;background:none;font-family:inherit;font-size:11px;color:var(--ink-l);padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;}
+.tabbar button{flex:1;border:0;background:none;font-family:inherit;font-size:10.5px;color:var(--ink-l);padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;}
 .tabbar button .ic{font-size:19px;line-height:1;}
 .tabbar button.on{color:var(--pink-d);font-weight:bold;}
 section.view{display:none;padding-top:8px;}
 section.view.on{display:block;}
-h2.sec{font-size:13px;color:var(--ink-l);margin:18px 0 8px;letter-spacing:.08em;font-weight:normal;}
+h2.sec{font-size:12.5px;color:var(--ink-l);margin:16px 0 8px;letter-spacing:.08em;font-weight:normal;}
 .card{background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:10px;border:1px solid var(--line);}
 .pill{display:inline-block;font-size:11px;padding:3px 10px;border-radius:999px;}
 .p-go{background:var(--sky-l);color:var(--sky-d);}
 .p-eat{background:var(--yellow-l);color:var(--yellow-d);}
 .p-buy{background:var(--mint-l);color:var(--mint-d);}
-input[type=text],input[type=time],select,textarea{font-family:inherit;font-size:15px;border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;width:100%;background:#fff;color:var(--ink);}
+input[type=text],input[type=time],input[type=search],select,textarea{font-family:inherit;font-size:15px;border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;width:100%;background:#fff;color:var(--ink);}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);}
 .btn{font-family:inherit;font-size:14px;border:0;border-radius:999px;padding:10px 18px;background:var(--pink);color:#fff;cursor:pointer;}
 .btn.sub{background:#fff;border:1.5px solid var(--pink);color:var(--pink-d);}
@@ -52,40 +53,86 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);}
 .catsel button.on[data-c=go]{background:var(--sky);} .catsel button.on[data-c=eat]{background:var(--yellow);color:var(--yellow-d);} .catsel button.on[data-c=buy]{background:var(--mint);}
 .item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 8px 10px 4px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
 .item.go{border-left:5px solid var(--sky);} .item.eat{border-left:5px solid var(--yellow);} .item.buy{border-left:5px solid var(--mint);}
-.item .grip{width:30px;flex:none;text-align:center;color:#CFC8D6;font-size:17px;cursor:grab;touch-action:none;user-select:none;}
+.item .grip{width:30px;flex:none;text-align:center;color:#A6BDD3;font-size:17px;cursor:grab;touch-action:none;user-select:none;}
 .item .txt{flex:1;min-width:0;font-size:14.5px;word-break:break-word;}
-.item .txt small{display:block;font-size:10.5px;color:#B7B0C0;}
-.item .act{display:flex;gap:4px;flex:none;}
-.item .act button{border:0;background:none;font-size:16px;color:#C3BCCC;padding:4px 6px;cursor:pointer;font-family:inherit;}
+.item .txt small{display:block;font-size:10.5px;color:#8AA1B7;}
+.item .act{display:flex;gap:2px;flex:none;}
+.item .act button{border:0;background:none;font-size:16px;color:#A6BDD3;padding:4px 6px;cursor:pointer;font-family:inherit;}
 .item.used{opacity:.45;}
 .ghost{position:fixed;z-index:999;pointer-events:none;opacity:.92;box-shadow:0 8px 22px rgba(0,0,0,.18);transform:rotate(-1.5deg);margin:0;}
 .dragging{opacity:.3;}
 .daybox{border-radius:18px;padding:12px;margin-bottom:14px;}
 .daybox.d1{background:var(--pink-l);} .daybox.d2{background:var(--lav-l);}
-.daybox h3{margin:0 0 4px;font-size:15px;font-weight:normal;display:flex;align-items:center;gap:8px;}
-.daybox.d1 h3{color:var(--pink-d);} .daybox.d2 h3{color:var(--lav-d);}
-.daybox h3 input{border:0;background:transparent;font-size:12.5px;width:auto;flex:1;padding:2px 6px;color:var(--ink-l);}
+.dayhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.dayhead b{font-size:15px;font-weight:normal;}
+.daybox.d1 .dayhead b{color:var(--pink-d);} .daybox.d2 .dayhead b{color:var(--lav-d);}
+.dayhead input{border:0;background:rgba(255,255,255,.7);font-size:12.5px;width:120px;padding:5px 8px;border-radius:9px;color:var(--ink);}
+.parksel{display:flex;gap:4px;margin-left:auto;}
+.parksel button{font-family:inherit;font-size:11.5px;border:1.5px solid transparent;background:rgba(255,255,255,.75);color:var(--ink-l);border-radius:999px;padding:5px 11px;cursor:pointer;}
+.parksel button.on[data-p=L]{background:var(--pink-d);color:#fff;}
+.parksel button.on[data-p=S]{background:var(--sky-d);color:#fff;}
+.parksel button.on[data-p=""]{background:var(--ink-l);color:#fff;}
 .zone{min-height:64px;border-radius:12px;padding:2px;transition:background .15s;}
 .zone.over{background:rgba(255,255,255,.85);box-shadow:inset 0 0 0 2px var(--pink);}
-.slot{background:#fff;border-radius:12px;padding:8px 6px 8px 2px;margin:6px 0;display:flex;align-items:center;gap:4px;}
-.slot .grip{width:26px;flex:none;text-align:center;color:#CFC8D6;touch-action:none;cursor:grab;}
-.slot input.tm{width:74px;flex:none;font-size:13px;padding:5px 6px;border-radius:9px;text-align:center;}
-.slot .ttl{flex:1;min-width:0;font-size:14px;word-break:break-word;}
-.slot .ttl small{display:block;font-size:10.5px;color:#B7B0C0;}
-.slot .del{border:0;background:none;color:#CFC8D6;font-size:15px;padding:4px 6px;cursor:pointer;}
-.empty{text-align:center;color:#BFB8C8;font-size:12.5px;padding:16px 6px;border:2px dashed #E2DCE8;border-radius:12px;margin:4px 0;}
+.slot{background:#fff;border-radius:12px;padding:8px 8px 8px 2px;margin:6px 0;display:flex;align-items:flex-start;gap:4px;}
+.slot.warn{background:var(--org-l);box-shadow:inset 0 0 0 1.5px var(--org);}
+.slot .grip{width:24px;flex:none;text-align:center;color:#A6BDD3;touch-action:none;cursor:grab;padding-top:5px;}
+.slot .body{flex:1;min-width:0;}
+.slot .r1{display:flex;align-items:center;gap:5px;}
+.slot input.tm{width:100px;flex:none;font-size:13px;padding:4px 2px;border-radius:9px;text-align:center;background:var(--pink-l);border-color:transparent;color:var(--pink-d);min-height:30px;}
+.slot select.dur{width:96px;flex:none;font-size:12.5px;padding:5px 4px;border-radius:9px;background:var(--sky-l);border-color:transparent;color:var(--sky-d);}
+.slot .del{border:0;background:none;color:#A6BDD3;font-size:15px;padding:2px 4px;cursor:pointer;}
+.slot .ttl{font-size:14px;word-break:break-word;margin-top:4px;}
+.slot .ttl small{display:block;font-size:10.5px;color:#8AA1B7;}
+.slot .noteBtn{border:0;background:none;color:#A6BDD3;font-size:14px;padding:2px 4px;cursor:pointer;font-family:inherit;margin-left:auto;}
+.slot .noteBtn.has{color:var(--sky-d);}
+.slot .noteview{font-size:12px;color:#57708A;background:var(--sky-l);border-radius:10px;padding:7px 10px;margin-top:6px;white-space:pre-wrap;word-break:break-word;cursor:pointer;line-height:1.65;}
+.slot textarea.note{font-size:13px;margin-top:6px;min-height:84px;line-height:1.7;border-radius:10px;}
+.slot .ncnt{font-size:10.5px;color:#8AA1B7;text-align:right;margin-top:2px;}
+.slot .ncnt.over{color:var(--org-d);}
+.slot .flag{display:inline-block;font-size:10.5px;background:var(--org);color:var(--org-d);border-radius:6px;padding:1px 7px;margin-top:4px;margin-right:4px;}
+input[type=time]{-webkit-appearance:none;appearance:none;}
+input[type=time]::-webkit-calendar-picker-indicator{opacity:.45;cursor:pointer;}
+input.timefield{width:112px;text-align:center;}
+.empty{text-align:center;color:#8FA6BC;font-size:12.5px;padding:16px 6px;border:2px dashed #D3E1ED;border-radius:12px;margin:4px 0;}
 .hint{font-size:11.5px;color:var(--ink-l);background:var(--yellow-l);border-radius:12px;padding:9px 12px;margin-bottom:10px;line-height:1.7;}
 .syncstep{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;}
 .syncstep b{display:block;font-size:14px;font-weight:normal;color:var(--pink-d);margin-bottom:8px;}
 #qrbox{display:flex;justify-content:center;padding:14px 0 4px;}
-#qrbox img,#qrbox canvas{border-radius:10px;}
-.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:10px 20px;border-radius:999px;z-index:200;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center;}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:10px 20px;border-radius:999px;z-index:400;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center;}
 .toast.on{opacity:.95;}
-.fields{display:grid;grid-template-columns:76px 1fr;gap:8px 10px;align-items:center;font-size:13px;}
+.fields{display:grid;grid-template-columns:80px 1fr;gap:8px 10px;align-items:center;font-size:13px;}
 .fields label{color:var(--ink-l);font-size:12.5px;}
 .mini{font-size:11.5px;color:var(--ink-l);margin:4px 2px 12px;line-height:1.7;}
+.sheet{position:fixed;inset:0;background:rgba(20,45,70,.45);z-index:300;display:none;align-items:flex-end;justify-content:center;}
+.sheet.on{display:flex;}
+.sheetbox{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:560px;padding:18px 16px calc(env(safe-area-inset-bottom) + 16px);animation:up .18s ease-out;max-height:86vh;overflow:auto;}
+@keyframes up{from{transform:translateY(24px);opacity:.4}to{transform:none;opacity:1}}
+.sheetbox p{margin:0 0 14px;font-size:13.5px;color:var(--ink-l);text-align:center;word-break:break-word;}
+.sheetbox p b{display:block;font-size:16px;color:var(--pink-d);font-weight:normal;margin-top:4px;}
+.sheetbox button.big{display:block;width:100%;font-family:inherit;font-size:15px;border:0;border-radius:14px;padding:14px 10px;margin-bottom:9px;cursor:pointer;text-align:center;}
+.sheetbox button.b1{background:var(--pink-l);color:var(--pink-d);}
+.sheetbox button.b2{background:var(--lav-l);color:var(--lav-d);}
+.sheetbox button.bc{background:#EDF3F9;color:var(--ink-l);font-size:14px;padding:11px;}
+.sheetbox button.warnb{background:var(--org-l);color:var(--org-d);box-shadow:inset 0 0 0 1.5px var(--org);}
+.sheetbox button.big small{display:block;font-size:11.5px;opacity:.85;margin-top:2px;}
+.sheetbox button.big:active{transform:scale(.98);}
+.filters{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap;}
+.filters button{font-family:inherit;font-size:12px;border:1.5px solid var(--line);background:#fff;color:var(--ink-l);border-radius:999px;padding:6px 13px;cursor:pointer;}
+.filters button.on{border-color:transparent;color:#fff;background:var(--ink-l);}
+.filters button.on[data-p=L]{background:var(--pink-d);} .filters button.on[data-p=S]{background:var(--sky-d);}
+.filters button.on[data-c=a]{background:var(--sky-d);} .filters button.on[data-c=e]{background:var(--yellow-d);} .filters button.on[data-c=s]{background:var(--mint-d);}
+.fac{background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 8px 9px 12px;margin-bottom:7px;display:flex;align-items:flex-start;gap:6px;}
+.fac.L{border-left:5px solid var(--pink);} .fac.S{border-left:5px solid var(--sky);}
+.fac .fb{flex:1;min-width:0;}
+.fac .fn{font-size:14px;word-break:break-word;}
+.fac .fm{font-size:11px;color:#798FA5;word-break:break-word;margin-top:2px;}
+.fac .fa{font-size:10.5px;color:#8AA1B7;}
+.fac .act{display:flex;flex:none;}
+.fac .act button{border:0;background:none;font-size:15px;color:#A6BDD3;padding:5px 6px;cursor:pointer;font-family:inherit;}
+.cnt{font-size:11.5px;color:var(--ink-l);margin:2px 2px 8px;}
 @media print{
-  body{background:#fff;padding:0;} .tabbar,header,.hint,.tabonly-hide,.grip,.act,.del,.btn{display:none!important;}
+  body{background:#fff;padding:0;} .tabbar,header,.hint,.tabonly-hide,.grip,.act,.del,.btn,.parksel,.sheet,.noteBtn,.ncnt{display:none!important;}
   section.view{display:none!important;} section#v-plan{display:block!important;}
   .zone{min-height:0;} .slot{border:1px solid #eee;}
 }
@@ -95,7 +142,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);}
 
 <header>
   <div class="wrap">
-    <h1>ふたり旅のしおり</h1>
+    <h1>Disney 2026 Summer</h1>
     <button class="me" id="meBtn">なまえ</button>
   </div>
 </header>
@@ -115,34 +162,79 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);}
         <button class="btn" id="addBtn">追加</button>
       </div>
     </div>
-    <div class="hint">メモは2人分まとめて表示されます。予定表に入れるには「予定」タブでドラッグするか、右の <b>＋</b> を押してください。</div>
+    <div class="hint">ふたり分がまとめて並びます。予定に入れるには右の <b>＋</b>、または「予定」タブで <b>⠿</b> をドラッグ。</div>
     <h2 class="sec">MEMO LIST</h2>
     <div id="memoList"></div>
   </section>
 
+  <!-- ===== 施設データベース ===== -->
+  <section class="view" id="v-db">
+    <div class="filters" id="fPark">
+      <button data-p="" class="on">両パーク</button>
+      <button data-p="L">ランド</button>
+      <button data-p="S">シー</button>
+    </div>
+    <div class="filters" id="fCat">
+      <button data-c="a" class="on">アトラクション</button>
+      <button data-c="e">レストラン</button>
+      <button data-c="s">ショップ</button>
+    </div>
+    <input type="search" id="fq" placeholder="名前・エリアで検索" style="margin-bottom:8px">
+    <div class="cnt" id="dbCount"></div>
+    <div id="dbList"></div>
+
+    <h2 class="sec">自分で追加する</h2>
+    <div class="card">
+      <div class="filters" id="nPark" style="margin-bottom:6px">
+        <button data-p="L" class="on">ランド</button>
+        <button data-p="S">シー</button>
+      </div>
+      <div class="filters" id="nCat" style="margin-bottom:8px">
+        <button data-c="a" class="on">アトラクション</button>
+        <button data-c="e">レストラン</button>
+        <button data-c="s">ショップ</button>
+      </div>
+      <input type="text" id="nName" placeholder="名称" style="margin-bottom:6px">
+      <input type="text" id="nArea" placeholder="エリア（任意）" style="margin-bottom:6px">
+      <input type="text" id="nMemo" placeholder="メモ・特色（任意）" style="margin-bottom:8px">
+      <button class="btn wide" id="nAdd">データベースに追加</button>
+    </div>
+    <div style="height:16px"></div>
+  </section>
+
   <!-- ===== 予定表 ===== -->
   <section class="view" id="v-plan">
-    <div class="hint tabonly-hide">左の <b>⠿</b> を長めに押したまま動かすと、メモから予定表へドラッグできます。予定どうしの入れ替えも同じ操作です。</div>
+    <div class="hint tabonly-hide">時間を入れると自動で時間順に並びます。時間が重なっている予定と、その日のパークと違う施設は<b>オレンジ色</b>になります。</div>
 
     <h2 class="sec tabonly-hide">MEMO（ここからドラッグ）</h2>
     <div id="planMemo" class="tabonly-hide"></div>
 
     <div class="daybox d1" style="margin-top:16px">
-      <h3>DAY 1 <input type="text" id="d1date" placeholder="0月0日（〇）"></h3>
+      <div class="dayhead">
+        <b>DAY 1</b><input type="text" id="d1date" placeholder="0月0日">
+        <div class="parksel" data-day="1">
+          <button data-p="L">ランド</button><button data-p="S">シー</button><button data-p="">未定</button>
+        </div>
+      </div>
       <div class="zone" data-day="1" id="zone1"></div>
     </div>
     <div class="daybox d2">
-      <h3>DAY 2 <input type="text" id="d2date" placeholder="0月0日（〇）"></h3>
+      <div class="dayhead">
+        <b>DAY 2</b><input type="text" id="d2date" placeholder="0月0日">
+        <div class="parksel" data-day="2">
+          <button data-p="L">ランド</button><button data-p="S">シー</button><button data-p="">未定</button>
+        </div>
+      </div>
       <div class="zone" data-day="2" id="zone2"></div>
     </div>
 
     <div class="card">
       <b style="font-size:13px;color:var(--sky-d);font-weight:normal">🏨 ランドホテル</b>
       <div class="fields" style="margin-top:8px">
-        <label>チェックイン</label><input type="text" id="h_in" placeholder="00:00">
-        <label>チェックアウト</label><input type="text" id="h_out" placeholder="00:00">
-        <label>予約番号</label><input type="text" id="h_no" placeholder="">
-        <label>部屋タイプ</label><input type="text" id="h_room" placeholder="">
+        <label>チェックイン</label><input type="time" step="300" class="timefield" id="h_in">
+        <label>チェックアウト</label><input type="time" step="300" class="timefield" id="h_out">
+        <label>予約番号</label><input type="text" id="h_no">
+        <label>部屋タイプ</label><input type="text" id="h_room">
       </div>
     </div>
     <div class="card">
@@ -158,7 +250,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);}
 
   <!-- ===== 同期 ===== -->
   <section class="view" id="v-sync">
-    <div class="hint">同期は「送る側が送信 → 相手が開く」で片方向です。<b>お互いに1回ずつ送れば</b>両方が最新になります。</div>
+    <div class="hint">同期は「送る側が送信 → 相手が開く」で片方向です。<b>お互いに1回ずつ</b>送れば両方が最新になります。施設データベースの内蔵分は送信されないので軽いままです。</div>
 
     <div class="syncstep">
       <b>① 自分のデータを相手に送る</b>
@@ -171,14 +263,14 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);}
 
     <div class="syncstep">
       <b>② 相手から届いたリンクを取り込む</b>
-      <div class="mini">リンクをタップすれば自動で取り込まれます。うまくいかないときは、ここに貼り付けて「取り込む」を押してください。</div>
+      <div class="mini">リンクをタップすれば自動で取り込まれます。うまくいかないときはここに貼り付けて「取り込む」。</div>
       <textarea id="pasteBox" rows="3" placeholder="https://... を貼り付け"></textarea>
       <button class="btn sub wide" style="margin-top:8px" id="importBtn">取り込む</button>
     </div>
 
     <div class="syncstep">
       <b>データ管理</b>
-      <div class="mini">データはこの端末の中だけに保存されます。ブラウザのデータを消すと消えるのでご注意ください。</div>
+      <div class="mini">データはこの端末の中だけに保存されます。ブラウザのデータを消すと消えます。</div>
       <button class="btn gray wide" id="resetBtn">全部消してやり直す</button>
     </div>
     <div style="height:20px"></div>
@@ -188,24 +280,304 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);}
 
 <div class="tabbar">
   <button data-v="memo" class="on"><span class="ic">📝</span>メモ</button>
+  <button data-v="db"><span class="ic">📚</span>施設</button>
   <button data-v="plan"><span class="ic">🗓️</span>予定</button>
   <button data-v="sync"><span class="ic">🔄</span>同期</button>
 </div>
 
+<div class="sheet" id="sheet"><div class="sheetbox" id="sheetBox"></div></div>
 <div class="toast" id="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-const KEY='futaritabi_v1';
+/* 施設データ  [パーク, カテゴリ, エリア, 名称, メモ]
+   パーク: L=東京ディズニーランド / S=東京ディズニーシー
+   カテゴリ: a=アトラクション / e=レストラン / s=ショップ        */
+const FAC=[
+/* ===== 東京ディズニーランド：アトラクション ===== */
+["L","a","ワールドバザール","オムニバス","2階建てバスでプラザを一周。午前中のみ運行"],
+["L","a","ワールドバザール","ペニーアーケード","20世紀初頭のゲームセンター。待ち時間ほぼなし"],
+["L","a","アドベンチャーランド","カリブの海賊","定番の船旅。ジャック・スパロウ登場。涼しい"],
+["L","a","アドベンチャーランド","ジャングルクルーズ：ワイルドライフ・エクスペディション","船長のトークが名物。夜はナイトver."],
+["L","a","アドベンチャーランド","魅惑のチキルーム：スティッチ・プレゼンツ","冷房の効いたシアター。休憩に最適","みわくのチキルーム"],
+["L","a","アドベンチャーランド","スイスファミリー・ツリーハウス","大きな木の家を散策。待ち時間少なめ"],
+["L","a","アドベンチャーランド","ウエスタンリバー鉄道","蒸気機関車で園内一周。約15分"],
+["L","a","ウエスタンランド","ビッグサンダー・マウンテン","鉱山を走るコースター。夜が特にきれい"],
+["L","a","ウエスタンランド","蒸気船マークトウェイン号","アメリカ河を一周。座って休める","しようきせんマークトウエインごう"],
+["L","a","ウエスタンランド","カントリーベア・シアター","クマたちのコンサート。季節ごとに演目が変わる"],
+["L","a","ウエスタンランド","トムソーヤ島いかだ","島の探検。夕方で終了することが多い"],
+["L","a","ウエスタンランド","ウエスタンランド・シューティングギャラリー","射撃ゲーム。有料"],
+["L","a","クリッターカントリー","スプラッシュ・マウンテン","最後の落下は水しぶき注意。夏向き"],
+["L","a","クリッターカントリー","ビーバーブラザーズのカヌー探険","自分で漕ぐカヌー。夕方で終了"],
+["L","a","ファンタジーランド","美女と野獣“魔法のものがたり”","人気。プレミアアクセス対象になることが多い","びじよとやじゆう"],
+["L","a","ファンタジーランド","ホーンテッドマンション","999人の幽霊のお屋敷。涼しい"],
+["L","a","ファンタジーランド","プーさんのハニーハント","ハチミツの世界へ。ライド"],
+["L","a","ファンタジーランド","ピーターパン空の旅","空を飛ぶ定番ライド"],
+["L","a","ファンタジーランド","白雪姫と七人のこびと","短め。少し怖い演出あり","しらゆきひめとしちにんのこびと"],
+["L","a","ファンタジーランド","ピノキオの冒険旅行","短めのダークライド"],
+["L","a","ファンタジーランド","イッツ・ア・スモールワールド","約10分。涼しくて休憩にもなる"],
+["L","a","ファンタジーランド","ミッキーのフィルハーマジック","3Dシアター。冷房あり"],
+["L","a","ファンタジーランド","アリスのティーパーティー","回るティーカップ"],
+["L","a","ファンタジーランド","キャッスルカルーセル","城前のメリーゴーランド。夜景がきれい"],
+["L","a","ファンタジーランド","ふしぎの国のアリス","迷路のようなウォークスルー"],
+["L","a","トゥーンタウン","ロジャーラビットのカートゥーンスピン","くるくる回るライド"],
+["L","a","トゥーンタウン","ガジェットのゴーコースター","子ども向けミニコースター"],
+["L","a","トゥーンタウン","ミニーの家","写真スポット。ウォークスルー"],
+["L","a","トゥーンタウン","ドナルドのボート","水遊びできる。夏は濡れる"],
+["L","a","トゥーンタウン","チップとデールのツリーハウス","小さな木の家を探検"],
+["L","a","トゥーンタウン","グーフィーのペイント&プレイハウス","部屋を塗る体験型"],
+["L","a","トゥモローランド","ベイマックスのハッピーライド","音楽に合わせて振り回される。楽しい"],
+["L","a","トゥモローランド","バズ・ライトイヤーのアストロブラスター","シューティング。得点を競える"],
+["L","a","トゥモローランド","モンスターズ・インク“ライド&ゴーシーク！”","懐中電灯で探すライド"],
+["L","a","トゥモローランド","スター・ツアーズ：ザ・アドベンチャーズ・コンティニュー","3D宇宙旅行。行き先はランダム"],
+["L","a","トゥモローランド","スティッチ・エンカウンター","スティッチと会話するシアター"],
+["L","a","トゥモローランド","スペース・マウンテン","※リニューアル工事中。再開は2027年予定"],
+/* ===== 東京ディズニーランド：レストラン ===== */
+["L","e","ワールドバザール","イーストサイド・カフェ","パスタ。落ち着いて食べたいとき"],
+["L","e","ワールドバザール","センターストリート・コーヒーハウス","洋食。予約可"],
+["L","e","ワールドバザール","リフレッシュメントコーナー","ホットドッグ。行列できやすい"],
+["L","e","ワールドバザール","スウィートハート・カフェ","パンとコーヒー。朝ごはんに"],
+["L","e","ワールドバザール","グレートアメリカン・ワッフルカンパニー","ミッキーワッフル。軽食"],
+["L","e","アドベンチャーランド","ブルーバイユー・レストラン","カリブの海賊の中。要予約の特別感"],
+["L","e","アドベンチャーランド","クリスタルパレス・レストラン","ビュッフェ。キャラクター登場"],
+["L","e","アドベンチャーランド","ポリネシアンテラス・レストラン","ショーレストラン。要予約"],
+["L","e","アドベンチャーランド","カフェ・オーリンズ","グラタンなど。テラス席あり"],
+["L","e","アドベンチャーランド","チャイナボイジャー","ラーメン・中華"],
+["L","e","アドベンチャーランド","ボイラールーム・バイツ","軽食スタンド"],
+["L","e","アドベンチャーランド","スクウィーザーズ・トロピカル・ジュースバー","フレッシュジュース"],
+["L","e","ウエスタンランド","ザ・ダイヤモンドホースシュー","ショーを見ながら食事。要予約"],
+["L","e","ウエスタンランド","ハングリーベア・レストラン","カレー。回転が早い"],
+["L","e","ウエスタンランド","キャンプ・ウッドチャック・キッチン","ハンバーガーなど"],
+["L","e","ウエスタンランド","プラザパビリオン・レストラン","広め。パレード鑑賞に便利"],
+["L","e","ウエスタンランド","ペコスビル・カフェ","チュロス・軽食"],
+["L","e","クリッターカントリー","グランマ・サラのキッチン","洋食。屋内で涼しい"],
+["L","e","クリッターカントリー","ラケッティのラクーンサルーン","スナック。軽く食べたいとき"],
+["L","e","ファンタジーランド","クイーン・オブ・ハートのバンケットホール","不思議の国の世界観。人気"],
+["L","e","ファンタジーランド","ラ・タベルヌ・ド・ガストン","美女と野獣エリア。軽食"],
+["L","e","ファンタジーランド","ル・フウズ","フローズンドリンク"],
+["L","e","ファンタジーランド","キャプテンフックス・ギャレー","ピザ"],
+["L","e","ファンタジーランド","ビレッジペイストリー","スイーツ"],
+["L","e","トゥーンタウン","ヒューイ・デューイ・ルーイのグッドタイム・カフェ","チキンなど"],
+["L","e","トゥーンタウン","トゥーントーン・トリート","軽食スタンド"],
+["L","e","トゥモローランド","トゥモローランド・テラス","ハンバーガー。席数が多い"],
+["L","e","トゥモローランド","パン・ギャラクティック・ピザ・ポート","ピザ。屋内"],
+["L","e","トゥモローランド","プラズマ・レイズ・ダイナー","丼もの・ライスボウル"],
+["L","e","トゥモローランド","ソフトランディング","チュロス・軽食"],
+["L","e","トゥモローランド","ビッグポップ","ポップコーン専門"],
+/* ===== 東京ディズニーランド：ショップ ===== */
+["L","s","ワールドバザール","グランドエンポーリアム","品ぞろえ最大。閉園前は混む"],
+["L","s","ワールドバザール","ワールドバザール・コンフェクショナリー","おみやげお菓子の定番"],
+["L","s","ワールドバザール","ディズニー&カンパニー","ぬいぐるみ・雑貨"],
+["L","s","ワールドバザール","タウンセンターファッション","衣類・帽子"],
+["L","s","ワールドバザール","ハウス・オブ・グリーティング","カード・文具"],
+["L","s","ワールドバザール","トイ・ステーション","おもちゃ"],
+["L","s","ワールドバザール","マジックショップ","手品グッズ・おもしろ雑貨"],
+["L","s","ワールドバザール","ペイストリーパレス","スイーツみやげ"],
+["L","s","ワールドバザール","クリスタルアーツ","ガラス製品。名入れができる"],
+["L","s","アドベンチャーランド","アドベンチャーランド・バザール","エリア雑貨"],
+["L","s","アドベンチャーランド","パイレーツ・トレジャー","海賊グッズ"],
+["L","s","アドベンチャーランド","ゴールデンガリオン","カリブの海賊出口付近"],
+["L","s","アドベンチャーランド","ラ・プティート・パフュームリー","香り雑貨"],
+["L","s","ウエスタンランド","ウエスタンウエア","西部風の衣類・小物"],
+["L","s","ウエスタンランド","カントリーベア・バンドワゴン","クマたちのグッズ"],
+["L","s","ウエスタンランド","フロンティア・ウッドクラフト","木製の雑貨"],
+["L","s","ウエスタンランド","トレーディングポスト","おみやげ全般"],
+["L","s","ウエスタンランド","ハッピーキャンパー・サプライ","アウトドア風グッズ"],
+["L","s","クリッターカントリー","スプラッシュダウン・フォト","ライド写真の購入"],
+["L","s","ファンタジーランド","ビレッジショップス","エリア最大級。プーさん関連も"],
+["L","s","ファンタジーランド","キングダム・トレジャー","プリンセス系"],
+["L","s","ファンタジーランド","ハーモニーフェア","雑貨・お菓子"],
+["L","s","ファンタジーランド","ガラスの靴","シンデレラ関連"],
+["L","s","ファンタジーランド","プーさんコーナー","プーさんグッズ"],
+["L","s","トゥーンタウン","ギャグファクトリー/ファイブ・アンド・ダイム","トゥーン系グッズ"],
+["L","s","トゥモローランド","プラネットM","スター・ウォーズ、宇宙系"],
+["L","s","トゥモローランド","モンスターズ・インク・カンパニーストア","モンスターズ・インク関連"],
+/* ===== 東京ディズニーシー：アトラクション ===== */
+["S","a","メディテレーニアンハーバー","ソアリン：ファンタスティック・フライト","空を飛ぶ体験。最人気のひとつ"],
+["S","a","メディテレーニアンハーバー","ヴェネツィアン・ゴンドラ","運河をゴンドラで。夕方から運航"],
+["S","a","メディテレーニアンハーバー","フォートレス・エクスプロレーション","要塞を自由に探索。待ち時間なし"],
+["S","a","メディテレーニアンハーバー","ディズニーシー・トランジットスチーマーライン","船で移動できる。座って休める"],
+["S","a","アメリカンウォーターフロント","タワー・オブ・テラー","急降下。絶叫系"],
+["S","a","アメリカンウォーターフロント","トイ・ストーリー・マニア！","シューティング。人気で待ち長め"],
+["S","a","アメリカンウォーターフロント","タートル・トーク","クラッシュと会話。涼しい"],
+["S","a","アメリカンウォーターフロント","ビッグシティ・ヴィークル","クラシックカーで街を移動"],
+["S","a","アメリカンウォーターフロント","ディズニーシー・エレクトリックレールウェイ","高架を走るトロリー"],
+["S","a","ポートディスカバリー","ニモ＆フレンズ・シーライダー","小さな潜水艇に乗る。揺れる"],
+["S","a","ポートディスカバリー","アクアトピア","水上をすべる。夏は濡れてもよい版あり"],
+["S","a","ロストリバーデルタ","インディ・ジョーンズ・アドベンチャー：クリスタルスカルの魔宮","スリル系の定番"],
+["S","a","ロストリバーデルタ","レイジングスピリッツ","1回転するコースター"],
+["S","a","ファンタジースプリングス","アナとエルサのフローズンジャーニー","新エリア。入場に条件がつくことあり"],
+["S","a","ファンタジースプリングス","ラプンツェルのランタンフェスティバル","ランタンの光の中をボートで"],
+["S","a","ファンタジースプリングス","ピーターパンのネバーランドアドベンチャー","3D体験型ライド"],
+["S","a","ファンタジースプリングス","フェアリー・ティンカーベルのビジーバギー","小さめの周遊ライド"],
+["S","a","アラビアンコースト","シンドバッド・ストーリーブック・ヴォヤッジ","歌が耳に残る。空いていて涼しい"],
+["S","a","アラビアンコースト","マジックランプシアター","ジーニーのマジックショー"],
+["S","a","アラビアンコースト","キャラバンカルーセル","2階建てメリーゴーランド"],
+["S","a","アラビアンコースト","ジャスミンのフライングカーペット","空飛ぶじゅうたん"],
+["S","a","マーメイドラグーン","マーメイドラグーンシアター","アリエルのショー。座って涼める"],
+["S","a","マーメイドラグーン","フランダーのフライングフィッシュコースター","子ども向けコースター"],
+["S","a","マーメイドラグーン","ジャンピン・ジェリーフィッシュ","ふわっと上下する"],
+["S","a","マーメイドラグーン","スカットルのスクーター","くるくる回る"],
+["S","a","マーメイドラグーン","ブローフィッシュ・バルーンレース","ゆるやかに回転"],
+["S","a","マーメイドラグーン","ワールプール","貝殻に乗って回る"],
+["S","a","マーメイドラグーン","アリエルのプレイグラウンド","自由に遊べる屋内エリア"],
+["S","a","ミステリアスアイランド","センター・オブ・ジ・アース","地底走行。最後に急加速"],
+["S","a","ミステリアスアイランド","海底2万マイル","潜水艇でゆっくり探検","かいてい2まんマイル"],
+/* ===== 東京ディズニーシー：レストラン ===== */
+["S","e","メディテレーニアンハーバー","マゼランズ","高級感のある店内。要予約"],
+["S","e","メディテレーニアンハーバー","リストランテ・ディ・カナレット","運河沿いのイタリアン。要予約"],
+["S","e","メディテレーニアンハーバー","ザンビーニ・ブラザーズ・リストランテ","パスタ・ピザ。カジュアル"],
+["S","e","メディテレーニアンハーバー","カフェ・ポルトフィーノ","洋食。席が多い"],
+["S","e","メディテレーニアンハーバー","マンマ・ビスコッティズ・ベーカリー","サンドイッチ・パン"],
+["S","e","メディテレーニアンハーバー","ゴンドリエ・スナック","軽食・スナック"],
+["S","e","メディテレーニアンハーバー","レフレスコス","メキシカン系の軽食"],
+["S","e","アメリカンウォーターフロント","S.S.コロンビア・ダイニングルーム","豪華客船の食堂。要予約"],
+["S","e","アメリカンウォーターフロント","テディ・ルーズヴェルト・ラウンジ","バー風ラウンジ。落ち着ける"],
+["S","e","アメリカンウォーターフロント","レストラン櫻","和食。ゆっくりできる"],
+["S","e","アメリカンウォーターフロント","ケープコッド・クックオフ","ダッフィーのショーあり。人気"],
+["S","e","アメリカンウォーターフロント","ケープコッド・コンフェクション","スイーツ・軽食"],
+["S","e","アメリカンウォーターフロント","ニューヨーク・デリ","サンドイッチ"],
+["S","e","アメリカンウォーターフロント","リバティ・ランディング・ダイナー","軽食"],
+["S","e","アメリカンウォーターフロント","バーナクル・ビルズ","スナック"],
+["S","e","ポートディスカバリー","ホライズンベイ・レストラン","洋食。窓際が気持ちいい"],
+["S","e","ポートディスカバリー","シーサイドスナック","軽食スタンド"],
+["S","e","ポートディスカバリー","ベイサイド・テイクアウト","持ち歩ける軽食"],
+["S","e","ロストリバーデルタ","ミゲルズ・エル・ドラード・キャンティーナ","メキシカン。屋外席"],
+["S","e","ロストリバーデルタ","ユカタン・ベースキャンプ・グリル","ボリュームあるグリル料理"],
+["S","e","ロストリバーデルタ","エクスペディション・イート","スナック"],
+["S","e","ロストリバーデルタ","トロピック・アルズ","ドリンク・軽食"],
+["S","e","ファンタジースプリングス","アレンデール・ロイヤルバンケット","城内の広い食事処"],
+["S","e","ファンタジースプリングス","スナグリーダックリング","ラプンツェルの森の酒場風"],
+["S","e","ファンタジースプリングス","ルックアウト・クックアウト","ネバーランドの軽食"],
+["S","e","ファンタジースプリングス","オーケンのオーケー・フード","軽食スタンド"],
+["S","e","アラビアンコースト","カスバ・フードコート","カレー。席数が多い"],
+["S","e","アラビアンコースト","サルタンズ・オアシス","軽食・スイーツ"],
+["S","e","アラビアンコースト","オープンセサミ","チュロスなど"],
+["S","e","マーメイドラグーン","セバスチャンのカリプソキッチン","屋内で涼しい。軽食"],
+["S","e","ミステリアスアイランド","ヴォルケイニア・レストラン","中華。屋内"],
+["S","e","ミステリアスアイランド","ノーチラスギャレー","ぎょうざドッグが名物"],
+["S","e","ミステリアスアイランド","リフレッシュメント・ステーション","ドリンク・軽食"],
+/* ===== 東京ディズニーシー：ショップ ===== */
+["S","s","メディテレーニアンハーバー","エンポーリオ","品ぞろえ最大。帰りに寄れる"],
+["S","s","メディテレーニアンハーバー","ガッレリーア・ディズニー","雑貨・アクセサリー"],
+["S","s","メディテレーニアンハーバー","ヴァレンティーナズ・スウィート","お菓子みやげ"],
+["S","s","メディテレーニアンハーバー","フィガロズ・クロージアー","衣類"],
+["S","s","メディテレーニアンハーバー","イル・ポスティーノ・ステーショナリー","文具"],
+["S","s","メディテレーニアンハーバー","ミラマーレ","雑貨"],
+["S","s","メディテレーニアンハーバー","ヴィラ・ドナルド・ホームショップ","ドナルド関連・生活雑貨"],
+["S","s","アメリカンウォーターフロント","マクダックス・デパートメントストア","大型店。品数多め"],
+["S","s","アメリカンウォーターフロント","スチームボート・ミッキーズ","ミッキー系グッズ"],
+["S","s","アメリカンウォーターフロント","ヴィレッジ・シャワーズ","ダッフィー関連が見つかることも"],
+["S","s","アメリカンウォーターフロント","トイビルトロリーパーク","トイ・ストーリー関連"],
+["S","s","アメリカンウォーターフロント","タワー・オブ・テラー・メモラビリア","タワテラのグッズ"],
+["S","s","ポートディスカバリー","ディスカバリーギフト","エリア雑貨"],
+["S","s","ロストリバーデルタ","ロストリバーアウトフィッター","探検隊風グッズ"],
+["S","s","ロストリバーデルタ","ペドラーズ・アウトポスト","小物・雑貨"],
+["S","s","ファンタジースプリングス","ファンタジースプリングス・ギフト","新エリアのグッズ"],
+["S","s","アラビアンコースト","アグラバーマーケットプレイス","アラジン関連"],
+["S","s","マーメイドラグーン","キス・デ・ガール・ファッション","アリエル関連"],
+["S","s","マーメイドラグーン","スリーピーホエール・ショップ","雑貨・お菓子"],
+["S","s","ミステリアスアイランド","ノーチラスギフト","ネモ船長の世界観"],
+/* ===== ホテル・その他 ===== */
+["L","e","ホテル","ディズニーランドホテル ドリーマーズ・ラウンジ","宿泊者に便利。軽食とドリンク"],
+["L","e","ホテル","ディズニーランドホテル シャーウッドガーデン・レストラン","ブッフェ。朝食にも"],
+["L","s","ホテル","ディズニーランドホテル ディズニーギフト","チェックアウト前に買える"]
+];
+
+</script>
+<script>
+const KEY='futaritabi_v2';
 const CATN={go:'行きたい',eat:'食べたい',buy:'買いたい'};
-let S={me:'',items:[],slots:[],info:{},v:1};
+const C2M={a:'go',e:'eat',s:'buy'};
+const CATL={a:'アトラクション',e:'レストラン',s:'ショップ'};
+const PARKN={L:'ディズニーランド',S:'ディズニーシー'};
+const PARKS={L:'ランド',S:'シー'};
+let S={me:'',items:[],slots:[],info:{},dbAdd:[],dbMemo:{},v:2};
 
 function uid(){return Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);}
 function now(){return Date.now();}
-function load(){try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}}
+function load(){
+  try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}
+  if(!S.info)S.info={}; if(!S.dbAdd)S.dbAdd=[]; if(!S.dbMemo)S.dbMemo={};
+  const def={d1date:'8月24日（月）',d2date:'8月25日（火）'};
+  Object.keys(def).forEach(k=>{if(!S.info[k]||!S.info[k].v)S.info[k]={v:def[k],at:1};});
+}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2200);}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2400);}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function dayPark(d){const o=S.info['d'+d+'park'];return o?o.v:'';}
+function dayLabel(d){const o=S.info['d'+d+'date'];return o&&o.v?o.v:'';}
+
+/* ---------- 施設データベース ---------- */
+function allFac(){
+  const built=FAC.map((f,i)=>({key:'f'+i,p:f[0],c:f[1],a:f[2],n:f[3],m:f[4],y:f[5]||'',own:0}));
+  const mine=S.dbAdd.filter(x=>!x.del).map(x=>({key:x.id,p:x.p,c:x.c,a:x.a||'',n:x.n,m:x.m||'',y:x.y||'',own:1}));
+  return mine.concat(built).map(f=>{
+    const ov=S.dbMemo[f.key];
+    return ov?Object.assign({},f,{m:ov.v}):f;
+  });
+}
+let fp='',fc='a',fq='';
+const COL=(window.Intl&&Intl.Collator)?new Intl.Collator('ja'):null;
+function sortKey(f){return f.y||f.n;}
+function jaSort(a,b){const x=sortKey(a),y=sortKey(b);return COL?COL.compare(x,y):(x<y?-1:x>y?1:0);}
+function renderDB(){
+  const q=fq.trim();
+  const list=allFac().filter(f=>(!fp||f.p===fp)&&f.c===fc&&(!q||(f.n+f.a+f.m).indexOf(q)>=0)).sort(jaSort);
+  document.getElementById('dbCount').textContent=list.length+'件（五十音順）';
+  const el=document.getElementById('dbList');el.innerHTML='';
+  if(!list.length){el.innerHTML='<div class="empty">該当なし</div>';return;}
+  list.forEach(f=>{
+    const d=document.createElement('div');d.className='fac '+f.p;
+    const b=document.createElement('div');b.className='fb';
+    b.innerHTML='<div class="fn">'+esc(f.n)+'</div><div class="fa">'+PARKS[f.p]+(f.a?' / '+esc(f.a):'')+(f.own?' ・自分で追加':'')+'</div>'+(f.m?'<div class="fm">'+esc(f.m)+'</div>':'');
+    d.appendChild(b);
+    const act=document.createElement('div');act.className='act';
+    const plus=document.createElement('button');plus.textContent='＋';plus.title='予定に追加';
+    plus.onclick=()=>openPicker({text:f.n,cat:C2M[f.c],park:f.p,area:f.a});
+    const heart=document.createElement('button');heart.textContent='♡';heart.title='メモに追加';
+    heart.onclick=()=>{
+      S.items.push({id:uid(),cat:C2M[f.c],text:f.n,park:f.p,area:f.a,by:S.me||'',at:now(),del:0});
+      save();render();toast('メモに追加しました');
+    };
+    const pen=document.createElement('button');pen.textContent='✎';pen.title='メモを編集';
+    pen.onclick=()=>{
+      const v=prompt('この施設のメモ',f.m||'');
+      if(v!==null){S.dbMemo[f.key]={v:v,at:now()};save();renderDB();}
+    };
+    act.appendChild(plus);act.appendChild(heart);act.appendChild(pen);
+    if(f.own){
+      const x=document.createElement('button');x.textContent='×';
+      x.onclick=()=>{if(confirm('削除しますか？')){const o=S.dbAdd.find(v=>v.id===f.key);if(o){o.del=1;o.at=now();}save();renderDB();}};
+      act.appendChild(x);
+    }
+    d.appendChild(act);el.appendChild(d);
+  });
+}
+function bindFilters(){
+  const wire=(id,fn)=>document.getElementById(id).addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    [...e.currentTarget.children].forEach(x=>x.classList.toggle('on',x===b));fn(b);
+  });
+  wire('fPark',b=>{fp=b.dataset.p;renderDB();});
+  wire('fCat',b=>{fc=b.dataset.c;renderDB();});
+  wire('nPark',b=>{np=b.dataset.p;});
+  wire('nCat',b=>{nc=b.dataset.c;});
+  document.getElementById('fq').addEventListener('input',e=>{fq=e.target.value;renderDB();});
+}
+let np='L',nc='a';
+function addFac(){
+  const n=document.getElementById('nName').value.trim();
+  if(!n){toast('名称を入れてください');return;}
+  S.dbAdd.push({id:uid(),p:np,c:nc,a:document.getElementById('nArea').value.trim(),
+    n:n,m:document.getElementById('nMemo').value.trim(),at:now(),del:0});
+  ['nName','nArea','nMemo'].forEach(k=>document.getElementById(k).value='');
+  save();fp=np;fc=nc;
+  [...document.getElementById('fPark').children].forEach(x=>x.classList.toggle('on',x.dataset.p===np));
+  [...document.getElementById('fCat').children].forEach(x=>x.classList.toggle('on',x.dataset.c===nc));
+  renderDB();toast('データベースに追加しました');
+}
 
 /* ---------- メモ ---------- */
 let cat='go';
@@ -230,11 +602,11 @@ function itemEl(it,forPlan){
   const tx=d.querySelector('.txt');
   tx.textContent=it.text;
   const s=document.createElement('small');
-  s.textContent=CATN[it.cat]+(it.by?' / '+it.by:'')+(used?' ・予定に追加済み':'');
+  s.textContent=CATN[it.cat]+(it.park?' / '+PARKS[it.park]:'')+(it.by?' / '+it.by:'')+(used?' ・予定に追加済み':'');
   tx.appendChild(s);
   const act=document.createElement('div');act.className='act';
   const plus=document.createElement('button');plus.textContent='＋';plus.title='予定に追加';
-  plus.onclick=()=>{const day=confirm('DAY1 に追加しますか？\n（キャンセルで DAY2）')?1:2;addSlot(day,it,-1);toast('DAY'+day+'に追加しました');};
+  plus.onclick=e=>{e.stopPropagation();openPicker(it);};
   act.appendChild(plus);
   if(!forPlan){
     const del=document.createElement('button');del.textContent='×';
@@ -248,7 +620,7 @@ function renderMemo(){
   const list=document.getElementById('memoList'),pl=document.getElementById('planMemo');
   list.innerHTML='';pl.innerHTML='';
   const live=S.items.filter(i=>!i.del);
-  if(!live.length){list.innerHTML='<div class="empty">まだメモがありません。<br>上の欄から追加してみましょう。</div>';}
+  if(!live.length)list.innerHTML='<div class="empty">まだメモがありません。<br>上の欄から追加してみましょう。</div>';
   ['go','eat','buy'].forEach(c=>{
     const g=live.filter(i=>i.cat===c);if(!g.length)return;
     const h=document.createElement('div');h.style.margin='12px 2px 6px';
@@ -257,44 +629,140 @@ function renderMemo(){
     g.forEach(i=>list.appendChild(itemEl(i,false)));
   });
   const un=live.filter(i=>!S.slots.some(s=>!s.del&&s.src===i.id));
-  if(!un.length){pl.innerHTML='<div class="empty">未配置のメモはありません 🎉</div>';}
+  if(!un.length)pl.innerHTML='<div class="empty">未配置のメモはありません 🎉</div>';
   else un.forEach(i=>pl.appendChild(itemEl(i,true)));
 }
+
+/* ---------- 追加先えらび ---------- */
+let picking=null;
+function openPicker(it){
+  picking=it;
+  const box=document.getElementById('sheetBox');
+  let h='<p>どちらの日に追加しますか？<b>'+esc(it.text)+'</b></p>';
+  [1,2].forEach(d=>{
+    const dp=dayPark(d),mis=it.park&&dp&&it.park!==dp;
+    h+='<button class="big '+(mis?'warnb':(d===1?'b1':'b2'))+'" data-d="'+d+'">DAY '+d
+      +'<small>'+esc(dayLabel(d))+(dp?'・'+PARKS[dp]:'・パーク未定')
+      +(mis?' ⚠ '+PARKS[it.park]+'の施設です':'')+'</small></button>';
+  });
+  h+='<button class="big bc" data-d="0">キャンセル</button>';
+  box.innerHTML=h;
+  document.getElementById('sheet').classList.add('on');
+}
+function closePicker(){picking=null;document.getElementById('sheet').classList.remove('on');}
+document.getElementById('sheet').addEventListener('click',e=>{
+  if(e.target.id==='sheet'){closePicker();return;}
+  const b=e.target.closest('button');if(!b)return;
+  const d=+b.dataset.d;
+  if(!d||!picking){closePicker();return;}
+  const it=picking;closePicker();
+  addSlot(d,it,-1);
+  const dp=dayPark(d);
+  toast(it.park&&dp&&it.park!==dp?('DAY'+d+'に追加（'+PARKS[it.park]+'の施設です）'):('DAY'+d+'に追加しました'));
+});
 
 /* ---------- 予定表 ---------- */
 function addSlot(day,it,idx){
   const o=S.slots.filter(s=>!s.del&&s.day===day);
   const ord=idx<0||idx>=o.length?(o.length?Math.max(...o.map(s=>s.ord))+1:0):o[idx].ord-0.5;
-  S.slots.push({id:uid(),day,ord,time:'',title:it.text,cat:it.cat,src:it.id,at:now(),del:0});
+  S.slots.push({id:uid(),day,ord,time:'',dur:0,note:'',title:it.text,cat:it.cat,park:it.park||'',
+    area:it.area||'',src:it.id||'',at:now(),del:0});
   normalize();save();render();
 }
 function normalize(){
   [1,2].forEach(d=>S.slots.filter(s=>!s.del&&s.day===d).sort((a,b)=>a.ord-b.ord).forEach((s,i)=>s.ord=i));
 }
-function slotEl(s){
+function tmin(t){const m=/^(\d{1,2}):(\d{2})$/.exec(t||'');return m?(+m[1])*60+(+m[2]):null;}
+function daySlots(day){
+  return S.slots.filter(s=>!s.del&&s.day===day).sort((a,b)=>{
+    const x=tmin(a.time),y=tmin(b.time);
+    if(x===null&&y===null)return a.ord-b.ord;
+    if(x===null)return 1; if(y===null)return -1;
+    if(x!==y)return x-y;
+    return a.ord-b.ord;
+  });
+}
+function overlaps(day){
+  const arr=daySlots(day).filter(s=>tmin(s.time)!==null);
+  const bad={};
+  for(let i=0;i<arr.length;i++)for(let j=i+1;j<arr.length;j++){
+    const a=arr[i],b=arr[j];
+    const as=tmin(a.time),ae=as+(a.dur||0),bs=tmin(b.time),be=bs+(b.dur||0);
+    const hit=(a.dur||b.dur)?(as<be&&bs<ae):(as===bs);
+    if(hit){bad[a.id]=1;bad[b.id]=1;}
+  }
+  return bad;
+}
+const openNotes={};
+const NMAX=1000;
+const DURS=(()=>{const a=[[0,'時間未設定']];for(let m=10;m<=240;m+=10)a.push([m,m<60?m+'分':(m%60?Math.floor(m/60)+'時間'+(m%60)+'分':m/60+'時間')]);return a;})();
+function slotEl(s,bad,dp){
+  const mis=s.park&&dp&&s.park!==dp;
   const d=document.createElement('div');
-  d.className='slot';d.dataset.id=s.id;d.dataset.kind='slot';
+  d.className='slot'+(bad||mis?' warn':'');
+  d.dataset.id=s.id;d.dataset.kind='slot';
   d.innerHTML='<div class="grip">⠿</div>';
-  const t=document.createElement('input');t.className='tm';t.type='text';t.placeholder='00:00';t.value=s.time||'';
-  t.oninput=()=>{s.time=t.value;s.at=now();save();};
-  d.appendChild(t);
-  const ttl=document.createElement('div');ttl.className='ttl';ttl.textContent=s.title;
-  const sm=document.createElement('small');sm.textContent=CATN[s.cat]||'';ttl.appendChild(sm);
-  d.appendChild(ttl);
+  const body=document.createElement('div');body.className='body';
+  const r1=document.createElement('div');r1.className='r1';
+  const t=document.createElement('input');t.className='tm';t.type='time';t.step='300';
+  t.value=/^\d{1,2}:\d{2}$/.test(s.time||'')?s.time.padStart(5,'0'):'';
+  t.onchange=()=>{s.time=t.value;s.at=now();save();render();};
+  r1.appendChild(t);
+  const sel=document.createElement('select');sel.className='dur';
+  DURS.forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;if((s.dur||0)===v)o.selected=true;sel.appendChild(o);});
+  sel.onchange=()=>{s.dur=+sel.value;s.at=now();save();render();};
+  r1.appendChild(sel);
+  const nb=document.createElement('button');
+  nb.className='noteBtn'+(s.note?' has':'');nb.textContent=s.note?'📝':'✎';nb.title='メモ';
+  nb.onclick=()=>{openNotes[s.id]=!openNotes[s.id];render();};
+  r1.appendChild(nb);
   const x=document.createElement('button');x.className='del';x.textContent='×';
   x.onclick=()=>{s.del=1;s.at=now();save();render();};
-  d.appendChild(x);
+  r1.appendChild(x);
+  body.appendChild(r1);
+  const ttl=document.createElement('div');ttl.className='ttl';ttl.textContent=s.title;
+  const sm=document.createElement('small');
+  const en=tmin(s.time)!==null&&s.dur?('〜'+String(Math.floor((tmin(s.time)+s.dur)/60)%24).padStart(2,'0')+':'+String((tmin(s.time)+s.dur)%60).padStart(2,'0')):'';
+  sm.textContent=[CATN[s.cat]||'',s.park?PARKS[s.park]:'',s.area||'',en].filter(Boolean).join(' / ');
+  ttl.appendChild(sm);
+  body.appendChild(ttl);
+  if(openNotes[s.id]){
+    const ta=document.createElement('textarea');ta.className='note';ta.value=s.note||'';
+    ta.maxLength=NMAX;ta.placeholder='この予定のメモ（1000文字まで）';
+    const cc=document.createElement('div');cc.className='ncnt';
+    const upd=()=>{cc.textContent=(ta.value.length)+' / '+NMAX;cc.classList.toggle('over',ta.value.length>=NMAX);};
+    ta.oninput=()=>{if(ta.value.length>NMAX)ta.value=ta.value.slice(0,NMAX);
+      s.note=ta.value;s.at=now();save();upd();};
+    upd();
+    body.appendChild(ta);body.appendChild(cc);
+    setTimeout(()=>{try{ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);}catch(e){}},0);
+  }else if(s.note){
+    const nv=document.createElement('div');nv.className='noteview';nv.textContent=s.note;
+    nv.onclick=()=>{openNotes[s.id]=true;render();};
+    body.appendChild(nv);
+  }
+  if(bad){const f=document.createElement('span');f.className='flag';f.textContent='⚠ 時間が重なっています';body.appendChild(f);}
+  if(mis){const f=document.createElement('span');f.className='flag';f.textContent='⚠ この日は'+PARKS[dp];body.appendChild(f);}
+  d.appendChild(body);
   return d;
 }
 function renderPlan(){
   [1,2].forEach(day=>{
     const z=document.getElementById('zone'+day);z.innerHTML='';
-    const arr=S.slots.filter(s=>!s.del&&s.day===day).sort((a,b)=>a.ord-b.ord);
-    if(!arr.length){z.innerHTML='<div class="empty">ここにメモをドラッグ</div>';return;}
-    arr.forEach(s=>z.appendChild(slotEl(s)));
+    const arr=daySlots(day),bad=overlaps(day),dp=dayPark(day);
+    if(!arr.length){z.innerHTML='<div class="empty">ここにメモをドラッグ<br>または「施設」タブの ＋ から追加</div>';}
+    else arr.forEach(s=>z.appendChild(slotEl(s,bad[s.id],dp)));
+    const ps=document.querySelector('.parksel[data-day="'+day+'"]');
+    [...ps.children].forEach(b=>b.classList.toggle('on',b.dataset.p===dp));
   });
 }
-function render(){clearDragUI();renderMemo();renderPlan();bindDrag();}
+function bindParkSel(){
+  document.querySelectorAll('.parksel').forEach(ps=>ps.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    S.info['d'+ps.dataset.day+'park']={v:b.dataset.p,at:now()};save();render();
+  }));
+}
+function render(){clearDragUI();renderMemo();renderPlan();renderDB();bindDrag();}
 
 /* ---------- ドラッグ＆ドロップ ---------- */
 let drag=null,autoT=null;
@@ -317,13 +785,11 @@ function bindDrag(){
 function start(ev){
   if(drag)clearDragUI();
   if(ev.button!==undefined&&ev.button!==0)return;
-  const grip=ev.currentTarget;
-  const host=grip.closest('.item,.slot');
+  const grip=ev.currentTarget,host=grip.closest('.item,.slot');
   if(!host)return;
   ev.preventDefault();
   const pid=ev.pointerId,sx=ev.clientX,sy=ev.clientY;
   let started=false,ghost=null,done=false;
-
   const finish=uv=>{
     if(done)return;done=true;
     grip.removeEventListener('pointermove',move);
@@ -333,14 +799,13 @@ function start(ev){
     window.removeEventListener('pointercancel',finish);
     window.removeEventListener('blur',finish);
     try{if(grip.hasPointerCapture&&grip.hasPointerCapture(pid))grip.releasePointerCapture(pid);}catch(e){}
-    const wasStarted=started,x=uv&&uv.clientX,y=uv&&uv.clientY;
+    const ws=started,x=uv&&uv.clientX,y=uv&&uv.clientY;
     clearDragUI();
-    if(!wasStarted)return;
+    if(!ws)return;
     let tgt=null;
     if(typeof x==='number'&&typeof y==='number')tgt=locate(x,y);
     if(tgt)drop(host,tgt);else render();
   };
-
   const move=mv=>{
     if(done)return;
     if(!started){
@@ -362,7 +827,6 @@ function start(ev){
     ghost.style.top=(mv.clientY-24)+'px';
     hover(mv.clientX,mv.clientY);
   };
-
   try{grip.setPointerCapture(pid);}catch(e){}
   grip.addEventListener('pointermove',move);
   grip.addEventListener('pointerup',finish);
@@ -387,8 +851,10 @@ function drop(host,t){
   let idx=kids.length;
   for(let i=0;i<kids.length;i++){const r=kids[i].getBoundingClientRect();if(t.y<r.top+r.height/2){idx=i;break;}}
   if(host.dataset.kind==='memo'){
-    const it=S.items.find(i=>i.id===host.dataset.id);if(it)addSlot(day,it,idx);
-    toast('DAY'+day+'に追加しました');
+    const it=S.items.find(i=>i.id===host.dataset.id);if(!it)return;
+    addSlot(day,it,idx);
+    const dp=dayPark(day);
+    toast(it.park&&dp&&it.park!==dp?('DAY'+day+'に追加（'+PARKS[it.park]+'の施設です）'):('DAY'+day+'に追加しました'));
   }else{
     const s=S.slots.find(v=>v.id===host.dataset.id);if(!s)return;
     const arr=S.slots.filter(v=>!v.del&&v.day===day&&v!==s).sort((a,b)=>a.ord-b.ord);
@@ -402,41 +868,39 @@ function drop(host,t){
 const F=['d1date','d2date','h_in','h_out','h_no','h_room','m_1','m_2'];
 function bindFields(){
   F.forEach(k=>{const e=document.getElementById(k);
-    e.value=(S.info[k]&&S.info[k].v)||'';
-    e.oninput=()=>{S.info[k]={v:e.value,at:now()};save();};});
+    const v=(S.info[k]&&S.info[k].v)||'';
+    e.value=(e.type==='time'&&!/^\d{2}:\d{2}$/.test(v))?'':v;
+    const h=()=>{S.info[k]={v:e.value,at:now()};save();};
+    e.oninput=h;e.onchange=h;});
 }
 
 /* ---------- 同期 ---------- */
 function payload(){
-  const p={m:S.me,i:S.items,s:S.slots,f:S.info};
-  return LZString.compressToEncodedURIComponent(JSON.stringify(p));
+  return LZString.compressToEncodedURIComponent(JSON.stringify(
+    {m:S.me,i:S.items,s:S.slots,f:S.info,d:S.dbAdd,x:S.dbMemo}));
 }
-function shareURL(){
-  const base=location.href.split('#')[0];
-  return base+'#d='+payload();
-}
+function shareURL(){return location.href.split('#')[0]+'#d='+payload();}
 function merge(p){
   let n=0;
-  const mg=(dst,src)=>{src.forEach(o=>{const e=dst.find(x=>x.id===o.id);
+  const mg=(dst,src)=>{(src||[]).forEach(o=>{const e=dst.find(x=>x.id===o.id);
     if(!e){dst.push(o);n++;}else if((o.at||0)>(e.at||0)){Object.assign(e,o);n++;}});};
-  mg(S.items,p.i||[]);mg(S.slots,p.s||[]);
-  Object.keys(p.f||{}).forEach(k=>{const o=p.f[k],e=S.info[k];
-    if(!e||(o.at||0)>(e.at||0)){S.info[k]=o;n++;}});
+  mg(S.items,p.i);mg(S.slots,p.s);mg(S.dbAdd,p.d);
+  const mo=(dst,src)=>Object.keys(src||{}).forEach(k=>{const o=src[k],e=dst[k];
+    if(!e||(o.at||0)>(e.at||0)){dst[k]=o;n++;}});
+  mo(S.info,p.f);mo(S.dbMemo,p.x);
   normalize();save();bindFields();render();
   toast(n?('同期しました（'+n+'件を更新）'):'すでに最新です');
 }
 function tryHash(){
   const h=location.hash;
   if(h.indexOf('#d=')!==0)return;
-  const raw=h.slice(3);
-  try{const p=JSON.parse(LZString.decompressFromEncodedURIComponent(raw));
+  try{const p=JSON.parse(LZString.decompressFromEncodedURIComponent(h.slice(3)));
     history.replaceState(null,'',location.href.split('#')[0]);
     if(confirm('相手のデータを取り込みますか？'))merge(p);
   }catch(e){toast('データを読み取れませんでした');}
 }
 document.getElementById('shareBtn').onclick=async()=>{
-  const u=shareURL();
-  const txt='【ふたり旅のしおり】メモを同期します。開いてね → '+u;
+  const u=shareURL(),txt='【Disney 2026 Summer】メモを同期します。開いてね → '+u;
   if(navigator.share){try{await navigator.share({text:txt});return;}catch(e){}}
   location.href='https://line.me/R/msg/text/?'+encodeURIComponent(txt);
 };
@@ -453,8 +917,8 @@ document.getElementById('qrBtn').onclick=()=>{
   n.textContent='相手のスマホの標準カメラで読み取ってもらってください。';
 };
 document.getElementById('importBtn').onclick=()=>{
-  const v=document.getElementById('pasteBox').value.trim();
-  const i=v.indexOf('#d=');if(i<0){toast('リンクの形式が違うようです');return;}
+  const v=document.getElementById('pasteBox').value.trim(),i=v.indexOf('#d=');
+  if(i<0){toast('リンクの形式が違うようです');return;}
   try{merge(JSON.parse(LZString.decompressFromEncodedURIComponent(v.slice(i+3))));
     document.getElementById('pasteBox').value='';}
   catch(e){toast('データを読み取れませんでした');}
@@ -474,9 +938,10 @@ document.getElementById('meBtn').onclick=()=>{
   const v=prompt('あなたのお名前は？',S.me||'');
   if(v!==null){S.me=v.trim();save();document.getElementById('meBtn').textContent=S.me||'なまえ';render();}
 };
+document.getElementById('nAdd').onclick=addFac;
 load();
 if(S.me)document.getElementById('meBtn').textContent=S.me;
-bindFields();render();tryHash();
+bindFilters();bindParkSel();bindFields();render();tryHash();
 </script>
 </body>
 </html>
