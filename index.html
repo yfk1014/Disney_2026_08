@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FFB7CE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ふたり旅">
+<title>ふたり旅のしおり</title>
+<style>
+:root{
+  --pink:#FFB7CE;--pink-l:#FFEDF3;--pink-d:#D9527E;
+  --sky:#A8DDF0;--sky-l:#E6F6FC;--sky-d:#2E86A8;
+  --yellow:#FFDE7A;--yellow-l:#FFF7DE;--yellow-d:#B47F00;
+  --mint:#AEE5C8;--mint-l:#E8F8F0;--mint-d:#2E9160;
+  --lav:#CDBDF0;--lav-l:#F1ECFC;--lav-d:#6B4FB0;
+  --ink:#4A4453;--ink-l:#8B8496;--line:#EDE8F0;
+  --font:"Hiragino Maru Gothic ProN","ヒラギノ丸ゴ ProN W4","Zen Maru Gothic","M PLUS Rounded 1c",-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{background:#FBF7F4;font-family:var(--font);color:var(--ink);font-size:15px;line-height:1.6;padding-bottom:86px;}
+body.noscroll{overflow:hidden;touch-action:none;}
+.wrap{max-width:520px;margin:0 auto;padding:0 14px;}
+header{background:linear-gradient(180deg,var(--pink-l),#FBF7F4);padding:calc(env(safe-area-inset-top) + 14px) 0 10px;}
+header .wrap{display:flex;align-items:center;gap:10px;}
+header h1{font-size:18px;margin:0;color:var(--pink-d);letter-spacing:.04em;flex:1;}
+header .me{font-size:11px;background:#fff;border:1.5px solid var(--pink);color:var(--pink-d);border-radius:999px;padding:5px 12px;}
+.tabbar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;padding:6px 0 calc(env(safe-area-inset-bottom) + 6px);z-index:40;}
+.tabbar button{flex:1;border:0;background:none;font-family:inherit;font-size:11px;color:var(--ink-l);padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;}
+.tabbar button .ic{font-size:19px;line-height:1;}
+.tabbar button.on{color:var(--pink-d);font-weight:bold;}
+section.view{display:none;padding-top:8px;}
+section.view.on{display:block;}
+h2.sec{font-size:13px;color:var(--ink-l);margin:18px 0 8px;letter-spacing:.08em;font-weight:normal;}
+.card{background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:10px;border:1px solid var(--line);}
+.pill{display:inline-block;font-size:11px;padding:3px 10px;border-radius:999px;}
+.p-go{background:var(--sky-l);color:var(--sky-d);}
+.p-eat{background:var(--yellow-l);color:var(--yellow-d);}
+.p-buy{background:var(--mint-l);color:var(--mint-d);}
+input[type=text],input[type=time],select,textarea{font-family:inherit;font-size:15px;border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;width:100%;background:#fff;color:var(--ink);}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);}
+.btn{font-family:inherit;font-size:14px;border:0;border-radius:999px;padding:10px 18px;background:var(--pink);color:#fff;cursor:pointer;}
+.btn.sub{background:#fff;border:1.5px solid var(--pink);color:var(--pink-d);}
+.btn.gray{background:#fff;border:1.5px solid var(--line);color:var(--ink-l);}
+.btn.wide{display:block;width:100%;text-align:center;margin-bottom:8px;}
+.btn:active{transform:scale(.97);}
+.addrow{display:flex;gap:8px;align-items:center;}
+.catsel{display:flex;gap:6px;margin-bottom:8px;}
+.catsel button{flex:1;font-family:inherit;font-size:12.5px;border:1.5px solid var(--line);background:#fff;color:var(--ink-l);border-radius:12px;padding:8px 0;cursor:pointer;}
+.catsel button.on{border-color:transparent;color:#fff;}
+.catsel button.on[data-c=go]{background:var(--sky);} .catsel button.on[data-c=eat]{background:var(--yellow);color:var(--yellow-d);} .catsel button.on[data-c=buy]{background:var(--mint);}
+.item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 8px 10px 4px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.item.go{border-left:5px solid var(--sky);} .item.eat{border-left:5px solid var(--yellow);} .item.buy{border-left:5px solid var(--mint);}
+.item .grip{width:30px;flex:none;text-align:center;color:#CFC8D6;font-size:17px;cursor:grab;touch-action:none;user-select:none;}
+.item .txt{flex:1;min-width:0;font-size:14.5px;word-break:break-word;}
+.item .txt small{display:block;font-size:10.5px;color:#B7B0C0;}
+.item .act{display:flex;gap:4px;flex:none;}
+.item .act button{border:0;background:none;font-size:16px;color:#C3BCCC;padding:4px 6px;cursor:pointer;font-family:inherit;}
+.item.used{opacity:.45;}
+.ghost{position:fixed;z-index:999;pointer-events:none;opacity:.92;box-shadow:0 8px 22px rgba(0,0,0,.18);transform:rotate(-1.5deg);margin:0;}
+.dragging{opacity:.3;}
+.daybox{border-radius:18px;padding:12px;margin-bottom:14px;}
+.daybox.d1{background:var(--pink-l);} .daybox.d2{background:var(--lav-l);}
+.daybox h3{margin:0 0 4px;font-size:15px;font-weight:normal;display:flex;align-items:center;gap:8px;}
+.daybox.d1 h3{color:var(--pink-d);} .daybox.d2 h3{color:var(--lav-d);}
+.daybox h3 input{border:0;background:transparent;font-size:12.5px;width:auto;flex:1;padding:2px 6px;color:var(--ink-l);}
+.zone{min-height:64px;border-radius:12px;padding:2px;transition:background .15s;}
+.zone.over{background:rgba(255,255,255,.85);box-shadow:inset 0 0 0 2px var(--pink);}
+.slot{background:#fff;border-radius:12px;padding:8px 6px 8px 2px;margin:6px 0;display:flex;align-items:center;gap:4px;}
+.slot .grip{width:26px;flex:none;text-align:center;color:#CFC8D6;touch-action:none;cursor:grab;}
+.slot input.tm{width:74px;flex:none;font-size:13px;padding:5px 6px;border-radius:9px;text-align:center;}
+.slot .ttl{flex:1;min-width:0;font-size:14px;word-break:break-word;}
+.slot .ttl small{display:block;font-size:10.5px;color:#B7B0C0;}
+.slot .del{border:0;background:none;color:#CFC8D6;font-size:15px;padding:4px 6px;cursor:pointer;}
+.empty{text-align:center;color:#BFB8C8;font-size:12.5px;padding:16px 6px;border:2px dashed #E2DCE8;border-radius:12px;margin:4px 0;}
+.hint{font-size:11.5px;color:var(--ink-l);background:var(--yellow-l);border-radius:12px;padding:9px 12px;margin-bottom:10px;line-height:1.7;}
+.syncstep{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;}
+.syncstep b{display:block;font-size:14px;font-weight:normal;color:var(--pink-d);margin-bottom:8px;}
+#qrbox{display:flex;justify-content:center;padding:14px 0 4px;}
+#qrbox img,#qrbox canvas{border-radius:10px;}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:10px 20px;border-radius:999px;z-index:200;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center;}
+.toast.on{opacity:.95;}
+.fields{display:grid;grid-template-columns:76px 1fr;gap:8px 10px;align-items:center;font-size:13px;}
+.fields label{color:var(--ink-l);font-size:12.5px;}
+.mini{font-size:11.5px;color:var(--ink-l);margin:4px 2px 12px;line-height:1.7;}
+@media print{
+  body{background:#fff;padding:0;} .tabbar,header,.hint,.tabonly-hide,.grip,.act,.del,.btn{display:none!important;}
+  section.view{display:none!important;} section#v-plan{display:block!important;}
+  .zone{min-height:0;} .slot{border:1px solid #eee;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>ふたり旅のしおり</h1>
+    <button class="me" id="meBtn">なまえ</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ===== メモ ===== -->
+  <section class="view on" id="v-memo">
+    <div class="card">
+      <div class="catsel" id="catsel">
+        <button data-c="go" class="on">行きたい</button>
+        <button data-c="eat">食べたい</button>
+        <button data-c="buy">買いたい</button>
+      </div>
+      <div class="addrow">
+        <input type="text" id="newText" placeholder="思いついたことを入力" enterkeyhint="done">
+        <button class="btn" id="addBtn">追加</button>
+      </div>
+    </div>
+    <div class="hint">メモは2人分まとめて表示されます。予定表に入れるには「予定」タブでドラッグするか、右の <b>＋</b> を押してください。</div>
+    <h2 class="sec">MEMO LIST</h2>
+    <div id="memoList"></div>
+  </section>
+
+  <!-- ===== 予定表 ===== -->
+  <section class="view" id="v-plan">
+    <div class="hint tabonly-hide">左の <b>⠿</b> を長めに押したまま動かすと、メモから予定表へドラッグできます。予定どうしの入れ替えも同じ操作です。</div>
+
+    <h2 class="sec tabonly-hide">MEMO（ここからドラッグ）</h2>
+    <div id="planMemo" class="tabonly-hide"></div>
+
+    <div class="daybox d1" style="margin-top:16px">
+      <h3>DAY 1 <input type="text" id="d1date" placeholder="0月0日（〇）"></h3>
+      <div class="zone" data-day="1" id="zone1"></div>
+    </div>
+    <div class="daybox d2">
+      <h3>DAY 2 <input type="text" id="d2date" placeholder="0月0日（〇）"></h3>
+      <div class="zone" data-day="2" id="zone2"></div>
+    </div>
+
+    <div class="card">
+      <b style="font-size:13px;color:var(--sky-d);font-weight:normal">🏨 ランドホテル</b>
+      <div class="fields" style="margin-top:8px">
+        <label>チェックイン</label><input type="text" id="h_in" placeholder="00:00">
+        <label>チェックアウト</label><input type="text" id="h_out" placeholder="00:00">
+        <label>予約番号</label><input type="text" id="h_no" placeholder="">
+        <label>部屋タイプ</label><input type="text" id="h_room" placeholder="">
+      </div>
+    </div>
+    <div class="card">
+      <b style="font-size:13px;color:var(--yellow-d);font-weight:normal">🍴 食事・レストラン予約</b>
+      <div class="fields" style="margin-top:8px">
+        <label>DAY1</label><input type="text" id="m_1" placeholder="店名・時間">
+        <label>DAY2</label><input type="text" id="m_2" placeholder="店名・時間">
+      </div>
+    </div>
+    <button class="btn gray wide tabonly-hide" onclick="window.print()">印刷 / PDF保存</button>
+    <div style="height:20px"></div>
+  </section>
+
+  <!-- ===== 同期 ===== -->
+  <section class="view" id="v-sync">
+    <div class="hint">同期は「送る側が送信 → 相手が開く」で片方向です。<b>お互いに1回ずつ送れば</b>両方が最新になります。</div>
+
+    <div class="syncstep">
+      <b>① 自分のデータを相手に送る</b>
+      <button class="btn wide" id="shareBtn">LINE・メールで送る</button>
+      <button class="btn sub wide" id="copyBtn">リンクをコピー</button>
+      <button class="btn gray wide" id="qrBtn">QRコードで見せる</button>
+      <div id="qrbox"></div>
+      <div class="mini" id="qrnote"></div>
+    </div>
+
+    <div class="syncstep">
+      <b>② 相手から届いたリンクを取り込む</b>
+      <div class="mini">リンクをタップすれば自動で取り込まれます。うまくいかないときは、ここに貼り付けて「取り込む」を押してください。</div>
+      <textarea id="pasteBox" rows="3" placeholder="https://... を貼り付け"></textarea>
+      <button class="btn sub wide" style="margin-top:8px" id="importBtn">取り込む</button>
+    </div>
+
+    <div class="syncstep">
+      <b>データ管理</b>
+      <div class="mini">データはこの端末の中だけに保存されます。ブラウザのデータを消すと消えるのでご注意ください。</div>
+      <button class="btn gray wide" id="resetBtn">全部消してやり直す</button>
+    </div>
+    <div style="height:20px"></div>
+  </section>
+
+</div>
+
+<div class="tabbar">
+  <button data-v="memo" class="on"><span class="ic">📝</span>メモ</button>
+  <button data-v="plan"><span class="ic">🗓️</span>予定</button>
+  <button data-v="sync"><span class="ic">🔄</span>同期</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const KEY='futaritabi_v1';
+const CATN={go:'行きたい',eat:'食べたい',buy:'買いたい'};
+let S={me:'',items:[],slots:[],info:{},v:1};
+
+function uid(){return Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);}
+function now(){return Date.now();}
+function load(){try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2200);}
+
+/* ---------- メモ ---------- */
+let cat='go';
+document.getElementById('catsel').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  cat=b.dataset.c;[...e.currentTarget.children].forEach(x=>x.classList.toggle('on',x===b));
+});
+function addItem(){
+  const i=document.getElementById('newText');const t=i.value.trim();if(!t)return;
+  S.items.push({id:uid(),cat,text:t,by:S.me||'',at:now(),del:0});
+  i.value='';save();render();
+}
+document.getElementById('addBtn').onclick=addItem;
+document.getElementById('newText').addEventListener('keydown',e=>{if(e.key==='Enter')addItem();});
+
+function itemEl(it,forPlan){
+  const used=S.slots.some(s=>!s.del&&s.src===it.id);
+  const d=document.createElement('div');
+  d.className='item '+it.cat+(used?' used':'');
+  d.dataset.id=it.id;d.dataset.kind='memo';
+  d.innerHTML='<div class="grip">⠿</div><div class="txt"></div>';
+  const tx=d.querySelector('.txt');
+  tx.textContent=it.text;
+  const s=document.createElement('small');
+  s.textContent=CATN[it.cat]+(it.by?' / '+it.by:'')+(used?' ・予定に追加済み':'');
+  tx.appendChild(s);
+  const act=document.createElement('div');act.className='act';
+  const plus=document.createElement('button');plus.textContent='＋';plus.title='予定に追加';
+  plus.onclick=()=>{const day=confirm('DAY1 に追加しますか？\n（キャンセルで DAY2）')?1:2;addSlot(day,it,-1);toast('DAY'+day+'に追加しました');};
+  act.appendChild(plus);
+  if(!forPlan){
+    const del=document.createElement('button');del.textContent='×';
+    del.onclick=()=>{if(confirm('このメモを削除しますか？')){it.del=1;it.at=now();save();render();}};
+    act.appendChild(del);
+  }
+  d.appendChild(act);
+  return d;
+}
+function renderMemo(){
+  const list=document.getElementById('memoList'),pl=document.getElementById('planMemo');
+  list.innerHTML='';pl.innerHTML='';
+  const live=S.items.filter(i=>!i.del);
+  if(!live.length){list.innerHTML='<div class="empty">まだメモがありません。<br>上の欄から追加してみましょう。</div>';}
+  ['go','eat','buy'].forEach(c=>{
+    const g=live.filter(i=>i.cat===c);if(!g.length)return;
+    const h=document.createElement('div');h.style.margin='12px 2px 6px';
+    h.innerHTML='<span class="pill p-'+c+'">'+CATN[c]+' '+g.length+'</span>';
+    list.appendChild(h);
+    g.forEach(i=>list.appendChild(itemEl(i,false)));
+  });
+  const un=live.filter(i=>!S.slots.some(s=>!s.del&&s.src===i.id));
+  if(!un.length){pl.innerHTML='<div class="empty">未配置のメモはありません 🎉</div>';}
+  else un.forEach(i=>pl.appendChild(itemEl(i,true)));
+}
+
+/* ---------- 予定表 ---------- */
+function addSlot(day,it,idx){
+  const o=S.slots.filter(s=>!s.del&&s.day===day);
+  const ord=idx<0||idx>=o.length?(o.length?Math.max(...o.map(s=>s.ord))+1:0):o[idx].ord-0.5;
+  S.slots.push({id:uid(),day,ord,time:'',title:it.text,cat:it.cat,src:it.id,at:now(),del:0});
+  normalize();save();render();
+}
+function normalize(){
+  [1,2].forEach(d=>S.slots.filter(s=>!s.del&&s.day===d).sort((a,b)=>a.ord-b.ord).forEach((s,i)=>s.ord=i));
+}
+function slotEl(s){
+  const d=document.createElement('div');
+  d.className='slot';d.dataset.id=s.id;d.dataset.kind='slot';
+  d.innerHTML='<div class="grip">⠿</div>';
+  const t=document.createElement('input');t.className='tm';t.type='text';t.placeholder='00:00';t.value=s.time||'';
+  t.oninput=()=>{s.time=t.value;s.at=now();save();};
+  d.appendChild(t);
+  const ttl=document.createElement('div');ttl.className='ttl';ttl.textContent=s.title;
+  const sm=document.createElement('small');sm.textContent=CATN[s.cat]||'';ttl.appendChild(sm);
+  d.appendChild(ttl);
+  const x=document.createElement('button');x.className='del';x.textContent='×';
+  x.onclick=()=>{s.del=1;s.at=now();save();render();};
+  d.appendChild(x);
+  return d;
+}
+function renderPlan(){
+  [1,2].forEach(day=>{
+    const z=document.getElementById('zone'+day);z.innerHTML='';
+    const arr=S.slots.filter(s=>!s.del&&s.day===day).sort((a,b)=>a.ord-b.ord);
+    if(!arr.length){z.innerHTML='<div class="empty">ここにメモをドラッグ</div>';return;}
+    arr.forEach(s=>z.appendChild(slotEl(s)));
+  });
+}
+function render(){clearDragUI();renderMemo();renderPlan();bindDrag();}
+
+/* ---------- ドラッグ＆ドロップ ---------- */
+let drag=null,autoT=null;
+function clearDragUI(){
+  clearInterval(autoT);autoT=null;
+  document.querySelectorAll('.ghost').forEach(g=>g.remove());
+  document.querySelectorAll('.dragging').forEach(g=>g.classList.remove('dragging'));
+  document.querySelectorAll('.zone.over').forEach(z=>z.classList.remove('over'));
+  document.body.classList.remove('noscroll');
+  drag=null;
+}
+function bindDrag(){
+  document.querySelectorAll('.grip').forEach(g=>{
+    if(g._b)return;g._b=1;
+    g.setAttribute('draggable','false');
+    g.addEventListener('pointerdown',start);
+    g.addEventListener('dragstart',e=>e.preventDefault());
+  });
+}
+function start(ev){
+  if(drag)clearDragUI();
+  if(ev.button!==undefined&&ev.button!==0)return;
+  const grip=ev.currentTarget;
+  const host=grip.closest('.item,.slot');
+  if(!host)return;
+  ev.preventDefault();
+  const pid=ev.pointerId,sx=ev.clientX,sy=ev.clientY;
+  let started=false,ghost=null,done=false;
+
+  const finish=uv=>{
+    if(done)return;done=true;
+    grip.removeEventListener('pointermove',move);
+    grip.removeEventListener('pointerup',finish);
+    grip.removeEventListener('pointercancel',finish);
+    window.removeEventListener('pointerup',finish);
+    window.removeEventListener('pointercancel',finish);
+    window.removeEventListener('blur',finish);
+    try{if(grip.hasPointerCapture&&grip.hasPointerCapture(pid))grip.releasePointerCapture(pid);}catch(e){}
+    const wasStarted=started,x=uv&&uv.clientX,y=uv&&uv.clientY;
+    clearDragUI();
+    if(!wasStarted)return;
+    let tgt=null;
+    if(typeof x==='number'&&typeof y==='number')tgt=locate(x,y);
+    if(tgt)drop(host,tgt);else render();
+  };
+
+  const move=mv=>{
+    if(done)return;
+    if(!started){
+      if(Math.abs(mv.clientX-sx)<5&&Math.abs(mv.clientY-sy)<5)return;
+      started=true;
+      ghost=host.cloneNode(true);ghost.classList.add('ghost');
+      ghost.style.width=host.offsetWidth+'px';
+      document.body.appendChild(ghost);host.classList.add('dragging');
+      document.body.classList.add('noscroll');
+      drag={host,ghost,y:mv.clientY};
+      autoT=setInterval(()=>{
+        if(!drag)return;
+        if(drag.y<100)window.scrollBy(0,-14);
+        else if(drag.y>innerHeight-100)window.scrollBy(0,14);
+      },16);
+    }
+    drag.y=mv.clientY;
+    ghost.style.left=(mv.clientX-30)+'px';
+    ghost.style.top=(mv.clientY-24)+'px';
+    hover(mv.clientX,mv.clientY);
+  };
+
+  try{grip.setPointerCapture(pid);}catch(e){}
+  grip.addEventListener('pointermove',move);
+  grip.addEventListener('pointerup',finish);
+  grip.addEventListener('pointercancel',finish);
+  window.addEventListener('pointerup',finish);
+  window.addEventListener('pointercancel',finish);
+  window.addEventListener('blur',finish);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')clearDragUI();});
+function locate(x,y){
+  const els=document.elementsFromPoint(x,y)||[];
+  for(const e of els){const z=e.closest&&e.closest('.zone');if(z)return{zone:z,x,y};}
+  return null;
+}
+function hover(x,y){
+  const t=locate(x,y);
+  document.querySelectorAll('.zone').forEach(z=>z.classList.toggle('over',!!t&&z===t.zone));
+}
+function drop(host,t){
+  const day=+t.zone.dataset.day;
+  const kids=[...t.zone.querySelectorAll('.slot')].filter(k=>k!==host);
+  let idx=kids.length;
+  for(let i=0;i<kids.length;i++){const r=kids[i].getBoundingClientRect();if(t.y<r.top+r.height/2){idx=i;break;}}
+  if(host.dataset.kind==='memo'){
+    const it=S.items.find(i=>i.id===host.dataset.id);if(it)addSlot(day,it,idx);
+    toast('DAY'+day+'に追加しました');
+  }else{
+    const s=S.slots.find(v=>v.id===host.dataset.id);if(!s)return;
+    const arr=S.slots.filter(v=>!v.del&&v.day===day&&v!==s).sort((a,b)=>a.ord-b.ord);
+    s.day=day;s.at=now();
+    s.ord=idx>=arr.length?(arr.length?arr[arr.length-1].ord+1:0):arr[idx].ord-0.5;
+    normalize();save();render();
+  }
+}
+
+/* ---------- 情報欄 ---------- */
+const F=['d1date','d2date','h_in','h_out','h_no','h_room','m_1','m_2'];
+function bindFields(){
+  F.forEach(k=>{const e=document.getElementById(k);
+    e.value=(S.info[k]&&S.info[k].v)||'';
+    e.oninput=()=>{S.info[k]={v:e.value,at:now()};save();};});
+}
+
+/* ---------- 同期 ---------- */
+function payload(){
+  const p={m:S.me,i:S.items,s:S.slots,f:S.info};
+  return LZString.compressToEncodedURIComponent(JSON.stringify(p));
+}
+function shareURL(){
+  const base=location.href.split('#')[0];
+  return base+'#d='+payload();
+}
+function merge(p){
+  let n=0;
+  const mg=(dst,src)=>{src.forEach(o=>{const e=dst.find(x=>x.id===o.id);
+    if(!e){dst.push(o);n++;}else if((o.at||0)>(e.at||0)){Object.assign(e,o);n++;}});};
+  mg(S.items,p.i||[]);mg(S.slots,p.s||[]);
+  Object.keys(p.f||{}).forEach(k=>{const o=p.f[k],e=S.info[k];
+    if(!e||(o.at||0)>(e.at||0)){S.info[k]=o;n++;}});
+  normalize();save();bindFields();render();
+  toast(n?('同期しました（'+n+'件を更新）'):'すでに最新です');
+}
+function tryHash(){
+  const h=location.hash;
+  if(h.indexOf('#d=')!==0)return;
+  const raw=h.slice(3);
+  try{const p=JSON.parse(LZString.decompressFromEncodedURIComponent(raw));
+    history.replaceState(null,'',location.href.split('#')[0]);
+    if(confirm('相手のデータを取り込みますか？'))merge(p);
+  }catch(e){toast('データを読み取れませんでした');}
+}
+document.getElementById('shareBtn').onclick=async()=>{
+  const u=shareURL();
+  const txt='【ふたり旅のしおり】メモを同期します。開いてね → '+u;
+  if(navigator.share){try{await navigator.share({text:txt});return;}catch(e){}}
+  location.href='https://line.me/R/msg/text/?'+encodeURIComponent(txt);
+};
+document.getElementById('copyBtn').onclick=async()=>{
+  const u=shareURL();
+  try{await navigator.clipboard.writeText(u);toast('リンクをコピーしました');}
+  catch(e){prompt('コピーしてください',u);}
+};
+document.getElementById('qrBtn').onclick=()=>{
+  const b=document.getElementById('qrbox'),n=document.getElementById('qrnote');
+  b.innerHTML='';const u=shareURL();
+  if(u.length>1200){n.textContent='データが大きすぎてQRにできません（'+u.length+'文字）。LINE・メールで送ってください。';return;}
+  new QRCode(b,{text:u,width:210,height:210,correctLevel:QRCode.CorrectLevel.L});
+  n.textContent='相手のスマホの標準カメラで読み取ってもらってください。';
+};
+document.getElementById('importBtn').onclick=()=>{
+  const v=document.getElementById('pasteBox').value.trim();
+  const i=v.indexOf('#d=');if(i<0){toast('リンクの形式が違うようです');return;}
+  try{merge(JSON.parse(LZString.decompressFromEncodedURIComponent(v.slice(i+3))));
+    document.getElementById('pasteBox').value='';}
+  catch(e){toast('データを読み取れませんでした');}
+};
+document.getElementById('resetBtn').onclick=()=>{
+  if(confirm('この端末のデータを全部消します。よろしいですか？')){localStorage.removeItem(KEY);location.reload();}
+};
+
+/* ---------- 起動 ---------- */
+document.querySelector('.tabbar').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('.tabbar button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('section.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v));
+  scrollTo(0,0);
+});
+document.getElementById('meBtn').onclick=()=>{
+  const v=prompt('あなたのお名前は？',S.me||'');
+  if(v!==null){S.me=v.trim();save();document.getElementById('meBtn').textContent=S.me||'なまえ';render();}
+};
+load();
+if(S.me)document.getElementById('meBtn').textContent=S.me;
+bindFields();render();tryHash();
+</script>
+</body>
+</html>
