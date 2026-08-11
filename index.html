@@ -665,7 +665,7 @@ document.getElementById('sheet').addEventListener('click',e=>{
 function addSlot(day,it,idx){
   const o=S.slots.filter(s=>!s.del&&s.day===day);
   const ord=idx<0||idx>=o.length?(o.length?Math.max(...o.map(s=>s.ord))+1:0):o[idx].ord-0.5;
-  S.slots.push({id:uid(),day,ord,time:'',dur:0,note:'',title:it.text,cat:it.cat,park:it.park||'',
+  S.slots.push({id:uid(),day,ord,time:'',dur:0,note:'',by:S.me||'',title:it.text,cat:it.cat,park:it.park||'',
     area:it.area||'',src:it.id||'',at:now(),del:0});
   normalize();save();render();
 }
@@ -706,7 +706,9 @@ function slotEl(s,bad,dp){
   const r1=document.createElement('div');r1.className='r1';
   const t=document.createElement('input');t.className='tm';t.type='time';t.step='300';
   t.value=/^\d{1,2}:\d{2}$/.test(s.time||'')?s.time.padStart(5,'0'):'';
-  t.onchange=()=>{s.time=t.value;s.at=now();save();render();};
+  t.oninput=()=>{s.time=t.value;s.at=now();save();};
+  t.onchange=()=>{s.time=t.value;s.at=now();save();};
+  t.onblur=()=>{render();};
   r1.appendChild(t);
   const sel=document.createElement('select');sel.className='dur';
   DURS.forEach(([v,l])=>{const o=document.createElement('option');o.value=v;o.textContent=l;if((s.dur||0)===v)o.selected=true;sel.appendChild(o);});
@@ -723,7 +725,7 @@ function slotEl(s,bad,dp){
   const ttl=document.createElement('div');ttl.className='ttl';ttl.textContent=s.title;
   const sm=document.createElement('small');
   const en=tmin(s.time)!==null&&s.dur?('〜'+String(Math.floor((tmin(s.time)+s.dur)/60)%24).padStart(2,'0')+':'+String((tmin(s.time)+s.dur)%60).padStart(2,'0')):'';
-  sm.textContent=[CATN[s.cat]||'',s.park?PARKS[s.park]:'',s.area||'',en].filter(Boolean).join(' / ');
+  sm.textContent=[CATN[s.cat]||'',s.park?PARKS[s.park]:'',s.area||'',en,s.by?('登録：'+s.by):''].filter(Boolean).join(' / ');
   ttl.appendChild(sm);
   body.appendChild(ttl);
   if(openNotes[s.id]){
@@ -880,16 +882,25 @@ function payload(){
     {m:S.me,i:S.items,s:S.slots,f:S.info,d:S.dbAdd,x:S.dbMemo}));
 }
 function shareURL(){return location.href.split('#')[0]+'#d='+payload();}
+function nt(t){const m=/^(\d{1,2}):(\d{2})$/.exec(t||'');return m?String(+m[1]).padStart(2,'0')+':'+m[2]:'';}
+function sameSlot(a,b){return a.day===b.day&&nt(a.time)===nt(b.time)&&(a.title||'')===(b.title||'');}
 function merge(p){
-  let n=0;
-  const mg=(dst,src)=>{(src||[]).forEach(o=>{const e=dst.find(x=>x.id===o.id);
-    if(!e){dst.push(o);n++;}else if((o.at||0)>(e.at||0)){Object.assign(e,o);n++;}});};
-  mg(S.items,p.i);mg(S.slots,p.s);mg(S.dbAdd,p.d);
+  let add=0,upd=0,skip=0;
+  const byId=(dst,src,dup)=>{(src||[]).forEach(o=>{
+    const e=dst.find(x=>x.id===o.id);
+    if(e){if((o.at||0)>(e.at||0)){Object.assign(e,o);upd++;}return;}
+    if(!o.del&&dst.some(x=>!x.del&&dup(x,o))){skip++;return;}
+    dst.push(o);add++;
+  });};
+  byId(S.slots,p.s,sameSlot);
+  byId(S.items,p.i,(x,o)=>x.cat===o.cat&&x.text===o.text);
+  byId(S.dbAdd,p.d,(x,o)=>x.p===o.p&&x.c===o.c&&x.n===o.n);
   const mo=(dst,src)=>Object.keys(src||{}).forEach(k=>{const o=src[k],e=dst[k];
-    if(!e||(o.at||0)>(e.at||0)){dst[k]=o;n++;}});
+    if(!e||(o.at||0)>(e.at||0)){dst[k]=o;upd++;}});
   mo(S.info,p.f);mo(S.dbMemo,p.x);
   normalize();save();bindFields();render();
-  toast(n?('同期しました（'+n+'件を更新）'):'すでに最新です');
+  toast(add+upd+skip===0?'すでに最新です'
+    :('追加 '+add+'件 / 更新 '+upd+'件'+(skip?(' / 重複 '+skip+'件はスキップ'):'')));
 }
 function tryHash(){
   const h=location.hash;
@@ -939,6 +950,7 @@ document.getElementById('meBtn').onclick=()=>{
   if(v!==null){S.me=v.trim();save();document.getElementById('meBtn').textContent=S.me||'なまえ';render();}
 };
 document.getElementById('nAdd').onclick=addFac;
+setTimeout(()=>{if(!S.me)toast('右上から自分の名前を設定すると、誰が登録したか分かります');},900);
 load();
 if(S.me)document.getElementById('meBtn').textContent=S.me;
 bindFilters();bindParkSel();bindFields();render();tryHash();
