@@ -75,6 +75,14 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);}
 .zone{min-height:64px;border-radius:12px;padding:2px;transition:background .15s;}
 .zone.over{background:rgba(255,255,255,.85);box-shadow:inset 0 0 0 2px var(--pink);}
 .slot{background:#fff;border-radius:12px;padding:8px 8px 8px 2px;margin:6px 0;display:flex;align-items:flex-start;gap:4px;}
+.slot.rdel{background:#EDF0F4;box-shadow:inset 0 0 0 1px #D8DEE6;}
+.slot.rdel .ttl{color:#93A2B2;text-decoration:line-through;}
+.slot.rdel input,.slot.rdel select{opacity:.5;}
+.slot .rbar{display:flex;gap:6px;margin-top:7px;}
+.slot .rbar button{font-family:inherit;font-size:11.5px;border:0;border-radius:9px;padding:6px 12px;cursor:pointer;}
+.slot .rbar .yes{background:#D8DEE6;color:#4A5A6B;}
+.slot .rbar .no{background:var(--pink-l);color:var(--pink-d);}
+.slot .rflag{display:inline-block;font-size:10.5px;background:#D8DEE6;color:#4A5A6B;border-radius:6px;padding:1px 7px;margin-top:5px;}
 .slot.warn{background:var(--org-l);box-shadow:inset 0 0 0 1.5px var(--org);}
 .slot .grip{width:24px;flex:none;text-align:center;color:#A6BDD3;touch-action:none;cursor:grab;padding-top:5px;}
 .slot .body{flex:1;min-width:0;}
@@ -99,7 +107,7 @@ input.timefield{width:112px;text-align:center;}
 .syncstep{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;}
 .syncstep b{display:block;font-size:14px;font-weight:normal;color:var(--pink-d);margin-bottom:8px;}
 #qrbox{display:flex;justify-content:center;padding:14px 0 4px;}
-.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:10px 20px;border-radius:999px;z-index:400;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center;}
+.toast{white-space:pre-line;position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:10px 20px;border-radius:999px;z-index:400;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center;}
 .toast.on{opacity:.95;}
 .fields{display:grid;grid-template-columns:80px 1fr;gap:8px 10px;align-items:center;font-size:13px;}
 .fields label{color:var(--ink-l);font-size:12.5px;}
@@ -134,7 +142,7 @@ input.timefield{width:112px;text-align:center;}
 @media print{
   body{background:#fff;padding:0;} .tabbar,header,.hint,.tabonly-hide,.grip,.act,.del,.btn,.parksel,.sheet,.noteBtn,.ncnt{display:none!important;}
   section.view{display:none!important;} section#v-plan{display:block!important;}
-  .zone{min-height:0;} .slot{border:1px solid #eee;}
+  .zone{min-height:0;} .slot{border:1px solid #eee;} .slot.rdel{display:none!important;}
 }
 </style>
 </head>
@@ -250,7 +258,20 @@ input.timefield{width:112px;text-align:center;}
 
   <!-- ===== 同期 ===== -->
   <section class="view" id="v-sync">
-    <div class="hint">同期は「送る側が送信 → 相手が開く」で片方向です。<b>お互いに1回ずつ</b>送れば両方が最新になります。施設データベースの内蔵分は送信されないので軽いままです。</div>
+    <div class="hint">同期は「送る側が送信 → 相手が開く」で片方向です。<b>お互いに1回ずつ</b>送れば両方が最新になります。<br><br><b>取り込みの決まり</b><br>・ふたりは対等。追加・変更・削除がそのまま伝わります<br>・同じ項目を両方が触った場合は<b>あとに操作したほうが残ります</b><br>・相手が削除した予定は<b>すぐには消さず、グレー表示</b>にします。「自分も消す」か「残す」を選べます<br>・メモと自作の施設は、相手が消しても自分側では消えません<br>・同じ日・同じ時刻・同じ場所の予定は足しません<br><br><b>やりとりされる内容</b><br>・メモ（行きたい／食べたい／買いたい）<br>・予定と、各予定の時間・滞在時間・メモ・登録者名<br>・DAY1／DAY2 の日付と<b>ランド／シーの設定</b><br>・ホテル欄、食事・レストラン予約欄<br>・自分で追加した施設と、施設メモの書き換え<br><br>内蔵の施設181件は送らないので、データは軽いままです。</div>
+
+    <div class="syncstep" id="fbBox">
+      <b>ふたりで自動同期</b>
+      <div class="mini" id="fbState">共有オフ</div>
+      <button class="btn wide" id="fbStartBtn">共有を始める</button>
+      <button class="btn sub wide" id="fbInviteBtn">相手を招待する（LINE・メール）</button>
+      <button class="btn gray wide" id="fbQrBtn">招待QRを表示</button>
+      <div id="fbqr" style="display:flex;justify-content:center;padding:10px 0 0"></div>
+      <button class="btn gray wide" id="fbStopBtn" style="margin-top:8px">共有をやめる</button>
+      <div class="mini">共有中は、追加・変更・削除がお互いの端末へ自動で届きます。電波がないときは端末内だけで動き、つながった時点でまとめて反映されます。</div>
+    </div>
+
+    <h2 class="sec">うまくいかないときの手動送受信</h2>
 
     <div class="syncstep">
       <b>① 自分のデータを相手に送る</b>
@@ -270,7 +291,9 @@ input.timefield{width:112px;text-align:center;}
 
     <div class="syncstep">
       <b>データ管理</b>
+      <div class="mini" id="statLine"></div>
       <div class="mini">データはこの端末の中だけに保存されます。ブラウザのデータを消すと消えます。</div>
+      <button class="btn sub wide" id="undoBtn">直前の取り込みを取り消す</button>
       <button class="btn gray wide" id="resetBtn">全部消してやり直す</button>
     </div>
     <div style="height:20px"></div>
@@ -280,7 +303,7 @@ input.timefield{width:112px;text-align:center;}
 
 <div class="tabbar">
   <button data-v="memo" class="on"><span class="ic">📝</span>メモ</button>
-  <button data-v="db"><span class="ic">📚</span>施設</button>
+  <button data-v="db"><span class="ic">🏰</span>施設</button>
   <button data-v="plan"><span class="ic">🗓️</span>予定</button>
   <button data-v="sync"><span class="ic">🔄</span>同期</button>
 </div>
@@ -288,6 +311,9 @@ input.timefield{width:112px;text-align:center;}
 <div class="sheet" id="sheet"><div class="sheetbox" id="sheetBox"></div></div>
 <div class="toast" id="toast"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
@@ -493,7 +519,7 @@ const C2M={a:'go',e:'eat',s:'buy'};
 const CATL={a:'アトラクション',e:'レストラン',s:'ショップ'};
 const PARKN={L:'ディズニーランド',S:'ディズニーシー'};
 const PARKS={L:'ランド',S:'シー'};
-let S={me:'',items:[],slots:[],info:{},dbAdd:[],dbMemo:{},v:2};
+let S={me:'',room:'',items:[],slots:[],info:{},dbAdd:[],dbMemo:{},v:2};
 
 function uid(){return Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);}
 function now(){return Date.now();}
@@ -503,7 +529,8 @@ function load(){
   const def={d1date:'8月24日（月）',d2date:'8月25日（火）'};
   Object.keys(def).forEach(k=>{if(!S.info[k]||!S.info[k].v)S.info[k]={v:def[k],at:1};});
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
+  if(typeof schedulePush==='function')schedulePush();}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2400);}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function dayPark(d){const o=S.info['d'+d+'park'];return o?o.v:'';}
@@ -683,7 +710,7 @@ function daySlots(day){
   });
 }
 function overlaps(day){
-  const arr=daySlots(day).filter(s=>tmin(s.time)!==null);
+  const arr=daySlots(day).filter(s=>!s.rdel&&tmin(s.time)!==null);
   const bad={};
   for(let i=0;i<arr.length;i++)for(let j=i+1;j<arr.length;j++){
     const a=arr[i],b=arr[j];
@@ -699,7 +726,7 @@ const DURS=(()=>{const a=[[0,'時間未設定']];for(let m=10;m<=240;m+=10)a.pus
 function slotEl(s,bad,dp){
   const mis=s.park&&dp&&s.park!==dp;
   const d=document.createElement('div');
-  d.className='slot'+(bad||mis?' warn':'');
+  d.className='slot'+(s.rdel?' rdel':(bad||mis?' warn':''));
   d.dataset.id=s.id;d.dataset.kind='slot';
   d.innerHTML='<div class="grip">⠿</div>';
   const body=document.createElement('div');body.className='body';
@@ -743,8 +770,18 @@ function slotEl(s,bad,dp){
     nv.onclick=()=>{openNotes[s.id]=true;render();};
     body.appendChild(nv);
   }
-  if(bad){const f=document.createElement('span');f.className='flag';f.textContent='⚠ 時間が重なっています';body.appendChild(f);}
-  if(mis){const f=document.createElement('span');f.className='flag';f.textContent='⚠ この日は'+PARKS[dp];body.appendChild(f);}
+  if(s.rdel){
+    const f=document.createElement('span');f.className='rflag';
+    f.textContent='相手がこの予定を削除しました';body.appendChild(f);
+    const bar=document.createElement('div');bar.className='rbar';
+    const y=document.createElement('button');y.className='yes';y.textContent='自分も消す';
+    y.onclick=()=>{s.del=1;s.rdel=0;s.at=now();save();render();stat();};
+    const n=document.createElement('button');n.className='no';n.textContent='残す';
+    n.onclick=()=>{s.rdel=0;s.at=now();save();render();};
+    bar.appendChild(y);bar.appendChild(n);body.appendChild(bar);
+  }
+  if(bad&&!s.rdel){const f=document.createElement('span');f.className='flag';f.textContent='⚠ 時間が重なっています';body.appendChild(f);}
+  if(mis&&!s.rdel){const f=document.createElement('span');f.className='flag';f.textContent='⚠ この日は'+PARKS[dp];body.appendChild(f);}
   d.appendChild(body);
   return d;
 }
@@ -884,23 +921,64 @@ function payload(){
 function shareURL(){return location.href.split('#')[0]+'#d='+payload();}
 function nt(t){const m=/^(\d{1,2}):(\d{2})$/.exec(t||'');return m?String(+m[1]).padStart(2,'0')+':'+m[2]:'';}
 function sameSlot(a,b){return a.day===b.day&&nt(a.time)===nt(b.time)&&(a.title||'')===(b.title||'');}
-function merge(p){
-  let add=0,upd=0,skip=0;
-  const byId=(dst,src,dup)=>{(src||[]).forEach(o=>{
+function backup(){try{localStorage.setItem(KEY+'_bak',JSON.stringify(S));}catch(e){}}
+function mergeCore(p){
+  let add=0,upd=0,skip=0,gray=0;
+  (p.s||[]).forEach(o=>{
+    const e=S.slots.find(x=>x.id===o.id);
+    if(!e){
+      if(o.del)return;
+      if(S.slots.some(x=>!x.del&&sameSlot(x,o))){skip++;return;}
+      S.slots.push(o);add++;return;
+    }
+    if((o.at||0)<=(e.at||0))return;
+    if(o.del){if(!e.del&&!e.rdel){e.rdel=1;gray++;}return;}
+    const kd=e.del;Object.assign(e,o);e.del=kd;e.rdel=0;upd++;
+  });
+  const soft=(dst,src,dup)=>{(src||[]).forEach(o=>{
+    if(o.del)return;
     const e=dst.find(x=>x.id===o.id);
-    if(e){if((o.at||0)>(e.at||0)){Object.assign(e,o);upd++;}return;}
-    if(!o.del&&dst.some(x=>!x.del&&dup(x,o))){skip++;return;}
+    if(e){if(!e.del&&(o.at||0)>(e.at||0)){Object.assign(e,o);upd++;}return;}
+    if(dst.some(x=>!x.del&&dup(x,o))){skip++;return;}
     dst.push(o);add++;
   });};
-  byId(S.slots,p.s,sameSlot);
-  byId(S.items,p.i,(x,o)=>x.cat===o.cat&&x.text===o.text);
-  byId(S.dbAdd,p.d,(x,o)=>x.p===o.p&&x.c===o.c&&x.n===o.n);
-  const mo=(dst,src)=>Object.keys(src||{}).forEach(k=>{const o=src[k],e=dst[k];
-    if(!e||(o.at||0)>(e.at||0)){dst[k]=o;upd++;}});
-  mo(S.info,p.f);mo(S.dbMemo,p.x);
-  normalize();save();bindFields();render();
-  toast(add+upd+skip===0?'すでに最新です'
-    :('追加 '+add+'件 / 更新 '+upd+'件'+(skip?(' / 重複 '+skip+'件はスキップ'):'')));
+  soft(S.items,p.i,(x,o)=>x.cat===o.cat&&x.text===o.text);
+  soft(S.dbAdd,p.d,(x,o)=>x.p===o.p&&x.c===o.c&&x.n===o.n);
+  const chg=[];
+  const LBL={d1park:'DAY1のパーク',d2park:'DAY2のパーク',d1date:'DAY1の日付',d2date:'DAY2の日付'};
+  const mo=(dst,src,lbl)=>Object.keys(src||{}).forEach(k=>{const o=src[k],e=dst[k];
+    if(!e||(o.at||0)>(e.at||0)){
+      if(lbl&&LBL[k]&&(!e||e.v!==o.v))chg.push(LBL[k]);
+      dst[k]=o;upd++;}});
+  mo(S.info,p.f,1);mo(S.dbMemo,p.x,0);
+  normalize();
+  return {add,upd,skip,gray,chg};
+}
+function merge(p){
+  backup();
+  const c=mergeCore(p);
+  save();bindFields();render();stat();
+  let msg=(c.add+c.upd+c.skip+c.gray===0)?'取り込むものはありませんでした'
+    :('追加 '+c.add+'件'+(c.upd?(' / 変更を反映 '+c.upd+'件'):'')
+      +(c.skip?(' / 同じ内容 '+c.skip+'件はスキップ'):'')
+      +(c.gray?(' / 相手が削除 '+c.gray+'件'):''));
+  if(c.gray)msg+='\n削除分はグレーで表示しています';
+  if(c.chg.length)msg+='\n'+c.chg.join('・')+'も更新';
+  toast(msg);
+}
+function undo(){
+  const b=localStorage.getItem(KEY+'_bak');
+  if(!b){toast('取り消せる取り込みがありません');return;}
+  if(!confirm('直前の取り込みを取り消して、その前の状態に戻します。よろしいですか？'))return;
+  try{S=Object.assign({me:'',room:S.room,items:[],slots:[],info:{},dbAdd:[],dbMemo:{},v:2},JSON.parse(b));
+    localStorage.removeItem(KEY+'_bak');save();bindFields();render();stat();toast('取り込み前の状態に戻しました');}
+  catch(e){toast('戻せませんでした');}
+}
+function stat(){
+  const el=document.getElementById('statLine');if(!el)return;
+  el.textContent='いまの件数：予定 '+S.slots.filter(s=>!s.del).length
+    +'件 / メモ '+S.items.filter(i=>!i.del).length
+    +'件 / 自作の施設 '+S.dbAdd.filter(d=>!d.del).length+'件';
 }
 function tryHash(){
   const h=location.hash;
@@ -938,6 +1016,104 @@ document.getElementById('resetBtn').onclick=()=>{
   if(confirm('この端末のデータを全部消します。よろしいですか？')){localStorage.removeItem(KEY);location.reload();}
 };
 
+/* ---------- Firebase 自動同期 ---------- */
+const FBCFG={
+  apiKey:"AIzaSyB7bkLre6lwz-dM2YUsZg-AVimkDfllw8Q",
+  authDomain:"disney-2026-08.firebaseapp.com",
+  databaseURL:"https://disney-2026-08-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"disney-2026-08",
+  storageBucket:"disney-2026-08.firebasestorage.app",
+  messagingSenderId:"219985831837",
+  appId:"1:219985831837:web:18e1bac401d0a76d70b174"
+};
+let fbRef=null,applying=false,pushT=null,firstSnap=true;
+function fbStatus(t){const e=document.getElementById('fbState');if(e)e.textContent=t;fbButtons();}
+function fbButtons(){
+  const on=!!S.room;
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.style.display=v?'block':'none';};
+  set('fbStartBtn',!on);set('fbInviteBtn',on);set('fbQrBtn',on);set('fbStopBtn',on);
+}
+function newRoom(){let s='';const c='abcdefghijkmnpqrstuvwxyz23456789';
+  for(let i=0;i<24;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
+function roomURL(){return location.href.split('#')[0]+'#room='+S.room;}
+function clean(o){return JSON.parse(JSON.stringify(o));}
+function arrOf(o){return o?Object.keys(o).map(k=>o[k]):[];}
+function fbStart(){
+  if(!S.room){fbStatus('共有オフ');return;}
+  if(typeof firebase==='undefined'){fbStatus('接続部品を読み込めませんでした。通信状態を確認して再読み込みしてください');return;}
+  try{if(!firebase.apps.length)firebase.initializeApp(FBCFG);}catch(e){}
+  fbStatus('接続中…');firstSnap=true;
+  firebase.auth().signInAnonymously().then(()=>{
+    fbRef=firebase.database().ref('rooms/'+S.room);
+    fbRef.on('value',snap=>{
+      const v=snap.val();
+      if(v)applyRemote(v);
+      const t=new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
+      fbStatus('つながっています（最終更新 '+t+'）');
+      if(firstSnap){firstSnap=false;pushAll();}
+    },err=>fbStatus('読み取りできません：'+err.message));
+    firebase.database().ref('.info/connected').on('value',s=>{
+      if(!s.val())fbStatus('オフライン。電波が戻ると自動で反映されます');
+    });
+  }).catch(e=>fbStatus('ログインできません：'+e.message));
+}
+function fbStop(){
+  try{if(fbRef)fbRef.off();}catch(e){}
+  fbRef=null;S.room='';save();fbStatus('共有オフ');
+}
+function applyRemote(v){
+  applying=true;
+  const before=JSON.stringify([S.items,S.slots,S.info,S.dbAdd,S.dbMemo]);
+  const c=mergeCore({i:arrOf(v.items),s:arrOf(v.slots),d:arrOf(v.dbAdd),f:v.info||{},x:v.dbMemo||{}});
+  const changed=JSON.stringify([S.items,S.slots,S.info,S.dbAdd,S.dbMemo])!==before;
+  if(changed){save();bindFields();render();stat();}
+  applying=false;
+  if(changed&&!firstSnap){
+    let m='相手の変更を受け取りました';
+    if(c.gray)m+='（削除 '+c.gray+'件はグレー表示）';
+    toast(m);
+  }
+}
+function schedulePush(){
+  if(!fbRef||applying)return;
+  clearTimeout(pushT);pushT=setTimeout(pushAll,700);
+}
+function pushAll(){
+  if(!fbRef)return;
+  const u={};
+  S.items.forEach(o=>u['items/'+o.id]=clean(o));
+  S.slots.forEach(o=>{if(!o.rdel)u['slots/'+o.id]=clean(o);});
+  S.dbAdd.forEach(o=>u['dbAdd/'+o.id]=clean(o));
+  Object.keys(S.info).forEach(k=>u['info/'+k]=clean(S.info[k]));
+  Object.keys(S.dbMemo).forEach(k=>u['dbMemo/'+k]=clean(S.dbMemo[k]));
+  fbRef.update(u).catch(e=>fbStatus('保存できません：'+e.message));
+}
+function tryRoom(){
+  const m=/[#&]room=([A-Za-z0-9_-]{8,})/.exec(location.hash);
+  if(!m)return;
+  const r=m[1];
+  history.replaceState(null,'',location.href.split('#')[0]);
+  if(r===S.room)return;
+  if(confirm('相手の共有に参加しますか？\nこれ以降、追加や変更が自動でやりとりされます。'))
+    {S.room=r;save();fbStart();}
+}
+document.getElementById('fbStartBtn').onclick=()=>{
+  if(!S.room){S.room=newRoom();save();}
+  fbStart();toast('共有を始めました。相手を招待してください');
+};
+document.getElementById('fbStopBtn').onclick=()=>{
+  if(confirm('共有をやめます。データは端末に残ります。よろしいですか？'))fbStop();
+};
+document.getElementById('fbInviteBtn').onclick=async()=>{
+  const txt='【Disney 2026 Summer】ふたりの予定表を共有します。開いてね → '+roomURL();
+  if(navigator.share){try{await navigator.share({text:txt});return;}catch(e){}}
+  location.href='https://line.me/R/msg/text/?'+encodeURIComponent(txt);
+};
+document.getElementById('fbQrBtn').onclick=()=>{
+  const b=document.getElementById('fbqr');b.innerHTML='';
+  new QRCode(b,{text:roomURL(),width:200,height:200,correctLevel:QRCode.CorrectLevel.M});
+};
+
 /* ---------- 起動 ---------- */
 document.querySelector('.tabbar').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
@@ -950,10 +1126,13 @@ document.getElementById('meBtn').onclick=()=>{
   if(v!==null){S.me=v.trim();save();document.getElementById('meBtn').textContent=S.me||'なまえ';render();}
 };
 document.getElementById('nAdd').onclick=addFac;
+document.getElementById('undoBtn').onclick=undo;
 setTimeout(()=>{if(!S.me)toast('右上から自分の名前を設定すると、誰が登録したか分かります');},900);
 load();
 if(S.me)document.getElementById('meBtn').textContent=S.me;
-bindFilters();bindParkSel();bindFields();render();tryHash();
+bindFilters();bindParkSel();bindFields();render();stat();
+fbButtons();tryRoom();if(S.room)fbStart();else fbStatus('共有オフ');
+tryHash();
 </script>
 </body>
 </html>
