@@ -107,6 +107,11 @@ input.timefield{width:112px;text-align:center;}
 .syncstep{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;}
 .syncstep b{display:block;font-size:14px;font-weight:normal;color:var(--pink-d);margin-bottom:8px;}
 #qrbox{display:flex;justify-content:center;padding:14px 0 4px;}
+#fbMembers{margin:6px 0 10px;}
+#fbMembers .mlbl{font-size:11.5px;color:var(--ink-l);margin-bottom:5px;}
+.mchip{display:inline-block;font-size:12px;background:var(--sky-l);color:var(--sky-d);border-radius:999px;padding:5px 12px;margin:0 5px 5px 0;}
+.mchip.me{background:var(--pink-l);color:var(--pink-d);}
+.mchip .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mint-d);margin-right:6px;vertical-align:1px;}
 .toast{white-space:pre-line;position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:10px 20px;border-radius:999px;z-index:400;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center;}
 .toast.on{opacity:.95;}
 .fields{display:grid;grid-template-columns:80px 1fr;gap:8px 10px;align-items:center;font-size:13px;}
@@ -263,6 +268,7 @@ input.timefield{width:112px;text-align:center;}
     <div class="syncstep" id="fbBox">
       <b>ふたりで自動同期</b>
       <div class="mini" id="fbState">共有オフ</div>
+      <div id="fbMembers"></div>
       <button class="btn wide" id="fbStartBtn">共有を始める</button>
       <button class="btn sub wide" id="fbInviteBtn">相手を招待する（LINE・メール）</button>
       <button class="btn gray wide" id="fbQrBtn">招待QRを表示</button>
@@ -519,7 +525,7 @@ const C2M={a:'go',e:'eat',s:'buy'};
 const CATL={a:'アトラクション',e:'レストラン',s:'ショップ'};
 const PARKN={L:'ディズニーランド',S:'ディズニーシー'};
 const PARKS={L:'ランド',S:'シー'};
-let S={me:'',room:'',items:[],slots:[],info:{},dbAdd:[],dbMemo:{},v:2};
+let S={me:'',room:'',cid:'',items:[],slots:[],info:{},dbAdd:[],dbMemo:{},v:2};
 
 function uid(){return Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);}
 function now(){return Date.now();}
@@ -1052,14 +1058,40 @@ function fbStart(){
       fbStatus('つながっています（最終更新 '+t+'）');
       if(firstSnap){firstSnap=false;pushAll();}
     },err=>fbStatus('読み取りできません：'+err.message));
-    firebase.database().ref('.info/connected').on('value',s=>{
-      if(!s.val())fbStatus('オフライン。電波が戻ると自動で反映されます');
-    });
+    fbPresence();
   }).catch(e=>fbStatus('ログインできません：'+e.message));
 }
+let presRef=null,myPres=null;
+function fbPresence(){
+  const db=firebase.database();
+  if(!S.cid){S.cid=uid();save();}
+  myPres=db.ref('rooms/'+S.room+'/presence/'+S.cid);
+  presRef=db.ref('rooms/'+S.room+'/presence');
+  db.ref('.info/connected').on('value',s=>{
+    if(!s.val()){fbStatus('オフライン。電波が戻ると自動で反映されます');return;}
+    myPres.onDisconnect().remove();
+    myPres.set({name:S.me||'名前未設定',at:firebase.database.ServerValue.TIMESTAMP});
+  });
+  presRef.on('value',s=>renderMembers(s.val()||{}));
+}
+function pushName(){
+  if(myPres)myPres.update({name:S.me||'名前未設定'});
+}
+function renderMembers(v){
+  const el=document.getElementById('fbMembers');if(!el)return;
+  const ks=Object.keys(v||{});
+  if(!S.room||!ks.length){el.innerHTML='';return;}
+  el.innerHTML='<div class="mlbl">いま参加している人（'+ks.length+'人）</div>'
+    +ks.map(k=>{const m=v[k]||{},me=k===S.cid;
+      return '<span class="mchip'+(me?' me':'')+'"><span class="dot"></span>'
+        +esc(m.name||'名前未設定')+(me?'（あなた）':'')+'</span>';}).join('');
+}
 function fbStop(){
+  try{if(myPres)myPres.remove();}catch(e){}
+  try{if(presRef)presRef.off();}catch(e){}
   try{if(fbRef)fbRef.off();}catch(e){}
-  fbRef=null;S.room='';save();fbStatus('共有オフ');
+  fbRef=null;presRef=null;myPres=null;
+  S.room='';save();renderMembers({});fbStatus('共有オフ');
 }
 function applyRemote(v){
   applying=true;
@@ -1123,7 +1155,8 @@ document.querySelector('.tabbar').addEventListener('click',e=>{
 });
 document.getElementById('meBtn').onclick=()=>{
   const v=prompt('あなたのお名前は？',S.me||'');
-  if(v!==null){S.me=v.trim();save();document.getElementById('meBtn').textContent=S.me||'なまえ';render();}
+  if(v!==null){S.me=v.trim();save();document.getElementById('meBtn').textContent=S.me||'なまえ';render();
+    if(typeof pushName==='function')pushName();}
 };
 document.getElementById('nAdd').onclick=addFac;
 document.getElementById('undoBtn').onclick=undo;
