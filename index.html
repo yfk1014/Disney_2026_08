@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Disney 2026">
 <title>Disney 2026 Summer</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{
   --pink:#1D6FB8;--pink-l:#E9F2FB;--pink-d:#0E4F8C;
@@ -112,6 +113,21 @@ input.timefield{width:112px;text-align:center;}
 .mchip{display:inline-block;font-size:12px;background:var(--sky-l);color:var(--sky-d);border-radius:999px;padding:5px 12px;margin:0 5px 5px 0;}
 .mchip.me{background:var(--pink-l);color:var(--pink-d);}
 .mchip .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mint-d);margin-right:6px;vertical-align:1px;}
+#map{height:58vh;min-height:320px;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#E8EEF4;}
+#map.picking{box-shadow:0 0 0 3px var(--org);}
+.pin{background:none;border:0;}
+.pin span{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;
+  background:var(--pink-d);color:#fff;font-size:12.5px;font-family:var(--font);box-shadow:0 1px 5px rgba(0,0,0,.35);border:2px solid #fff;}
+.pin.s2 span{background:var(--lav-d);}
+.pin.now span{background:var(--mint-d);width:16px;height:16px;}
+.leg{display:flex;align-items:center;gap:8px;font-size:12.5px;background:#fff;border:1px solid var(--line);
+  border-radius:12px;padding:8px 12px;margin-bottom:6px;}
+.leg b{font-weight:normal;color:var(--pink-d);flex:none;}
+.leg .w{margin-left:auto;color:var(--ink-l);font-size:11.5px;flex:none;}
+.miss{display:flex;align-items:center;gap:8px;background:var(--org-l);border-radius:12px;padding:8px 10px;margin-bottom:6px;font-size:12.5px;}
+.miss span{flex:1;min-width:0;word-break:break-word;color:var(--org-d);}
+.miss button{font-family:inherit;font-size:11.5px;border:0;border-radius:9px;padding:6px 11px;background:var(--org);color:#4A2C00;cursor:pointer;flex:none;}
+.sumline{background:var(--sky-l);color:var(--sky-d);border-radius:12px;padding:9px 12px;font-size:12.5px;margin:8px 0;}
 .toast{white-space:pre-line;position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:10px 20px;border-radius:999px;z-index:400;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center;}
 .toast.on{opacity:.95;}
 .fields{display:grid;grid-template-columns:80px 1fr;gap:8px 10px;align-items:center;font-size:13px;}
@@ -261,6 +277,28 @@ input.timefield{width:112px;text-align:center;}
     <div style="height:20px"></div>
   </section>
 
+  <!-- ===== 地図 ===== -->
+  <section class="view" id="v-map">
+    <div class="filters" id="mapDay">
+      <button data-d="1" class="on">DAY 1</button>
+      <button data-d="2">DAY 2</button>
+      <button id="locBtn" style="margin-left:auto">現在地</button>
+    </div>
+    <div id="map"></div>
+    <div id="mapSum"></div>
+    <div id="mapMissing"></div>
+    <h2 class="sec">区間ごとの移動</h2>
+    <div id="mapLegs"></div>
+    <div class="card">
+      <b style="font-size:13px;color:var(--sky-d);font-weight:normal">📍 施設の位置</b>
+      <div class="mini" style="margin-top:6px">最初に一度だけ押してください。地図の公開データから施設を探して位置を登録します。見つからなかったものは、上のオレンジの欄から地図タップで登録できます。</div>
+      <button class="btn wide" id="geoFetch">施設の位置をまとめて取得</button>
+      <div class="mini" id="geoState"></div>
+    </div>
+    <div class="mini">地図と経路の表示には通信が必要です。一度表示した経路は端末に保存され、次回は通信なしで出ます。<br>地図データ © OpenStreetMap contributors</div>
+    <div style="height:20px"></div>
+  </section>
+
   <!-- ===== 同期 ===== -->
   <section class="view" id="v-sync">
     <div class="hint">同期は「送る側が送信 → 相手が開く」で片方向です。<b>お互いに1回ずつ</b>送れば両方が最新になります。<br><br><b>取り込みの決まり</b><br>・ふたりは対等。追加・変更・削除がそのまま伝わります<br>・同じ項目を両方が触った場合は<b>あとに操作したほうが残ります</b><br>・相手が削除した予定は<b>すぐには消さず、グレー表示</b>にします。「自分も消す」か「残す」を選べます<br>・メモと自作の施設は、相手が消しても自分側では消えません<br>・同じ日・同じ時刻・同じ場所の予定は足しません<br><br><b>やりとりされる内容</b><br>・メモ（行きたい／食べたい／買いたい）<br>・予定と、各予定の時間・滞在時間・メモ・登録者名<br>・DAY1／DAY2 の日付と<b>ランド／シーの設定</b><br>・ホテル欄、食事・レストラン予約欄<br>・自分で追加した施設と、施設メモの書き換え<br><br>内蔵の施設181件は送らないので、データは軽いままです。</div>
@@ -311,12 +349,14 @@ input.timefield{width:112px;text-align:center;}
   <button data-v="memo" class="on"><span class="ic">📝</span>メモ</button>
   <button data-v="db"><span class="ic">🏰</span>施設</button>
   <button data-v="plan"><span class="ic">🗓️</span>予定</button>
+  <button data-v="map"><span class="ic">🗺️</span>地図</button>
   <button data-v="sync"><span class="ic">🔄</span>同期</button>
 </div>
 
 <div class="sheet" id="sheet"><div class="sheetbox" id="sheetBox"></div></div>
 <div class="toast" id="toast"></div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -525,13 +565,13 @@ const C2M={a:'go',e:'eat',s:'buy'};
 const CATL={a:'アトラクション',e:'レストラン',s:'ショップ'};
 const PARKN={L:'ディズニーランド',S:'ディズニーシー'};
 const PARKS={L:'ランド',S:'シー'};
-let S={me:'',room:'',cid:'',items:[],slots:[],info:{},dbAdd:[],dbMemo:{},v:2};
+let S={me:'',room:'',cid:'',items:[],slots:[],info:{},dbAdd:[],dbMemo:{},geo:{},v:2};
 
 function uid(){return Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);}
 function now(){return Date.now();}
 function load(){
   try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}
-  if(!S.info)S.info={}; if(!S.dbAdd)S.dbAdd=[]; if(!S.dbMemo)S.dbMemo={};
+  if(!S.info)S.info={}; if(!S.dbAdd)S.dbAdd=[]; if(!S.dbMemo)S.dbMemo={}; if(!S.geo)S.geo={};
   const def={d1date:'8月24日（月）',d2date:'8月25日（火）'};
   Object.keys(def).forEach(k=>{if(!S.info[k]||!S.info[k].v)S.info[k]={v:def[k],at:1};});
 }
@@ -922,7 +962,7 @@ function bindFields(){
 /* ---------- 同期 ---------- */
 function payload(){
   return LZString.compressToEncodedURIComponent(JSON.stringify(
-    {m:S.me,i:S.items,s:S.slots,f:S.info,d:S.dbAdd,x:S.dbMemo}));
+    {m:S.me,i:S.items,s:S.slots,f:S.info,d:S.dbAdd,x:S.dbMemo,g:S.geo}));
 }
 function shareURL(){return location.href.split('#')[0]+'#d='+payload();}
 function nt(t){const m=/^(\d{1,2}):(\d{2})$/.exec(t||'');return m?String(+m[1]).padStart(2,'0')+':'+m[2]:'';}
@@ -956,7 +996,7 @@ function mergeCore(p){
     if(!e||(o.at||0)>(e.at||0)){
       if(lbl&&LBL[k]&&(!e||e.v!==o.v))chg.push(LBL[k]);
       dst[k]=o;upd++;}});
-  mo(S.info,p.f,1);mo(S.dbMemo,p.x,0);
+  mo(S.info,p.f,1);mo(S.dbMemo,p.x,0);if(!S.geo)S.geo={};mo(S.geo,p.g,0);
   normalize();
   return {add,upd,skip,gray,chg};
 }
@@ -1043,6 +1083,7 @@ function newRoom(){let s='';const c='abcdefghijkmnpqrstuvwxyz23456789';
   for(let i=0;i<24;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
 function roomURL(){return location.href.split('#')[0]+'#room='+S.room;}
 function clean(o){return JSON.parse(JSON.stringify(o));}
+function fbKey(s){return encodeURIComponent(s).replace(/\./g,'%2E');}
 function arrOf(o){return o?Object.keys(o).map(k=>o[k]):[];}
 function fbStart(){
   if(!S.room){fbStatus('共有オフ');return;}
@@ -1096,7 +1137,8 @@ function fbStop(){
 function applyRemote(v){
   applying=true;
   const before=JSON.stringify([S.items,S.slots,S.info,S.dbAdd,S.dbMemo]);
-  const c=mergeCore({i:arrOf(v.items),s:arrOf(v.slots),d:arrOf(v.dbAdd),f:v.info||{},x:v.dbMemo||{}});
+  const g={};Object.keys(v.geo||{}).forEach(k=>{try{g[decodeURIComponent(k)]=v.geo[k];}catch(e){}});
+  const c=mergeCore({i:arrOf(v.items),s:arrOf(v.slots),d:arrOf(v.dbAdd),f:v.info||{},x:v.dbMemo||{},g:g});
   const changed=JSON.stringify([S.items,S.slots,S.info,S.dbAdd,S.dbMemo])!==before;
   if(changed){save();bindFields();render();stat();}
   applying=false;
@@ -1118,6 +1160,7 @@ function pushAll(){
   S.dbAdd.forEach(o=>u['dbAdd/'+o.id]=clean(o));
   Object.keys(S.info).forEach(k=>u['info/'+k]=clean(S.info[k]));
   Object.keys(S.dbMemo).forEach(k=>u['dbMemo/'+k]=clean(S.dbMemo[k]));
+  Object.keys(S.geo||{}).forEach(k=>u['geo/'+fbKey(k)]=clean(S.geo[k]));
   fbRef.update(u).catch(e=>fbStatus('保存できません：'+e.message));
 }
 function tryRoom(){
@@ -1146,12 +1189,158 @@ document.getElementById('fbQrBtn').onclick=()=>{
   new QRCode(b,{text:roomURL(),width:200,height:200,correctLevel:QRCode.CorrectLevel.M});
 };
 
+/* ---------- 地図 ---------- */
+const OSRM='https://routing.openstreetmap.de/routed-foot/route/v1/foot/';
+const RKEY=KEY+'_routes';
+let map=null,layer=null,mapDay=1,pickFor='',drawing=false,locMk=null;
+function rCache(){try{return JSON.parse(localStorage.getItem(RKEY)||'{}');}catch(e){return{};}}
+function rSave(k,v){const c=rCache();c[k]=v;try{localStorage.setItem(RKEY,JSON.stringify(c));}catch(e){}}
+function normName(s){
+  return String(s||'')
+    .replace(/[！-～]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0))
+    .replace(/[\s・:：!?"'“”‘’,.\-—–\/()、。「」&~〜]/g,'')
+    .toLowerCase();
+}
+function geoOf(n){const g=S.geo&&S.geo[n];return g&&typeof g.lat==='number'?[g.lat,g.lng]:null;}
+function setGeo(n,lat,lng){if(!S.geo)S.geo={};S.geo[n]={lat:+(+lat).toFixed(6),lng:+(+lng).toFixed(6),at:now()};save();}
+function mmss(sec){const m=Math.round(sec/60);return m<60?(m+'分'):(Math.floor(m/60)+'時間'+(m%60?(m%60)+'分':''));}
+function initMap(){
+  if(map||typeof L==='undefined')return;
+  map=L.map('map',{zoomControl:true}).setView([35.6300,139.8830],15);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);
+  layer=L.layerGroup().addTo(map);
+  map.on('click',e=>{
+    if(!pickFor)return;
+    const n=pickFor;pickFor='';
+    document.getElementById('map').classList.remove('picking');
+    setGeo(n,e.latlng.lat,e.latlng.lng);
+    toast(n+' の位置を登録しました');drawMap();
+  });
+}
+function dayPts(day){
+  return daySlots(day).filter(s=>!s.del&&!s.rdel)
+    .map(s=>({s:s,c:geoOf(s.title)})).filter(x=>x.c);
+}
+function dayMissing(day){
+  return daySlots(day).filter(s=>!s.del&&!s.rdel&&!geoOf(s.title));
+}
+async function drawMap(){
+  if(!map||drawing)return;
+  drawing=true;
+  try{
+    layer.clearLayers();
+    const pts=dayPts(mapDay),miss=dayMissing(mapDay);
+    const mEl=document.getElementById('mapMissing');
+    mEl.innerHTML=miss.length?('<div class="mini" style="margin:8px 2px 4px">位置が未登録の予定（下のボタンを押してから地図をタップ）</div>'
+      +miss.map(s=>'<div class="miss"><span>'+esc(s.title)+'</span><button data-n="'+esc(s.title)+'">地図で指定</button></div>').join('')):'';
+    mEl.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      pickFor=b.dataset.n;document.getElementById('map').classList.add('picking');
+      toast('地図をタップして「'+pickFor+'」の位置を指定してください');
+    });
+    const sum=document.getElementById('mapSum'),legs=document.getElementById('mapLegs');
+    if(!pts.length){sum.innerHTML='<div class="sumline">この日の予定にはまだ位置が登録されていません</div>';legs.innerHTML='';drawing=false;return;}
+    const cls=mapDay===2?'pin s2':'pin';
+    pts.forEach((x,i)=>{
+      L.marker(x.c,{icon:L.divIcon({className:cls,html:'<span>'+(i+1)+'</span>',iconSize:[26,26],iconAnchor:[13,13]})})
+       .bindPopup('<b>'+esc(x.s.title)+'</b><br>'+(x.s.time||'時間未定')).addTo(layer);
+    });
+    map.fitBounds(L.latLngBounds(pts.map(x=>x.c)),{padding:[36,36],maxZoom:17});
+    if(pts.length<2){sum.innerHTML='<div class="sumline">2件以上に位置が登録されると経路を表示します</div>';legs.innerHTML='';drawing=false;return;}
+    sum.innerHTML='<div class="sumline">経路を計算しています…</div>';
+    let r=null;
+    try{r=await route(pts.map(x=>x.c));}catch(e){r=null;}
+    if(!r){
+      sum.innerHTML='<div class="sumline">経路を取得できませんでした。通信状態を確認してください（点の表示だけ行っています）</div>';
+      L.polyline(pts.map(x=>x.c),{color:'#8AA1B7',weight:3,dashArray:'6 6'}).addTo(layer);
+      legs.innerHTML='';drawing=false;return;
+    }
+    L.polyline(r.line,{color:mapDay===2?'#36499B':'#0E4F8C',weight:5,opacity:.8}).addTo(layer);
+    sum.innerHTML='<div class="sumline">合計 '+(r.distance>=1000?(r.distance/1000).toFixed(1)+'km':r.distance+'m')
+      +' ・ 歩き '+mmss(r.duration)+'（'+pts.length+'か所）</div>';
+    legs.innerHTML=r.legs.map((l,i)=>'<div class="leg"><b>'+(i+1)+' → '+(i+2)+'</b>'
+      +'<span style="flex:1;min-width:0">'+esc(pts[i].s.title)+' → '+esc(pts[i+1].s.title)+'</span>'
+      +'<span class="w">'+l.d+'m・'+mmss(l.t)+'</span></div>').join('');
+  }finally{drawing=false;}
+}
+async function route(cs){
+  const key=cs.map(c=>c[1].toFixed(5)+','+c[0].toFixed(5)).join(';');
+  const c=rCache();
+  if(c[key])return c[key];
+  const url=OSRM+key+'?overview=full&geometries=geojson&steps=false';
+  const res=await fetch(url);
+  const j=await res.json();
+  if(j.code!=='Ok'||!j.routes||!j.routes[0])throw new Error(j.code||'ng');
+  const R=j.routes[0];
+  const out={line:R.geometry.coordinates.map(p=>[p[1],p[0]]),
+    legs:R.legs.map(l=>({d:Math.round(l.distance),t:Math.round(l.duration)})),
+    distance:Math.round(R.distance),duration:Math.round(R.duration)};
+  rSave(key,out);return out;
+}
+async function geoFetchAll(){
+  const st=document.getElementById('geoState');
+  st.textContent='地図データを取得しています…（30秒ほどかかることがあります）';
+  const bb='35.6220,139.8700,35.6430,139.8980';
+  const q='[out:json][timeout:60];('
+    +'nwr('+bb+')["attraction"]["name"];'
+    +'nwr('+bb+')["tourism"]["name"];'
+    +'nwr('+bb+')["amenity"~"restaurant|cafe|fast_food|ice_cream|bar|theatre"]["name"];'
+    +'nwr('+bb+')["shop"]["name"];'
+    +');out center;';
+  let j=null;
+  for(const ep of ['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter']){
+    try{
+      const r=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        body:'data='+encodeURIComponent(q)});
+      if(r.ok){j=await r.json();break;}
+    }catch(e){}
+  }
+  if(!j||!j.elements){st.textContent='取得できませんでした。時間をおいて試すか、地図タップで登録してください';return;}
+  const pts=j.elements.map(e=>{
+    const t=e.tags||{},n=t['name:ja']||t.name;
+    const lat=(typeof e.lat==='number')?e.lat:(e.center&&e.center.lat);
+    const lng=(typeof e.lon==='number')?e.lon:(e.center&&e.center.lon);
+    return (n&&typeof lat==='number')?{k:normName(n),raw:n,lat:lat,lng:lng}:null;
+  }).filter(Boolean);
+  let hit=0;
+  allFac().forEach(f=>{
+    const name=f.n;
+    if(geoOf(name))return;
+    const k=normName(name);if(k.length<3)return;
+    let b=pts.find(p=>p.k===k);
+    if(!b)b=pts.find(p=>p.k.length>=5&&(p.k.indexOf(k)===0||k.indexOf(p.k)===0));
+    if(!b)b=pts.find(p=>p.k.length>=6&&(p.k.indexOf(k)>=0||k.indexOf(p.k)>=0));
+    if(b){setGeo(name,b.lat,b.lng);hit++;}
+  });
+  st.textContent='地図上の '+pts.length+'件から、'+hit+'件の位置を登録しました'
+    +(hit?'':'（名前が一致しませんでした。地図タップで登録してください）');
+  save();drawMap();
+}
+function showLoc(){
+  if(!navigator.geolocation){toast('現在地を取得できません');return;}
+  toast('現在地を調べています…');
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const c=[pos.coords.latitude,pos.coords.longitude];
+    if(locMk)map.removeLayer(locMk);
+    locMk=L.marker(c,{icon:L.divIcon({className:'pin now',html:'<span></span>',iconSize:[16,16],iconAnchor:[8,8]})}).addTo(map);
+    map.setView(c,17);
+  },e=>toast('現在地を取得できませんでした'),{enableHighAccuracy:true,timeout:10000});
+}
+document.getElementById('mapDay').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||!b.dataset.d)return;
+  [...e.currentTarget.children].forEach(x=>{if(x.dataset.d)x.classList.toggle('on',x===b);});
+  mapDay=+b.dataset.d;drawMap();
+});
+document.getElementById('geoFetch').onclick=geoFetchAll;
+document.getElementById('locBtn').onclick=showLoc;
+
 /* ---------- 起動 ---------- */
 document.querySelector('.tabbar').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   document.querySelectorAll('.tabbar button').forEach(x=>x.classList.toggle('on',x===b));
   document.querySelectorAll('section.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v));
   scrollTo(0,0);
+  if(b.dataset.v==='map'){initMap();setTimeout(()=>{if(map){map.invalidateSize();drawMap();}},80);}
 });
 document.getElementById('meBtn').onclick=()=>{
   const v=prompt('あなたのお名前は？',S.me||'');
