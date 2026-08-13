@@ -155,7 +155,7 @@ input.timefield{width:112px;text-align:center;}
 .filters button{font-family:inherit;font-size:12px;border:1.5px solid var(--line);background:#fff;color:var(--ink-l);border-radius:999px;padding:6px 13px;cursor:pointer;}
 .filters button.on{border-color:transparent;color:#fff;background:var(--ink-l);}
 .filters button.on[data-p=L]{background:var(--pink-d);} .filters button.on[data-p=S]{background:var(--sky-d);}
-.filters button.on[data-c=a]{background:var(--sky-d);} .filters button.on[data-c=e]{background:var(--yellow-d);} .filters button.on[data-c=s]{background:var(--mint-d);}
+.filters button.on[data-c=a]{background:var(--sky-d);} .filters button.on[data-c=e]{background:var(--yellow-d);} .filters button.on[data-c=s]{background:var(--mint-d);} .filters button.on[data-c=h]{background:var(--lav-d);}
 .fac{background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 8px 9px 12px;margin-bottom:7px;display:flex;align-items:flex-start;gap:6px;}
 .fac.L{border-left:5px solid var(--pink);} .fac.S{border-left:5px solid var(--sky);}
 .fac .fb{flex:1;min-width:0;}
@@ -165,6 +165,35 @@ input.timefield{width:112px;text-align:center;}
 .fac .act{display:flex;flex:none;}
 .fac .act button{border:0;background:none;font-size:15px;color:#A6BDD3;padding:5px 6px;cursor:pointer;font-family:inherit;}
 .cnt{font-size:11.5px;color:var(--ink-l);margin:2px 2px 8px;}
+/* ---- パス ---- */
+.pgrp{background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:10px;}
+.pgrp.dpa{border-left:5px solid var(--org);} .pgrp.pp{border-left:5px solid var(--mint);} .pgrp.lot{border-left:5px solid var(--lav);}
+.pgrp .ph{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.pgrp .ph b{font-size:13.5px;font-weight:normal;}
+.pgrp.dpa .ph b{color:var(--org-d);} .pgrp.pp .ph b{color:var(--mint-d);} .pgrp.lot .ph b{color:var(--lav-d);}
+.pgrp .ph .n{font-size:11px;color:var(--ink-l);flex:1;}
+.pgrp .note{font-size:10.5px;color:#8AA1B7;margin:-2px 0 6px;}
+.pgrp .warnnote{font-size:10.5px;color:var(--org-d);background:var(--org-l);border-radius:8px;padding:5px 8px;margin:-2px 0 7px;}
+.pitem{border:1px solid var(--line);border-radius:12px;padding:7px 6px 7px 8px;margin-bottom:6px;background:#fff;}
+.pitem.got{background:var(--mint-l);border-color:var(--mint);}
+.pitem.miss{opacity:.5;}
+.pitem .top{display:flex;align-items:center;gap:5px;}
+.pitem .rank{flex:none;width:19px;height:19px;border-radius:50%;background:var(--ink-l);color:#fff;font-size:10.5px;display:flex;align-items:center;justify-content:center;}
+.pitem .pt{flex:1;min-width:0;font-size:14px;word-break:break-word;}
+.pitem .pt small{display:block;font-size:10.5px;color:#8AA1B7;}
+.pitem .ord{flex:none;display:flex;flex-direction:column;gap:1px;}
+.pitem .ord button{border:0;background:none;font-size:11px;color:#A6BDD3;padding:0 5px;cursor:pointer;font-family:inherit;line-height:1.15;}
+.pitem .ord button:disabled{opacity:.25;}
+.pitem .x{flex:none;border:0;background:none;font-size:15px;color:#A6BDD3;padding:3px 5px;cursor:pointer;font-family:inherit;}
+.pitem .btm{display:flex;align-items:center;gap:5px;margin:6px 0 0 24px;flex-wrap:wrap;}
+.pitem .st{display:flex;gap:3px;flex:none;}
+.pitem .st button{font-family:inherit;font-size:11px;border:1.5px solid var(--line);background:#fff;color:var(--ink-l);border-radius:999px;padding:4px 10px;cursor:pointer;}
+.pitem .st button.on{border-color:transparent;color:#fff;background:var(--ink-l);}
+.pitem .st button.on[data-s="1"]{background:var(--mint-d);} .pitem .st button.on[data-s="2"]{background:#B08497;}
+.pitem input.gt{flex:none;width:96px;font-size:12.5px;padding:5px 8px;border-radius:10px;}
+.pitem input.pn{flex:1;min-width:110px;font-size:12.5px;padding:5px 8px;border-radius:10px;}
+.pempty{font-size:11.5px;color:#9FB3C8;padding:5px 2px 7px;}
+.paddbtn{font-family:inherit;font-size:12px;border:1.5px dashed var(--line);background:#fff;color:var(--ink-l);border-radius:12px;padding:7px 0;width:100%;cursor:pointer;}
 @media print{
   body{background:#fff;padding:0;} .tabbar,header,.hint,.tabonly-hide,.grip,.act,.del,.btn,.parksel,.sheet,.noteBtn,.ncnt{display:none!important;}
   section.view{display:none!important;} section#v-plan{display:block!important;}
@@ -217,6 +246,7 @@ input.timefield{width:112px;text-align:center;}
       <button data-c="a" class="on">アトラクション</button>
       <button data-c="e">レストラン</button>
       <button data-c="s">ショップ</button>
+      <button data-c="h">ショー</button>
     </div>
     <input type="search" id="fq" placeholder="名前・エリアで検索" style="margin-bottom:8px">
     <div class="cnt" id="dbCount"></div>
@@ -232,6 +262,7 @@ input.timefield{width:112px;text-align:center;}
         <button data-c="a" class="on">アトラクション</button>
         <button data-c="e">レストラン</button>
         <button data-c="s">ショップ</button>
+        <button data-c="h">ショー</button>
       </div>
       <input type="text" id="nName" placeholder="名称" style="margin-bottom:6px">
       <input type="text" id="nArea" placeholder="エリア（任意）" style="margin-bottom:6px">
@@ -287,6 +318,25 @@ input.timefield{width:112px;text-align:center;}
     <div style="height:20px"></div>
   </section>
 
+  <!-- ===== パス ===== -->
+  <section class="view" id="v-pass">
+    <div class="hint">DPA・PP・抽選で<b>とりたいものの候補</b>を、日ごとに並べておく画面です。施設タブの <b>🎟️</b> から追加できます。上にあるものほど優先。当日は結果（取れた／外れた）と時間をここに記録します。</div>
+    <div id="passWrap"></div>
+    <div class="card">
+      <b style="font-size:13px;color:var(--lav-d);font-weight:normal">📖 参考：2026年8月時点の対象</b>
+      <div class="mini" style="margin-top:6px">
+        <b>DPA（有料）ランド</b><br>美女と野獣 2,000円／ベイマックス 1,500円／スプラッシュ・マウンテン 1,500円<br>
+        パレード・ショーは ハーモニー・イン・カラー／エレクトリカルパレード／Reach for the Stars／マジカルミュージックワールド が各2,500円<br><br>
+        <b>DPA（有料）シー</b><br>アナとエルサ・ラプンツェル・ピーターパン・ソアリン・トイ・ストーリー・マニア！ 各2,000円／タワー・オブ・テラー・センター・オブ・ジ・アース 各1,500円<br>
+        ショーは ビリーヴ！／ダンス・ザ・グローブ！／ドリームス・テイク・フライト が各2,500円<br><br>
+        <b>9月1日から対象に加わるもの</b><br>ビッグサンダー・マウンテン／プーさんのハニーハント／モンスターズ・インク／レイジングスピリッツ<br><br>
+        <b>抽選（エントリー受付）</b><br>ランド：ミッキーのマジカルミュージックワールド／ジャンボリミッキー！<br>シー：ダンス・ザ・グローブ！／ドリームス・テイク・フライト<br><br>
+        料金と対象は変わることがあります。当日は公式アプリで確認してください。
+      </div>
+    </div>
+    <div style="height:20px"></div>
+  </section>
+
   <!-- ===== 地図 ===== -->
   <section class="view" id="v-map">
     <div class="filters" id="mapDay">
@@ -311,7 +361,7 @@ input.timefield{width:112px;text-align:center;}
 
   <!-- ===== 同期 ===== -->
   <section class="view" id="v-sync">
-    <div class="hint">同期は「送る側が送信 → 相手が開く」で片方向です。<b>お互いに1回ずつ</b>送れば両方が最新になります。<br><br><b>取り込みの決まり</b><br>・ふたりは対等。追加・変更・削除がそのまま伝わります<br>・同じ項目を両方が触った場合は<b>あとに操作したほうが残ります</b><br>・相手が削除した予定は<b>すぐには消さず、グレー表示</b>にします。「自分も消す」か「残す」を選べます<br>・メモと自作の施設は、相手が消しても自分側では消えません<br>・同じ日・同じ時刻・同じ場所の予定は足しません<br><br><b>やりとりされる内容</b><br>・メモ（行きたい／食べたい／買いたい）<br>・予定と、各予定の時間・滞在時間・メモ・登録者名<br>・DAY1／DAY2 の日付と<b>ランド／シーの設定</b><br>・ホテル欄、食事・レストラン予約欄<br>・自分で追加した施設と、施設メモの書き換え<br><br>内蔵の施設181件は送らないので、データは軽いままです。<br><br><b>設定（画面上部）との関係</b><br>共有は<b>設定ごと</b>です。設定Aで共有を始めても設定Bはつながりません。それぞれの設定で「共有を始める」を押し、相手を招待してください。<br>自分で追加した施設と施設メモは、どの設定でも共通です。</div>
+    <div class="hint">同期は「送る側が送信 → 相手が開く」で片方向です。<b>お互いに1回ずつ</b>送れば両方が最新になります。<br><br><b>取り込みの決まり</b><br>・ふたりは対等。追加・変更・削除がそのまま伝わります<br>・同じ項目を両方が触った場合は<b>あとに操作したほうが残ります</b><br>・相手が削除した予定は<b>すぐには消さず、グレー表示</b>にします。「自分も消す」か「残す」を選べます<br>・メモと自作の施設は、相手が消しても自分側では消えません<br>・同じ日・同じ時刻・同じ場所の予定は足しません<br><br><b>やりとりされる内容</b><br>・メモ（行きたい／食べたい／買いたい）<br>・予定と、各予定の時間・滞在時間・メモ・登録者名<br>・DAY1／DAY2 の日付と<b>ランド／シーの設定</b><br>・ホテル欄、食事・レストラン予約欄<br>・パスの候補（DPA・PP・抽選）と、その結果・時間・メモ<br>・自分で追加した施設と、施設メモの書き換え<br><br>内蔵の施設データは送らないので、データは軽いままです。<br><br><b>設定（画面上部）との関係</b><br>共有は<b>設定ごと</b>です。設定Aで共有を始めても設定Bはつながりません。それぞれの設定で「共有を始める」を押し、相手を招待してください。<br>自分で追加した施設と施設メモは、どの設定でも共通です。</div>
 
     <div class="syncstep" id="fbBox">
       <b>ふたりで自動同期</b>
@@ -359,6 +409,7 @@ input.timefield{width:112px;text-align:center;}
   <button data-v="memo" class="on"><span class="ic">📝</span>メモ</button>
   <button data-v="db"><span class="ic">🏰</span>施設</button>
   <button data-v="plan"><span class="ic">🗓️</span>予定</button>
+  <button data-v="pass"><span class="ic">🎟️</span>パス</button>
   <button data-v="map"><span class="ic">🗺️</span>地図</button>
   <button data-v="sync"><span class="ic">🔄</span>同期</button>
 </div>
@@ -564,7 +615,17 @@ const FAC=[
 /* ===== ホテル・その他 ===== */
 ["L","e","ホテル","ディズニーランドホテル ドリーマーズ・ラウンジ","宿泊者に便利。軽食とドリンク"],
 ["L","e","ホテル","ディズニーランドホテル シャーウッドガーデン・レストラン","ブッフェ。朝食にも"],
-["L","s","ホテル","ディズニーランドホテル ディズニーギフト","チェックアウト前に買える"]
+["L","s","ホテル","ディズニーランドホテル ディズニーギフト","チェックアウト前に買える"],
+["L","h","ショー","ミッキーのマジカルミュージックワールド","抽選対象。DPAは2,500円/回"],
+["L","h","ショー","ジャンボリミッキー！レッツ・ダンス！","抽選対象。2026年7月1日〜9月14日は2階席が自由席"],
+["L","h","パレード","ディズニー・ハーモニー・イン・カラー","昼のパレード。DPA 2,500円/回"],
+["L","h","パレード","東京ディズニーランド・エレクトリカルパレード・ドリームライツ","夜のパレード。DPA 2,500円/回"],
+["L","h","ショー","Reach for the Stars: Everlasting Dreams","夜のショー。DPA 2,500円/回","りいちふぉざすたあず"],
+["L","h","ショー","ザ・ヴィランズ・ハロウィーン“Into the Frenzy”","DPA 3,500円/回。2026年9月16日〜10月31日"],
+["L","h","ショー","The D-Groovationz4 Live: Happy! Funky! Groovy! Tour","抽選対象・DPA 2,500円/回。2026年9月30日〜","でぃいぐるうゔぇいしょんず"],
+["S","h","ショー","ビリーヴ！～シー・オブ・ドリームス～","夜のハーバーショー。DPA 2,500円/回"],
+["S","h","ショー","ダンス・ザ・グローブ！","抽選対象・DPA 2,500円/回。2027年3月31日まで"],
+["S","h","ショー","ドリームス・テイク・フライト","抽選対象・DPA 2,500円/回"]
 ];
 
 </script>
@@ -576,11 +637,17 @@ const SKEY=KEY+'_shared';     /* 全設定で共通に持つデータ */
 const SHARED=['me','cid','dbAdd','dbMemo','geo'];
 function pKey(id){return KEY+'_p_'+id;}
 const CATN={go:'行きたい',eat:'食べたい',buy:'買いたい'};
-const C2M={a:'go',e:'eat',s:'buy'};
-const CATL={a:'アトラクション',e:'レストラン',s:'ショップ'};
+const C2M={a:'go',e:'eat',s:'buy',h:'go'};
+const CATL={a:'アトラクション',e:'レストラン',s:'ショップ',h:'ショー'};
+/* パスの種類 */
+const PKIND=[['dpa','DPA','ディズニー・プレミアアクセス（有料）'],
+             ['pp','PP','プライオリティパス（無料・2026年8月31日で終了）'],
+             ['lot','抽選','エントリー受付']];
+const PKN={dpa:'DPA',pp:'PP',lot:'抽選'};
+const PST=['未','取れた','外れた'];
 const PARKN={L:'ディズニーランド',S:'ディズニーシー'};
 const PARKS={L:'ランド',S:'シー'};
-function blankS(){return {me:'',room:'',cid:'',items:[],slots:[],info:{},dbAdd:[],dbMemo:{},geo:{},v:2};}
+function blankS(){return {me:'',room:'',cid:'',items:[],slots:[],pass:[],info:{},dbAdd:[],dbMemo:{},geo:{},v:2};}
 let S=blankS();
 let PROF={list:[],cur:''};
 
@@ -629,7 +696,21 @@ function load(){
   try{const r=localStorage.getItem(pKey(PROF.cur));if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}
   try{const r=localStorage.getItem(SKEY);if(r)Object.assign(S,JSON.parse(r));}catch(e){}
   if(!S.info)S.info={}; if(!S.dbAdd)S.dbAdd=[]; if(!S.dbMemo)S.dbMemo={}; if(!S.geo)S.geo={};
-  if(!S.items)S.items=[]; if(!S.slots)S.slots=[];
+  if(!S.items)S.items=[]; if(!S.slots)S.slots=[]; if(!S.pass)S.pass=[];
+  /* 設定ごとに一度だけ：すでに予定へ入れてあるメモをメモ一覧から消す */
+  if(!S.mcln){
+    const n=syncMemoHidden();
+    S.mcln=1;save();
+    if(n)setTimeout(()=>toast('予定に入っているメモ '+n+'件をメモ一覧から外しました'),1200);
+  }
+}
+/* 予定に入っているメモをメモ一覧から外す。外した件数を返す */
+function syncMemoHidden(){
+  let n=0;
+  S.items.forEach(i=>{
+    if(!i.del&&S.slots.some(s=>!s.del&&s.src===i.id)){i.del=1;i.at=now();n++;}
+  });
+  return n;
 }
 function save(){
   const body={},sh={};
@@ -680,7 +761,9 @@ function renderDB(){
       const v=prompt('この施設のメモ',f.m||'');
       if(v!==null){S.dbMemo[f.key]={v:v,at:now()};save();renderDB();}
     };
-    act.appendChild(plus);act.appendChild(heart);act.appendChild(pen);
+    const tik=document.createElement('button');tik.textContent='🎟️';tik.title='DPA・PP・抽選の候補に追加';
+    tik.onclick=()=>openPassPicker(f);
+    act.appendChild(plus);act.appendChild(heart);act.appendChild(tik);act.appendChild(pen);
     if(f.own){
       const x=document.createElement('button');x.textContent='×';
       x.onclick=()=>{if(confirm('削除しますか？')){const o=S.dbAdd.find(v=>v.id===f.key);if(o){o.del=1;o.at=now();}save();renderDB();}};
@@ -795,13 +878,155 @@ document.getElementById('sheet').addEventListener('click',e=>{
   toast(it.park&&dp&&it.park!==dp?('DAY'+d+'に追加（'+PARKS[it.park]+'の施設です）'):('DAY'+d+'に追加しました'));
 });
 
+/* ---------- パス（DPA・PP・抽選） ---------- */
+function passList(day,kind){
+  return S.pass.filter(p=>!p.del&&p.day===day&&p.kind===kind).sort((a,b)=>a.ord-b.ord);
+}
+function addPass(day,kind,f){
+  const l=passList(day,kind);
+  if(l.some(p=>p.title===f.n)){toast('すでに入っています');return false;}
+  S.pass.push({id:uid(),day:day,kind:kind,ord:l.length?l[l.length-1].ord+1:0,
+    title:f.n,park:f.p||'',area:f.a||'',src:f.key||'',st:0,gt:'',note:'',by:S.me||'',at:now(),del:0});
+  pnorm();save();renderPass();
+  return true;
+}
+function pnorm(){
+  [1,2].forEach(d=>PKIND.forEach(k=>passList(d,k[0]).forEach((p,i)=>p.ord=i)));
+}
+function pmove(p,dir){
+  const l=passList(p.day,p.kind),i=l.indexOf(p),j=i+dir;
+  if(i<0||j<0||j>=l.length)return;
+  const t=l[j].ord;l[j].ord=p.ord;p.ord=t;
+  p.at=now();l[j].at=now();
+  pnorm();save();renderPass();
+}
+function passItemEl(p,i,len){
+  const d=document.createElement('div');
+  d.className='pitem'+(p.st===1?' got':(p.st===2?' miss':''));
+  const top=document.createElement('div');top.className='top';
+  const rk=document.createElement('span');rk.className='rank';rk.textContent=i+1;top.appendChild(rk);
+  const tx=document.createElement('div');tx.className='pt';tx.textContent=p.title;
+  const sm=document.createElement('small');
+  sm.textContent=[p.park?PARKS[p.park]:'',p.area||'',p.by?('登録：'+p.by):''].filter(Boolean).join(' / ');
+  tx.appendChild(sm);top.appendChild(tx);
+  const ord=document.createElement('div');ord.className='ord';
+  const up=document.createElement('button');up.textContent='▲';up.title='順位を上げる';up.disabled=(i===0);
+  up.onclick=()=>pmove(p,-1);
+  const dn=document.createElement('button');dn.textContent='▼';dn.title='順位を下げる';dn.disabled=(i===len-1);
+  dn.onclick=()=>pmove(p,1);
+  ord.appendChild(up);ord.appendChild(dn);top.appendChild(ord);
+  const x=document.createElement('button');x.className='x';x.textContent='×';
+  x.onclick=()=>{if(!confirm('候補から外しますか？\n\n'+p.title))return;
+    p.del=1;p.at=now();pnorm();save();renderPass();stat();toast('候補から外しました');};
+  top.appendChild(x);
+  d.appendChild(top);
+  const btm=document.createElement('div');btm.className='btm';
+  const st=document.createElement('div');st.className='st';
+  PST.forEach((lbl,v)=>{
+    const b=document.createElement('button');b.textContent=lbl;b.dataset.s=v;
+    if((p.st||0)===v)b.classList.add('on');
+    b.onclick=()=>{p.st=v;p.at=now();save();renderPass();};
+    st.appendChild(b);
+  });
+  btm.appendChild(st);
+  const gt=document.createElement('input');gt.className='gt';gt.type='time';gt.step='300';
+  gt.value=/^\d{1,2}:\d{2}$/.test(p.gt||'')?p.gt.padStart(5,'0'):'';
+  gt.title='とれた時間';
+  gt.onchange=()=>{p.gt=gt.value;p.at=now();save();};
+  btm.appendChild(gt);
+  const nt=document.createElement('input');nt.className='pn';nt.type='text';nt.placeholder='メモ（料金・作戦など）';
+  nt.value=p.note||'';nt.maxLength=200;
+  nt.oninput=()=>{p.note=nt.value;p.at=now();save();};
+  btm.appendChild(nt);
+  d.appendChild(btm);
+  return d;
+}
+function renderPass(){
+  const w=document.getElementById('passWrap');if(!w)return;
+  w.innerHTML='';
+  [1,2].forEach(day=>{
+    const box=document.createElement('div');box.className='daybox d'+day;box.style.marginBottom='14px';
+    const hd=document.createElement('div');hd.className='dayhead';
+    const dp=dayPark(day);
+    hd.innerHTML='<b>DAY '+day+'</b><span style="font-size:12.5px;color:var(--ink-l)">'
+      +esc(dayLabel(day)||'日付未設定')+(dp?'・'+PARKS[dp]:'・パーク未定')+'</span>';
+    box.appendChild(hd);
+    PKIND.forEach(([kind,label,desc])=>{
+      const g=document.createElement('div');g.className='pgrp '+kind;
+      const ph=document.createElement('div');ph.className='ph';
+      const l=passList(day,kind);
+      const got=l.filter(p=>p.st===1).length;
+      ph.innerHTML='<b>'+label+'</b><span class="n">'+(l.length?(l.length+'件'+(got?('・取れた '+got):'')):'候補なし')+'</span>';
+      g.appendChild(ph);
+      const nd=document.createElement('div');nd.className=(kind==='pp')?'warnnote':'note';
+      nd.textContent=(kind==='pp')?'プライオリティパスは2026年8月31日で終了します。9月以降の日程では使えません。':desc;
+      g.appendChild(nd);
+      if(!l.length){const e=document.createElement('div');e.className='pempty';
+        e.textContent='施設タブの 🎟️ から候補を追加してください';g.appendChild(e);}
+      else l.forEach((p,i)=>g.appendChild(passItemEl(p,i,l.length)));
+      const ab=document.createElement('button');ab.className='paddbtn';ab.textContent='＋ 施設タブから追加する';
+      ab.onclick=()=>{
+        document.querySelectorAll('.tabbar button').forEach(x=>x.classList.toggle('on',x.dataset.v==='db'));
+        document.querySelectorAll('section.view').forEach(v=>v.classList.toggle('on',v.id==='v-db'));
+        scrollTo(0,0);toast('施設の 🎟️ を押すと候補に追加できます');
+      };
+      g.appendChild(ab);
+      box.appendChild(g);
+    });
+    w.appendChild(box);
+  });
+}
+/* 施設タブの🎟️から、日と種類を選んで追加する */
+let picketing=null;
+function openPassPicker(f){
+  picketing=f;
+  const box=document.getElementById('sheetBox');
+  let h='<p>どこの候補に入れますか？<b>'+esc(f.n)+'</b></p>';
+  [1,2].forEach(d=>{
+    const dp=dayPark(d),mis=f.p&&dp&&f.p!==dp;
+    h+='<div style="font-size:11.5px;color:#8AA1B7;margin:8px 2px 4px">DAY'+d+'　'
+      +esc(dayLabel(d)||'日付未設定')+(dp?'・'+PARKS[dp]:'・パーク未定')
+      +(mis?'　⚠ '+PARKS[f.p]+'の施設です':'')+'</div>';
+    h+='<div style="display:flex;gap:6px;margin-bottom:2px">'
+      +PKIND.map(([k,l])=>'<button class="big '+(d===1?'b1':'b2')+'" style="flex:1;margin:0" data-pk="'+d+':'+k+'">'+l+'</button>').join('')
+      +'</div>';
+  });
+  h+='<button class="big bc" data-pk="">キャンセル</button>';
+  box.innerHTML=h;
+  document.getElementById('sheet').classList.add('on');
+}
+document.getElementById('sheet').addEventListener('click',e=>{
+  const b=e.target.closest('button');
+  if(!b||b.dataset.pk===undefined)return;
+  document.getElementById('sheet').classList.remove('on');
+  const v=b.dataset.pk,f=picketing;picketing=null;
+  if(!v||!f)return;
+  const [d,k]=v.split(':');
+  if(addPass(+d,k,f))toast('DAY'+d+'の'+PKN[k]+'に追加しました');
+});
+
 /* ---------- 予定表 ---------- */
 function addSlot(day,it,idx){
   const o=S.slots.filter(s=>!s.del&&s.day===day);
   const ord=idx<0||idx>=o.length?(o.length?Math.max(...o.map(s=>s.ord))+1:0):o[idx].ord-0.5;
   S.slots.push({id:uid(),day,ord,time:'',dur:0,note:'',by:S.me||'',title:it.text,cat:it.cat,park:it.park||'',
     area:it.area||'',src:it.id||'',at:now(),del:0});
+  hideMemo(it.id);   /* 予定に移したメモはメモ一覧から消す */
   normalize();save();render();
+}
+/* メモ → 予定 に移したとき、元のメモを隠す */
+function hideMemo(id){
+  if(!id)return;
+  const m=S.items.find(i=>i.id===id);
+  if(m&&!m.del){m.del=1;m.at=now();}
+}
+/* 予定を消したとき、元にしたメモを戻す（ほかの予定でまだ使っていなければ） */
+function showMemo(slot){
+  if(!slot||!slot.src)return false;
+  if(S.slots.some(s=>!s.del&&s.id!==slot.id&&s.src===slot.src))return false;
+  const m=S.items.find(i=>i.id===slot.src);
+  if(m&&m.del){m.del=0;m.at=now();return true;}
+  return false;
 }
 function normalize(){
   [1,2].forEach(d=>S.slots.filter(s=>!s.del&&s.day===d).sort((a,b)=>a.ord-b.ord).forEach((s,i)=>s.ord=i));
@@ -853,7 +1078,13 @@ function slotEl(s,bad,dp){
   nb.onclick=()=>{openNotes[s.id]=!openNotes[s.id];render();};
   r1.appendChild(nb);
   const x=document.createElement('button');x.className='del';x.textContent='×';
-  x.onclick=()=>{s.del=1;s.at=now();save();render();};
+  x.onclick=()=>{
+    const tm=/^\d{1,2}:\d{2}$/.test(s.time||'')?(s.time.padStart(5,'0')+'　'):'';
+    if(!confirm('DAY'+s.day+'の予定を削除しますか？\n\n'+tm+(s.title||'')))return;
+    const back=showMemo(s);
+    s.del=1;s.at=now();save();render();stat();
+    toast(back?'予定を削除しました（メモに戻しました）':'予定を削除しました');
+  };
   r1.appendChild(x);
   body.appendChild(r1);
   const ttl=document.createElement('div');ttl.className='ttl';ttl.textContent=s.title;
@@ -882,7 +1113,8 @@ function slotEl(s,bad,dp){
     f.textContent='相手がこの予定を削除しました';body.appendChild(f);
     const bar=document.createElement('div');bar.className='rbar';
     const y=document.createElement('button');y.className='yes';y.textContent='自分も消す';
-    y.onclick=()=>{s.del=1;s.rdel=0;s.at=now();save();render();stat();};
+    y.onclick=()=>{const back=showMemo(s);s.del=1;s.rdel=0;s.at=now();save();render();stat();
+      if(back)toast('メモに戻しました');};
     const n=document.createElement('button');n.className='no';n.textContent='残す';
     n.onclick=()=>{s.rdel=0;s.at=now();save();render();};
     bar.appendChild(y);bar.appendChild(n);body.appendChild(bar);
@@ -908,7 +1140,7 @@ function bindParkSel(){
     S.info['d'+ps.dataset.day+'park']={v:b.dataset.p,at:now()};save();render();
   }));
 }
-function render(){clearDragUI();renderMemo();renderPlan();renderDB();bindDrag();}
+function render(){clearDragUI();renderMemo();renderPlan();renderDB();renderPass();bindDrag();}
 
 /* ---------- ドラッグ＆ドロップ ---------- */
 let drag=null,autoT=null;
@@ -1023,7 +1255,7 @@ function bindFields(){
 /* ---------- 同期 ---------- */
 function payload(){
   return LZString.compressToEncodedURIComponent(JSON.stringify(
-    {m:S.me,i:S.items,s:S.slots,f:S.info,d:S.dbAdd,x:S.dbMemo,g:S.geo}));
+    {m:S.me,i:S.items,s:S.slots,k:S.pass,f:S.info,d:S.dbAdd,x:S.dbMemo,g:S.geo}));
 }
 function shareURL(){return location.href.split('#')[0]+'#d='+payload();}
 function nt(t){const m=/^(\d{1,2}):(\d{2})$/.exec(t||'');return m?String(+m[1]).padStart(2,'0')+':'+m[2]:'';}
@@ -1051,6 +1283,8 @@ function mergeCore(p){
   });};
   soft(S.items,p.i,(x,o)=>x.cat===o.cat&&x.text===o.text);
   soft(S.dbAdd,p.d,(x,o)=>x.p===o.p&&x.c===o.c&&x.n===o.n);
+  if(!S.pass)S.pass=[];
+  soft(S.pass,p.k,(x,o)=>x.day===o.day&&x.kind===o.kind&&x.title===o.title);
   const chg=[];
   const LBL={d1park:'DAY1のパーク',d2park:'DAY2のパーク',d1date:'DAY1の日付',d2date:'DAY2の日付'};
   const mo=(dst,src,lbl)=>Object.keys(src||{}).forEach(k=>{const o=src[k],e=dst[k];
@@ -1058,7 +1292,8 @@ function mergeCore(p){
       if(lbl&&LBL[k]&&(!e||e.v!==o.v))chg.push(LBL[k]);
       dst[k]=o;upd++;}});
   mo(S.info,p.f,1);mo(S.dbMemo,p.x,0);if(!S.geo)S.geo={};mo(S.geo,p.g,0);
-  normalize();
+  syncMemoHidden();   /* 相手から届いた予定の分も、メモ一覧から外す */
+  normalize();pnorm();
   return {add,upd,skip,gray,chg};
 }
 function merge(p){
@@ -1085,6 +1320,7 @@ function stat(){
   const el=document.getElementById('statLine');if(!el)return;
   el.textContent='設定「'+profName(PROF.cur)+'」の件数：予定 '+S.slots.filter(s=>!s.del).length
     +'件 / メモ '+S.items.filter(i=>!i.del).length
+    +'件 / パス候補 '+(S.pass||[]).filter(p=>!p.del).length
     +'件（自作の施設 '+S.dbAdd.filter(d=>!d.del).length+'件は全設定で共通）';
 }
 function tryHash(){
@@ -1208,10 +1444,10 @@ function fbStop(){
 }
 function applyRemote(v){
   applying=true;
-  const before=JSON.stringify([S.items,S.slots,S.info,S.dbAdd,S.dbMemo]);
+  const before=JSON.stringify([S.items,S.slots,S.pass,S.info,S.dbAdd,S.dbMemo]);
   const g={};Object.keys(v.geo||{}).forEach(k=>{try{g[decodeURIComponent(k)]=v.geo[k];}catch(e){}});
-  const c=mergeCore({i:arrOf(v.items),s:arrOf(v.slots),d:arrOf(v.dbAdd),f:v.info||{},x:v.dbMemo||{},g:g});
-  const changed=JSON.stringify([S.items,S.slots,S.info,S.dbAdd,S.dbMemo])!==before;
+  const c=mergeCore({i:arrOf(v.items),s:arrOf(v.slots),k:arrOf(v.pass),d:arrOf(v.dbAdd),f:v.info||{},x:v.dbMemo||{},g:g});
+  const changed=JSON.stringify([S.items,S.slots,S.pass,S.info,S.dbAdd,S.dbMemo])!==before;
   if(changed){save();bindFields();render();stat();}
   applying=false;
   if(changed&&!firstSnap){
@@ -1229,6 +1465,7 @@ function pushAll(){
   const u={};
   S.items.forEach(o=>u['items/'+o.id]=clean(o));
   S.slots.forEach(o=>{if(!o.rdel)u['slots/'+o.id]=clean(o);});
+  (S.pass||[]).forEach(o=>u['pass/'+o.id]=clean(o));
   S.dbAdd.forEach(o=>u['dbAdd/'+o.id]=clean(o));
   Object.keys(S.info).forEach(k=>u['info/'+k]=clean(S.info[k]));
   Object.keys(S.dbMemo).forEach(k=>u['dbMemo/'+k]=clean(S.dbMemo[k]));
@@ -1441,7 +1678,7 @@ function newProf(copy){
     Object.keys(S).forEach(k=>{if(SHARED.indexOf(k)<0)body[k]=JSON.parse(JSON.stringify(S[k]));});
     body.room='';
   }else{
-    body={room:'',items:[],slots:[],info:{},v:2};
+    body={room:'',items:[],slots:[],pass:[],info:{},v:2};
   }
   const id=uid();
   try{localStorage.setItem(pKey(id),JSON.stringify(body));}catch(e){}
