@@ -165,6 +165,22 @@ input.timefield{width:112px;text-align:center;}
 .fac .act{display:flex;flex:none;}
 .fac .act button{border:0;background:none;font-size:15px;color:#A6BDD3;padding:5px 6px;cursor:pointer;font-family:inherit;}
 .cnt{font-size:11.5px;color:var(--ink-l);margin:2px 2px 8px;}
+/* ---- 混雑 ---- */
+.cwhead{font-size:11.5px;color:var(--ink-l);margin:0 2px 9px;line-height:1.5;}
+.cwhead b{color:var(--ink);font-weight:normal;}
+.filters button.on[data-m=free]{background:var(--mint-d);} .filters button.on[data-m=busy]{background:#B08497;}
+.filters button.on[data-d="1"]{background:var(--pink-d);} .filters button.on[data-d="2"]{background:var(--lav-d);}
+.cw{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);
+ border-radius:12px;padding:9px 11px;margin-bottom:6px;}
+.cw.free{border-left:5px solid var(--mint);} .cw.busy{border-left:5px solid #C9A0AF;}
+.cw .n{flex:1;min-width:0;font-size:13.5px;word-break:break-word;}
+.cw .n small{display:block;font-size:10.5px;color:#8AA1B7;}
+.cw .w{flex:none;font-size:17px;font-variant-numeric:tabular-nums;}
+.cw .w span{font-size:11px;margin-left:1px;}
+.cw.free .w{color:var(--mint-d);} .cw.busy .w{color:#96586F;}
+.cwtag{display:inline-block;font-size:9.5px;background:var(--org-l);color:var(--org-d);border-radius:999px;padding:2px 7px;margin-left:5px;vertical-align:1px;}
+.cwmsg{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 14px;text-align:center;font-size:13px;color:var(--ink-l);}
+.cwmsg button{font-family:inherit;font-size:13px;border:1.5px solid var(--pink);background:#fff;color:var(--pink-d);border-radius:999px;padding:8px 20px;margin-top:10px;cursor:pointer;}
 /* ---- パス ---- */
 .pgrp{background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px 12px;margin-bottom:10px;}
 .pgrp.dpa{border-left:5px solid var(--org);} .pgrp.pp{border-left:5px solid var(--mint);} .pgrp.lot{border-left:5px solid var(--lav);}
@@ -318,6 +334,23 @@ input.timefield{width:112px;text-align:center;}
     <div style="height:20px"></div>
   </section>
 
+  <!-- ===== 混雑 ===== -->
+  <section class="view" id="v-crowd">
+    <div class="filters" id="cwDaySel">
+      <button data-d="1">DAY 1</button>
+      <button data-d="2">DAY 2</button>
+      <button id="cwReload" style="margin-left:auto">更新</button>
+    </div>
+    <div class="cwhead" id="cwHead"></div>
+    <div class="filters" id="cwMode">
+      <button data-m="free" class="on">混雑無し</button>
+      <button data-m="busy">混雑あり</button>
+    </div>
+    <div id="cwList"></div>
+    <div class="mini" style="margin-top:10px">待ち時間は非公式のデータを使っています。数分の遅れがあり、取得できないこともあります。確実なところは公式アプリで確認してください。</div>
+    <div style="height:20px"></div>
+  </section>
+
   <!-- ===== パス ===== -->
   <section class="view" id="v-pass">
     <div class="hint">DPA・PP・抽選で<b>とりたいものの候補</b>を、日ごとに並べておく画面です。施設タブの <b>🎟️</b> から追加できます。上にあるものほど優先。当日は結果（取れた／外れた）と時間をここに記録します。</div>
@@ -409,6 +442,7 @@ input.timefield{width:112px;text-align:center;}
   <button data-v="memo" class="on"><span class="ic">📝</span>メモ</button>
   <button data-v="db"><span class="ic">🏰</span>施設</button>
   <button data-v="plan"><span class="ic">🗓️</span>予定</button>
+  <button data-v="crowd"><span class="ic">📶</span>混雑</button>
   <button data-v="pass"><span class="ic">🎟️</span>パス</button>
   <button data-v="map"><span class="ic">🗺️</span>地図</button>
   <button data-v="sync"><span class="ic">🔄</span>同期</button>
@@ -878,6 +912,136 @@ document.getElementById('sheet').addEventListener('click',e=>{
   toast(it.park&&dp&&it.park!==dp?('DAY'+d+'に追加（'+PARKS[it.park]+'の施設です）'):('DAY'+d+'に追加しました'));
 });
 
+/* ---------- 混雑（当日の待ち時間） ---------- */
+const TPARK={L:'3cc919f1-d16d-43e0-8c3f-1dd269bd1a42',S:'67b290d5-3478-4f23-b601-2f8fb71ba803'};
+const CFREE=20,CBUSY=90;
+/* 公式の施設番号 → 日本語名（APIは英語名で返ってくるため） */
+const TJA={
+'151':'オムニバス','152':'カリブの海賊','153':'ジャングルクルーズ：ワイルドライフ・エクスペディション',
+'154':'ウエスタンリバー鉄道','155':'スイスファミリー・ツリーハウス','156':'魅惑のチキルーム：スティッチ・プレゼンツ',
+'157':'ウエスタンランド・シューティングギャラリー','158':'カントリーベア・シアター','159':'蒸気船マークトウェイン号',
+'160':'ビッグサンダー・マウンテン','161':'トムソーヤ島いかだ','162':'スプラッシュ・マウンテン',
+'163':'ビーバーブラザーズのカヌー探険','164':'ピーターパン空の旅','165':'白雪姫と七人のこびと',
+'166':'シンデレラのフェアリーテイル・ホール','167':'ミッキーのフィルハーマジック','168':'ピノキオの冒険旅行',
+'169':'空飛ぶダンボ','170':'キャッスルカルーセル','171':'ホーンテッドマンション','172':'イッツ・ア・スモールワールド',
+'173':'アリスのティーパーティー','174':'プーさんのハニーハント','175':'ロジャーラビットのカートゥーンスピン',
+'176':'ミニーの家','178':'チップとデールのツリーハウス','179':'ガジェットのゴーコースター','180':'ドナルドのボート',
+'181':'グーフィーのペイント&プレイハウス','183':'スター・ツアーズ：ザ・アドベンチャーズ・コンティニュー',
+'189':'モンスターズ・インク“ライド&ゴーシーク！”','191':'ペニーアーケード','194':'トゥーンパーク',
+'195':'スティッチ・エンカウンター','196':'ベイマックスのハッピーライド','197':'美女と野獣“魔法のものがたり”',
+'202':'アリエルのプレイグラウンド','218':'トイ・ストーリー・マニア！','219':'ソアリン：ファンタスティック・フライト',
+'220':'ジャスミンのフライングカーペット','221':'マーメイドラグーンシアター',
+'222':'インディ・ジョーンズ・アドベンチャー：クリスタルスカルの魔宮','223':'センター・オブ・ジ・アース',
+'224':'海底2万マイル','226':'マジックランプシアター',
+'227':'ディズニーシー・トランジットスチーマーライン（メディテレーニアンハーバー）',
+'228':'ディズニーシー・トランジットスチーマーライン（アメリカンウォーターフロント）',
+'229':'ディズニーシー・トランジットスチーマーライン（ロストリバーデルタ）','230':'ヴェネツィアン・ゴンドラ',
+'231':'ディズニーシー・エレクトリックレールウェイ（ポートディスカバリー）',
+'232':'ディズニーシー・エレクトリックレールウェイ（アメリカンウォーターフロント）','233':'ビッグシティ・ヴィークル',
+'234':'アクアトピア','235':'シンドバッド・ストーリーブック・ヴォヤッジ','236':'キャラバンカルーセル',
+'237':'フランダーのフライングフィッシュコースター','238':'スカットルのスクーター','239':'ジャンピン・ジェリーフィッシュ',
+'240':'ブローフィッシュ・バルーンレース','241':'ワールプール','242':'レイジングスピリッツ','243':'タワー・オブ・テラー',
+'244':'フォートレス・エクスプロレーション','245':'ザ・レオナルドチャレンジ','246':'タートル・トーク',
+'247':'ニモ＆フレンズ・シーライダー','255':'アナとエルサのフローズンジャーニー','256':'ラプンツェルのランタンフェスティバル',
+'257':'ピーターパンのネバーランドアドベンチャー','258':'フェアリー・ティンカーベルのビジーバギー'};
+let cwDay=0,cwMode='free',cwData=null,cwLoading=false,cwErr='',cwAuto=0;
+/* 今日の日付が DAY1／DAY2 のどちらかに一致するか調べる */
+function cwToday(){
+  const n=new Date(),m=n.getMonth()+1,d=n.getDate();
+  for(const day of [1,2]){
+    const r=/(\d{1,2})\s*月\s*(\d{1,2})\s*日/.exec(dayLabel(day)||'');
+    if(r&&+r[1]===m&&+r[2]===d)return day;
+  }
+  return 0;
+}
+function cwNowDay(){cwAuto=cwToday();return cwDay||cwAuto||1;}
+async function cwLoad(force){
+  const day=cwNowDay(),park=dayPark(day);
+  if(!park){cwData=null;cwErr='';renderCrowd();return;}
+  if(cwLoading)return;
+  if(!force&&cwData&&cwData.park===park&&(Date.now()-cwData.at)<60000){renderCrowd();return;}
+  cwLoading=true;cwErr='';renderCrowd();
+  try{
+    const r=await fetch('https://api.themeparks.wiki/v1/entity/'+TPARK[park]+'/live',{cache:'no-store'});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const j=await r.json();
+    const list=(j.liveData||[]).filter(x=>x.entityType==='ATTRACTION').map(x=>{
+      const q=x.queue||{},sb=q.STANDBY||{};
+      return {n:TJA[x.externalId]||x.name,st:x.status||'',
+        w:(typeof sb.waitTime==='number')?sb.waitTime:null,
+        dpa:(q.PAID_RETURN_TIME&&q.PAID_RETURN_TIME.state==='AVAILABLE')?1:0};
+    });
+    cwData={park:park,at:Date.now(),list:list};
+  }catch(e){
+    cwErr=String((e&&e.message)||e);
+    if(/Failed to fetch|NetworkError|Load failed/i.test(cwErr))cwErr='通信できませんでした';
+  }
+  cwLoading=false;renderCrowd();
+}
+function cwMsg(t,btn){
+  return '<div class="cwmsg">'+t+(btn?'<br><button id="cwRetry">'+btn+'</button>':'')+'</div>';
+}
+function renderCrowd(){
+  const el=document.getElementById('cwList');if(!el)return;
+  const day=cwNowDay(),park=dayPark(day);
+  document.querySelectorAll('#cwDaySel button[data-d]').forEach(b=>b.classList.toggle('on',+b.dataset.d===day));
+  document.querySelectorAll('#cwMode button').forEach(b=>b.classList.toggle('on',b.dataset.m===cwMode));
+  const hd=document.getElementById('cwHead');
+  let h='DAY'+day+'　'+esc(dayLabel(day)||'日付未設定')+'　'+(park?('<b>'+PARKS[park]+'</b>'):'パーク未定');
+  if(!cwDay&&cwAuto)h+='<br>今日の日付から DAY'+cwAuto+' を自動で選びました';
+  else if(!cwDay)h+='<br>今日はどちらの日付とも一致しないので DAY1 を表示しています';
+  if(cwData&&cwData.park===park)h+='<br>'+new Date(cwData.at).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})+' 時点';
+  hd.innerHTML=h;
+
+  if(!park){el.innerHTML=cwMsg('DAY'+day+'のパークが未設定です。<br>「予定」タブでランドかシーを選んでください。','');return;}
+  if(cwLoading&&!cwData){el.innerHTML=cwMsg('待ち時間を取得しています…','');return;}
+  if(cwErr&&!cwData){el.innerHTML=cwMsg('待ち時間を取得できませんでした。<br><span class="mini">'+esc(cwErr)+'</span>','もう一度試す');
+    const b=document.getElementById('cwRetry');if(b)b.onclick=()=>cwLoad(true);return;}
+  if(!cwData||cwData.park!==park){el.innerHTML=cwMsg('「更新」を押すと待ち時間を取り込みます。','いま取り込む');
+    const b=document.getElementById('cwRetry');if(b)b.onclick=()=>cwLoad(true);return;}
+
+  const wt=cwData.list.filter(x=>x.w!==null);
+  const free=wt.filter(x=>x.w<=CFREE).sort((a,b)=>a.w-b.w||(a.n<b.n?-1:1));
+  const busy=wt.filter(x=>x.w>=CBUSY).sort((a,b)=>b.w-a.w||(a.n<b.n?-1:1));
+  const mid=wt.length-free.length-busy.length;
+  const list=(cwMode==='free')?free:busy;
+  const cls=(cwMode==='free')?'free':'busy';
+
+  if(!wt.length){
+    el.innerHTML=cwMsg('いま待ち時間が出ているアトラクションがありません。<br><span class="mini">開園前・閉園後や、休止中の可能性があります。</span>','もう一度試す');
+    const b=document.getElementById('cwRetry');if(b)b.onclick=()=>cwLoad(true);return;
+  }
+  el.innerHTML='';
+  const cnt=document.createElement('div');cnt.className='cnt';
+  cnt.textContent=(cwMode==='free'?('待ち時間 '+CFREE+'分以内　'+free.length+'件'):('待ち時間 '+CBUSY+'分以上　'+busy.length+'件'))
+    +'（'+(CFREE+1)+'〜'+(CBUSY-1)+'分の '+mid+'件はどちらにも出ません）';
+  el.appendChild(cnt);
+  if(!list.length){
+    const d=document.createElement('div');d.className='cwmsg';
+    d.textContent=(cwMode==='free')?('いま'+CFREE+'分以内のアトラクションはありません'):('いま'+CBUSY+'分以上のアトラクションはありません');
+    el.appendChild(d);return;
+  }
+  list.forEach(x=>{
+    const d=document.createElement('div');d.className='cw '+cls;
+    const n=document.createElement('div');n.className='n';n.textContent=x.n;
+    if(x.dpa){const t=document.createElement('span');t.className='cwtag';t.textContent='DPAあり';n.appendChild(t);}
+    d.appendChild(n);
+    const w=document.createElement('div');w.className='w';
+    w.innerHTML=x.w+'<span>分</span>';
+    d.appendChild(w);
+    el.appendChild(d);
+  });
+}
+document.getElementById('cwDaySel').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||!b.dataset.d)return;
+  cwDay=+b.dataset.d;cwLoad(false);
+});
+document.getElementById('cwReload').onclick=()=>cwLoad(true);
+document.getElementById('cwMode').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||!b.dataset.m)return;
+  cwMode=b.dataset.m;renderCrowd();
+});
+
 /* ---------- パス（DPA・PP・抽選） ---------- */
 function passList(day,kind){
   return S.pass.filter(p=>!p.del&&p.day===day&&p.kind===kind).sort((a,b)=>a.ord-b.ord);
@@ -1140,7 +1304,7 @@ function bindParkSel(){
     S.info['d'+ps.dataset.day+'park']={v:b.dataset.p,at:now()};save();render();
   }));
 }
-function render(){clearDragUI();renderMemo();renderPlan();renderDB();renderPass();bindDrag();}
+function render(){clearDragUI();renderMemo();renderPlan();renderDB();renderPass();renderCrowd();bindDrag();}
 
 /* ---------- ドラッグ＆ドロップ ---------- */
 let drag=null,autoT=null;
@@ -1735,6 +1899,7 @@ document.querySelector('.tabbar').addEventListener('click',e=>{
   document.querySelectorAll('section.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v));
   scrollTo(0,0);
   if(b.dataset.v==='map'){initMap();setTimeout(()=>{if(map){map.invalidateSize();drawMap();}},80);}
+  if(b.dataset.v==='crowd')cwLoad(false);
 });
 document.getElementById('meBtn').onclick=()=>{
   const v=prompt('あなたのお名前は？',S.me||'');
