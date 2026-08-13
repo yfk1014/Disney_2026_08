@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>待ち時間API 接続テスト</title>
+<style>
+:root{--pink:#1D6FB8;--pink-d:#0E4F8C;--ink:#22374B;--ink-l:#6B8095;--line:#DCE6F0;
+--ok:#1B7768;--ok-l:#E6F7F3;--ng:#A03A55;--ng-l:#FBEBEF;--warn-l:#FBF3DF;--warn-d:#8C6612;}
+body{margin:0;padding:0 0 40px;background:#F4F8FC;color:var(--ink);
+ font-family:"Hiragino Maru Gothic ProN","M PLUS Rounded 1c",-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.6;}
+.wrap{max-width:560px;margin:0 auto;padding:0 14px;}
+header{background:linear-gradient(180deg,#DCEBF9,#F4F8FC);padding:16px 0 10px;margin-bottom:12px;}
+h1{font-size:17px;margin:0;color:var(--pink-d);}
+h1 small{display:block;font-size:11.5px;color:var(--ink-l);margin-top:3px;}
+.card{background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:10px;border:1px solid var(--line);}
+.big{display:block;width:100%;font-family:inherit;font-size:15px;border:0;border-radius:999px;
+ padding:14px 0;background:var(--pink);color:#fff;cursor:pointer;margin-bottom:12px;}
+.big:active{transform:scale(.98);}
+.res{border-radius:14px;padding:11px 13px;margin-bottom:9px;font-size:13.5px;}
+.res.ok{background:var(--ok-l);border:1.5px solid var(--ok);color:var(--ok);}
+.res.ng{background:var(--ng-l);border:1.5px solid var(--ng);color:var(--ng);}
+.res.wait{background:#fff;border:1.5px solid var(--line);color:var(--ink-l);}
+.res b{display:block;font-size:14.5px;margin-bottom:3px;}
+.res .d{color:var(--ink);font-size:12px;margin-top:5px;word-break:break-all;}
+h2{font-size:12.5px;color:var(--ink-l);margin:18px 0 7px;font-weight:normal;letter-spacing:.06em;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+td{padding:5px 4px;border-bottom:1px solid var(--line);}
+td.t{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+tr.free td.t{color:var(--ok);font-weight:bold;}
+tr.busy td.t{color:var(--ng);font-weight:bold;}
+.note{font-size:11.5px;background:var(--warn-l);color:var(--warn-d);border-radius:10px;padding:8px 10px;margin-bottom:10px;}
+.mini{font-size:11px;color:var(--ink-l);}
+#copy{font-family:inherit;font-size:13px;border:1.5px solid var(--pink);background:#fff;color:var(--pink-d);
+ border-radius:999px;padding:9px 0;width:100%;cursor:pointer;margin-top:6px;}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>待ち時間API 接続テスト<small>混雑タブが作れるかどうかを確かめます</small></h1>
+</div></header>
+
+<div class="wrap">
+  <div class="note">スマホでもパソコンでも構いません。<b>アプリと同じ場所（GitHub Pages）に上げてから開いてください。</b>手元のファイルを直接開くと、本番と違う結果が出ることがあります。</div>
+
+  <button class="big" id="go">テストを始める</button>
+
+  <div id="out"></div>
+
+  <div id="after" style="display:none">
+    <h2>この結果を知らせてください</h2>
+    <div class="card">
+      <div class="mini" id="summary"></div>
+      <button id="copy">結果をコピー</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PARKS=[
+  {n:'東京ディズニーランド',id:'3cc919f1-d16d-43e0-8c3f-1dd269bd1a42'},
+  {n:'東京ディズニーシー',id:'67b290d5-3478-4f23-b601-2f8fb71ba803'}
+];
+const FREE=20, BUSY=90;
+const out=document.getElementById('out');
+let log=[];
+
+function box(cls,title,detail){
+  const d=document.createElement('div');
+  d.className='res '+cls;
+  d.innerHTML='<b>'+title+'</b>'+(detail?'<div class="d">'+detail+'</div>':'');
+  out.appendChild(d);
+  return d;
+}
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+async function testPark(p){
+  const url='https://api.themeparks.wiki/v1/entity/'+p.id+'/live';
+  const b=box('wait',p.n+'：接続中…','');
+  const t0=Date.now();
+  try{
+    const r=await fetch(url,{cache:'no-store'});
+    const ms=Date.now()-t0;
+    if(!r.ok){
+      b.className='res ng';
+      b.innerHTML='<b>'+p.n+'：サーバーがエラーを返しました</b><div class="d">HTTP '+r.status+'（'+ms+'ミリ秒）</div>';
+      log.push(p.n+': HTTP '+r.status);
+      return null;
+    }
+    const j=await r.json();
+    const at=(j.liveData||[]).filter(x=>x.entityType==='ATTRACTION');
+    const op=at.filter(x=>x.status==='OPERATING');
+    const wt=at.filter(x=>x.queue&&x.queue.STANDBY&&typeof x.queue.STANDBY.waitTime==='number');
+    const dpa=at.filter(x=>x.queue&&x.queue.PAID_RETURN_TIME);
+    b.className='res ok';
+    b.innerHTML='<b>'+p.n+'：つながりました ✓</b><div class="d">'
+      +'アトラクション '+at.length+'件／運営中 '+op.length+'件／待ち時間が取れたもの '+wt.length+'件'
+      +'<br>DPAの状況が取れたもの '+dpa.length+'件・'+ms+'ミリ秒</div>';
+    log.push(p.n+': OK 全'+at.length+'件 運営中'+op.length+'件 待ち時間'+wt.length+'件 DPA'+dpa.length+'件 '+ms+'ms');
+    return {p:p,at:at,wt:wt};
+  }catch(e){
+    b.className='res ng';
+    const m=String(e&&e.message||e);
+    const cors=/Failed to fetch|NetworkError|Load failed|CORS/i.test(m);
+    b.innerHTML='<b>'+p.n+'：つながりませんでした ✕</b><div class="d">'+esc(m)
+      +(cors?'<br><br>これはCORSで止められた可能性が高いです。ブラウザから直接この形では取得できません。':'')+'</div>';
+    log.push(p.n+': NG '+m);
+    return null;
+  }
+}
+
+function table(rows){
+  if(!rows.length)return '<div class="mini">該当なし</div>';
+  return '<table>'+rows.map(x=>'<tr class="'+x.c+'"><td>'+esc(x.n)+'</td><td class="t">'+x.w+'分</td></tr>').join('')+'</table>';
+}
+
+document.getElementById('go').onclick=async function(){
+  out.innerHTML='';log=[];
+  const g=document.getElementById('go');
+  g.disabled=true;g.textContent='テスト中…';
+  log.push('日時: '+new Date().toString());
+  log.push('開いた場所: '+location.origin+' ('+location.protocol+')');
+  if(location.protocol==='file:')
+    box('wait','注意：手元のファイルを直接開いています','本番はGitHub Pagesなので、結果が変わることがあります。できれば公開したURLから開いてください。');
+
+  let anyOk=false;
+  for(const p of PARKS){
+    const r=await testPark(p);
+    if(!r)continue;
+    anyOk=true;
+    const free=r.wt.filter(x=>x.queue.STANDBY.waitTime<=FREE)
+      .map(x=>({n:x.name,w:x.queue.STANDBY.waitTime,c:'free'})).sort((a,b)=>a.w-b.w);
+    const busy=r.wt.filter(x=>x.queue.STANDBY.waitTime>=BUSY)
+      .map(x=>({n:x.name,w:x.queue.STANDBY.waitTime,c:'busy'})).sort((a,b)=>b.w-a.w);
+    const mid=r.wt.length-free.length-busy.length;
+    const c=document.createElement('div');c.className='card';
+    c.innerHTML='<h2 style="margin-top:0">'+esc(p.n)+'　混雑無し（'+FREE+'分以内）'+free.length+'件</h2>'+table(free)
+      +'<h2>'+esc(p.n)+'　混雑あり（'+BUSY+'分以上）'+busy.length+'件</h2>'+table(busy)
+      +'<div class="mini" style="margin-top:8px">中間（'+(FREE+1)+'〜'+(BUSY-1)+'分）は '+mid+'件で、どちらにも出ません。</div>';
+    out.appendChild(c);
+    log.push('  '+p.n+' 空き'+free.length+'件 混雑'+busy.length+'件 中間'+mid+'件');
+  }
+
+  if(!anyOk)box('ng','結論：この方法では自動取得できません','混雑タブを自動取得だけで作ることはできません。手入力に切り替えるか、中継サーバーを用意する必要があります。');
+  else box('ok','結論：自動取得できます','混雑タブを作れます。あとは英語の施設名を日本語に対応づける作業だけです。');
+
+  const s=document.getElementById('summary');
+  s.textContent=log.join('\n');
+  s.style.whiteSpace='pre-wrap';
+  document.getElementById('after').style.display='block';
+  g.disabled=false;g.textContent='もう一度テストする';
+};
+
+document.getElementById('copy').onclick=async function(){
+  const t=log.join('\n');
+  try{await navigator.clipboard.writeText(t);document.getElementById('copy').textContent='コピーしました';}
+  catch(e){prompt('コピーしてください',t);}
+};
+</script>
+</body>
+</html>
