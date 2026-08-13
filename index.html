@@ -105,6 +105,12 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pink);}
 .slot .ncnt{font-size:10.5px;color:#8AA1B7;text-align:right;margin-top:2px;}
 .slot .ncnt.over{color:var(--org-d);}
 .slot .flag{display:inline-block;font-size:10.5px;background:var(--org);color:var(--org-d);border-radius:6px;padding:1px 7px;margin-top:4px;margin-right:4px;}
+/* 待ち時間バッジ（水色＝空いてる／オレンジ＝混雑） */
+.slot .wb{display:inline-block;font-size:11px;border-radius:999px;padding:2px 9px;margin-left:6px;
+ background:#EDF2F7;color:var(--ink-l);vertical-align:1px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.slot .wb.free{background:var(--sky-l);color:var(--sky-d);box-shadow:inset 0 0 0 1.5px var(--sky);}
+.slot .wb.busy{background:var(--org-l);color:var(--org-d);box-shadow:inset 0 0 0 1.5px var(--org);}
+.wnote{font-size:10.5px;color:var(--ink-l);flex-basis:100%;}
 input[type=time]{-webkit-appearance:none;appearance:none;}
 input[type=time]::-webkit-calendar-picker-indicator{opacity:.45;cursor:pointer;}
 input.timefield{width:112px;text-align:center;}
@@ -301,6 +307,7 @@ input.timefield{width:112px;text-align:center;}
         <div class="parksel" data-day="1">
           <button data-p="L">ランド</button><button data-p="S">シー</button><button data-p="">未定</button>
         </div>
+        <span class="wnote" id="wnote1"></span>
       </div>
       <div class="zone" data-day="1" id="zone1"></div>
     </div>
@@ -310,6 +317,7 @@ input.timefield{width:112px;text-align:center;}
         <div class="parksel" data-day="2">
           <button data-p="L">ランド</button><button data-p="S">シー</button><button data-p="">未定</button>
         </div>
+        <span class="wnote" id="wnote2"></span>
       </div>
       <div class="zone" data-day="2" id="zone2"></div>
     </div>
@@ -957,9 +965,9 @@ function cwToday(){
 function cwNowDay(){cwAuto=cwToday();return cwDay||cwAuto||1;}
 async function cwLoad(force){
   const day=cwNowDay(),park=dayPark(day);
-  if(!park){cwData=null;cwErr='';renderCrowd();return;}
+  if(!park){cwData=null;cwErr='';renderCrowd();renderPlan();return;}
   if(cwLoading)return;
-  if(!force&&cwData&&cwData.park===park&&(Date.now()-cwData.at)<60000){renderCrowd();return;}
+  if(!force&&cwData&&cwData.park===park&&(Date.now()-cwData.at)<60000){renderCrowd();renderPlan();return;}
   cwLoading=true;cwErr='';renderCrowd();
   try{
     const r=await fetch('https://api.themeparks.wiki/v1/entity/'+TPARK[park]+'/live',{cache:'no-store'});
@@ -976,7 +984,37 @@ async function cwLoad(force){
     cwErr=String((e&&e.message)||e);
     if(/Failed to fetch|NetworkError|Load failed/i.test(cwErr))cwErr='通信できませんでした';
   }
-  cwLoading=false;renderCrowd();
+  cwLoading=false;renderCrowd();renderPlan();
+}
+/* 施設名 → 待ち時間。乗り場が分かれているものは一番短いものを採用 */
+function cwWaitMap(){
+  const m={};
+  if(!cwData)return m;
+  cwData.list.forEach(x=>{
+    if(x.w===null)return;
+    const keys=[x.n];
+    const base=x.n.replace(/（[^）]*）\s*$/,'');
+    if(base!==x.n)keys.push(base);
+    keys.forEach(k=>{if(m[k]===undefined||x.w<m[k])m[k]=x.w;});
+  });
+  return m;
+}
+/* 予定1件ぶんの待ち時間。対象の日・対象のパークでなければ null */
+function slotWait(s){
+  const day=cwNowDay();
+  if(s.day!==day||!cwData||cwData.park!==dayPark(day))return null;
+  const w=cwWaitMap()[s.title];
+  return (typeof w==='number')?w:null;
+}
+/* 予定表の日付見出しに、いつ時点の待ち時間かを書く */
+function renderWaitNote(){
+  const day=cwNowDay(),t=cwToday();
+  [1,2].forEach(d=>{
+    const el=document.getElementById('wnote'+d);if(!el)return;
+    if(d!==day||!cwData||cwData.park!==dayPark(d)){el.textContent='';return;}
+    const hm=new Date(cwData.at).toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
+    el.textContent=(t===d)?('待ち時間 '+hm+' 時点'):('※下の待ち時間は、旅行日ではなく今日の混雑です（'+hm+' 時点）');
+  });
 }
 function cwMsg(t,btn){
   return '<div class="cwmsg">'+t+(btn?'<br><button id="cwRetry">'+btn+'</button>':'')+'</div>';
@@ -1252,6 +1290,13 @@ function slotEl(s,bad,dp){
   r1.appendChild(x);
   body.appendChild(r1);
   const ttl=document.createElement('div');ttl.className='ttl';ttl.textContent=s.title;
+  const wv=slotWait(s);
+  if(wv!==null){
+    const wb=document.createElement('span');
+    wb.className='wb'+(wv<=CFREE?' free':(wv>=CBUSY?' busy':''));
+    wb.textContent=wv+'分待ち';
+    ttl.appendChild(wb);
+  }
   const sm=document.createElement('small');
   const en=tmin(s.time)!==null&&s.dur?('〜'+String(Math.floor((tmin(s.time)+s.dur)/60)%24).padStart(2,'0')+':'+String((tmin(s.time)+s.dur)%60).padStart(2,'0')):'';
   sm.textContent=[CATN[s.cat]||'',s.park?PARKS[s.park]:'',s.area||'',en,s.by?('登録：'+s.by):''].filter(Boolean).join(' / ');
@@ -1297,6 +1342,7 @@ function renderPlan(){
     const ps=document.querySelector('.parksel[data-day="'+day+'"]');
     [...ps.children].forEach(b=>b.classList.toggle('on',b.dataset.p===dp));
   });
+  renderWaitNote();
 }
 function bindParkSel(){
   document.querySelectorAll('.parksel').forEach(ps=>ps.addEventListener('click',e=>{
@@ -1899,7 +1945,7 @@ document.querySelector('.tabbar').addEventListener('click',e=>{
   document.querySelectorAll('section.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v));
   scrollTo(0,0);
   if(b.dataset.v==='map'){initMap();setTimeout(()=>{if(map){map.invalidateSize();drawMap();}},80);}
-  if(b.dataset.v==='crowd')cwLoad(false);
+  if(b.dataset.v==='crowd'||b.dataset.v==='plan')cwLoad(false);
 });
 document.getElementById('meBtn').onclick=()=>{
   const v=prompt('あなたのお名前は？',S.me||'');
