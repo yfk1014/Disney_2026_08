@@ -28,6 +28,11 @@ header{background:linear-gradient(180deg,#DCEBF9,#F4F8FC);padding:calc(env(safe-
 header .wrap{display:flex;align-items:center;gap:10px;}
 header h1{font-size:17px;margin:0;color:var(--pink-d);letter-spacing:.04em;flex:1;}
 header .me{font-size:11px;background:#fff;border:1.5px solid var(--pink);color:var(--pink-d);border-radius:999px;padding:5px 12px;}
+.profbar{margin-top:8px;}
+.profbar .plbl{font-size:10.5px;color:var(--ink-l);flex:none;letter-spacing:.06em;}
+.profbar select{flex:1;min-width:0;font-size:13.5px;padding:7px 30px 7px 11px;border-radius:12px;border:1.5px solid var(--pink);background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%230E4F8C' stroke-width='1.8' stroke-linecap='round'/></svg>") no-repeat right 10px center/11px;color:var(--pink-d);font-family:inherit;-webkit-appearance:none;appearance:none;}
+.profbar button{flex:none;border:1.5px solid var(--pink);background:#fff;color:var(--pink-d);border-radius:12px;font-family:inherit;font-size:15px;line-height:1;padding:9px 12px;cursor:pointer;}
+.profbar button:active{transform:scale(.97);}
 .tabbar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;padding:6px 0 calc(env(safe-area-inset-bottom) + 6px);z-index:40;}
 .tabbar button{flex:1;border:0;background:none;font-family:inherit;font-size:10.5px;color:var(--ink-l);padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;}
 .tabbar button .ic{font-size:19px;line-height:1;}
@@ -174,6 +179,11 @@ input.timefield{width:112px;text-align:center;}
     <h1>Disney 2026 Summer</h1>
     <button class="me" id="meBtn">なまえ</button>
   </div>
+  <div class="wrap profbar">
+    <span class="plbl">設定</span>
+    <select id="profSel" aria-label="スケジュールの設定を選ぶ"></select>
+    <button id="profMenu" title="設定の追加・複製・名前変更・削除">⋯</button>
+  </div>
 </header>
 
 <div class="wrap">
@@ -301,7 +311,7 @@ input.timefield{width:112px;text-align:center;}
 
   <!-- ===== 同期 ===== -->
   <section class="view" id="v-sync">
-    <div class="hint">同期は「送る側が送信 → 相手が開く」で片方向です。<b>お互いに1回ずつ</b>送れば両方が最新になります。<br><br><b>取り込みの決まり</b><br>・ふたりは対等。追加・変更・削除がそのまま伝わります<br>・同じ項目を両方が触った場合は<b>あとに操作したほうが残ります</b><br>・相手が削除した予定は<b>すぐには消さず、グレー表示</b>にします。「自分も消す」か「残す」を選べます<br>・メモと自作の施設は、相手が消しても自分側では消えません<br>・同じ日・同じ時刻・同じ場所の予定は足しません<br><br><b>やりとりされる内容</b><br>・メモ（行きたい／食べたい／買いたい）<br>・予定と、各予定の時間・滞在時間・メモ・登録者名<br>・DAY1／DAY2 の日付と<b>ランド／シーの設定</b><br>・ホテル欄、食事・レストラン予約欄<br>・自分で追加した施設と、施設メモの書き換え<br><br>内蔵の施設181件は送らないので、データは軽いままです。</div>
+    <div class="hint">同期は「送る側が送信 → 相手が開く」で片方向です。<b>お互いに1回ずつ</b>送れば両方が最新になります。<br><br><b>取り込みの決まり</b><br>・ふたりは対等。追加・変更・削除がそのまま伝わります<br>・同じ項目を両方が触った場合は<b>あとに操作したほうが残ります</b><br>・相手が削除した予定は<b>すぐには消さず、グレー表示</b>にします。「自分も消す」か「残す」を選べます<br>・メモと自作の施設は、相手が消しても自分側では消えません<br>・同じ日・同じ時刻・同じ場所の予定は足しません<br><br><b>やりとりされる内容</b><br>・メモ（行きたい／食べたい／買いたい）<br>・予定と、各予定の時間・滞在時間・メモ・登録者名<br>・DAY1／DAY2 の日付と<b>ランド／シーの設定</b><br>・ホテル欄、食事・レストラン予約欄<br>・自分で追加した施設と、施設メモの書き換え<br><br>内蔵の施設181件は送らないので、データは軽いままです。<br><br><b>設定（画面上部）との関係</b><br>共有は<b>設定ごと</b>です。設定Aで共有を始めても設定Bはつながりません。それぞれの設定で「共有を始める」を押し、相手を招待してください。<br>自分で追加した施設と施設メモは、どの設定でも共通です。</div>
 
     <div class="syncstep" id="fbBox">
       <b>ふたりで自動同期</b>
@@ -560,23 +570,74 @@ const FAC=[
 </script>
 <script>
 const KEY='futaritabi_v2';
+const PKEY=KEY+'_profiles';   /* 設定の一覧と、いま選んでいる設定 */
+const SKEY=KEY+'_shared';     /* 全設定で共通に持つデータ */
+/* 下の項目は設定を切り替えても共通。それ以外（予定・メモ・日付・共有ルーム）は設定ごと */
+const SHARED=['me','cid','dbAdd','dbMemo','geo'];
+function pKey(id){return KEY+'_p_'+id;}
 const CATN={go:'行きたい',eat:'食べたい',buy:'買いたい'};
 const C2M={a:'go',e:'eat',s:'buy'};
 const CATL={a:'アトラクション',e:'レストラン',s:'ショップ'};
 const PARKN={L:'ディズニーランド',S:'ディズニーシー'};
 const PARKS={L:'ランド',S:'シー'};
-let S={me:'',room:'',cid:'',items:[],slots:[],info:{},dbAdd:[],dbMemo:{},geo:{},v:2};
+function blankS(){return {me:'',room:'',cid:'',items:[],slots:[],info:{},dbAdd:[],dbMemo:{},geo:{},v:2};}
+let S=blankS();
+let PROF={list:[],cur:''};
 
 function uid(){return Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);}
 function now(){return Date.now();}
-function load(){
-  try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}
-  if(!S.info)S.info={}; if(!S.dbAdd)S.dbAdd=[]; if(!S.dbMemo)S.dbMemo={}; if(!S.geo)S.geo={};
-  const def={d1date:'8月24日（月）',d2date:'8月25日（火）'};
-  Object.keys(def).forEach(k=>{if(!S.info[k]||!S.info[k].v)S.info[k]={v:def[k],at:1};});
+
+/* ---------- 設定（スケジュール）の保存まわり ---------- */
+function saveProf(){try{localStorage.setItem(PKEY,JSON.stringify(PROF));}catch(e){}}
+function profName(id){const p=PROF.list.find(x=>x.id===id);return p?p.name:'';}
+function bakKey(){return pKey(PROF.cur)+'_bak';}
+function defInfo(){
+  const def={d1date:'8月24日（月）',d2date:'8月25日（火）'},o={};
+  Object.keys(def).forEach(k=>o[k]={v:def[k],at:1});
+  return o;
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
-  if(typeof schedulePush==='function')schedulePush();}
+/* 初回だけ、旧形式（設定1件だけ）のデータを設定名つきに移し替える */
+function initProf(){
+  let p=null;
+  try{p=JSON.parse(localStorage.getItem(PKEY)||'null');}catch(e){}
+  if(p&&p.list&&p.list.length){
+    PROF=p;
+  }else{
+    const id=uid();
+    PROF={list:[{id:id,name:'二人で初ディズニー'}],cur:id};
+    let old=null;
+    try{old=JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){}
+    const body={};
+    if(old&&typeof old==='object'){
+      const sh={};
+      SHARED.forEach(k=>{if(old[k]!==undefined)sh[k]=old[k];});
+      try{localStorage.setItem(SKEY,JSON.stringify(sh));}catch(e){}
+      Object.keys(old).forEach(k=>{if(SHARED.indexOf(k)<0)body[k]=old[k];});
+    }
+    if(!body.info)body.info={};
+    const d=defInfo();
+    Object.keys(d).forEach(k=>{if(!body.info[k]||!body.info[k].v)body.info[k]=d[k];});
+    if(!body.v)body.v=2;
+    try{localStorage.setItem(pKey(id),JSON.stringify(body));}catch(e){}
+    saveProf();
+  }
+  if(!PROF.list.some(x=>x.id===PROF.cur))PROF.cur=PROF.list[0].id;
+}
+function load(){
+  initProf();
+  S=blankS();
+  try{const r=localStorage.getItem(pKey(PROF.cur));if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}
+  try{const r=localStorage.getItem(SKEY);if(r)Object.assign(S,JSON.parse(r));}catch(e){}
+  if(!S.info)S.info={}; if(!S.dbAdd)S.dbAdd=[]; if(!S.dbMemo)S.dbMemo={}; if(!S.geo)S.geo={};
+  if(!S.items)S.items=[]; if(!S.slots)S.slots=[];
+}
+function save(){
+  const body={},sh={};
+  Object.keys(S).forEach(k=>{if(SHARED.indexOf(k)<0)body[k]=S[k];else sh[k]=S[k];});
+  try{localStorage.setItem(pKey(PROF.cur),JSON.stringify(body));}catch(e){}
+  try{localStorage.setItem(SKEY,JSON.stringify(sh));}catch(e){}
+  if(typeof schedulePush==='function')schedulePush();
+}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2400);}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function dayPark(d){const o=S.info['d'+d+'park'];return o?o.v:'';}
@@ -967,7 +1028,7 @@ function payload(){
 function shareURL(){return location.href.split('#')[0]+'#d='+payload();}
 function nt(t){const m=/^(\d{1,2}):(\d{2})$/.exec(t||'');return m?String(+m[1]).padStart(2,'0')+':'+m[2]:'';}
 function sameSlot(a,b){return a.day===b.day&&nt(a.time)===nt(b.time)&&(a.title||'')===(b.title||'');}
-function backup(){try{localStorage.setItem(KEY+'_bak',JSON.stringify(S));}catch(e){}}
+function backup(){try{localStorage.setItem(bakKey(),JSON.stringify(S));}catch(e){}}
 function mergeCore(p){
   let add=0,upd=0,skip=0,gray=0;
   (p.s||[]).forEach(o=>{
@@ -1013,18 +1074,18 @@ function merge(p){
   toast(msg);
 }
 function undo(){
-  const b=localStorage.getItem(KEY+'_bak');
+  const b=localStorage.getItem(bakKey());
   if(!b){toast('取り消せる取り込みがありません');return;}
   if(!confirm('直前の取り込みを取り消して、その前の状態に戻します。よろしいですか？'))return;
-  try{S=Object.assign({me:'',room:S.room,items:[],slots:[],info:{},dbAdd:[],dbMemo:{},v:2},JSON.parse(b));
-    localStorage.removeItem(KEY+'_bak');save();bindFields();render();stat();toast('取り込み前の状態に戻しました');}
+  try{S=Object.assign(blankS(),JSON.parse(b));
+    localStorage.removeItem(bakKey());save();bindFields();render();stat();toast('取り込み前の状態に戻しました');}
   catch(e){toast('戻せませんでした');}
 }
 function stat(){
   const el=document.getElementById('statLine');if(!el)return;
-  el.textContent='いまの件数：予定 '+S.slots.filter(s=>!s.del).length
+  el.textContent='設定「'+profName(PROF.cur)+'」の件数：予定 '+S.slots.filter(s=>!s.del).length
     +'件 / メモ '+S.items.filter(i=>!i.del).length
-    +'件 / 自作の施設 '+S.dbAdd.filter(d=>!d.del).length+'件';
+    +'件（自作の施設 '+S.dbAdd.filter(d=>!d.del).length+'件は全設定で共通）';
 }
 function tryHash(){
   const h=location.hash;
@@ -1059,7 +1120,10 @@ document.getElementById('importBtn').onclick=()=>{
   catch(e){toast('データを読み取れませんでした');}
 };
 document.getElementById('resetBtn').onclick=()=>{
-  if(confirm('この端末のデータを全部消します。よろしいですか？')){localStorage.removeItem(KEY);location.reload();}
+  if(confirm('いま選んでいる設定「'+profName(PROF.cur)+'」の予定とメモを全部消します。\n（ほかの設定と、自分で追加した施設は残ります）\nよろしいですか？')){
+    try{localStorage.removeItem(pKey(PROF.cur));localStorage.removeItem(bakKey());}catch(e){}
+    location.reload();
+  }
 };
 
 /* ---------- Firebase 自動同期 ---------- */
@@ -1109,6 +1173,7 @@ function fbPresence(){
   myPres=db.ref('rooms/'+S.room+'/presence/'+S.cid);
   presRef=db.ref('rooms/'+S.room+'/presence');
   db.ref('.info/connected').on('value',s=>{
+    if(!myPres)return;
     if(!s.val()){fbStatus('オフライン。電波が戻ると自動で反映されます');return;}
     myPres.onDisconnect().remove();
     myPres.set({name:S.me||'名前未設定',at:firebase.database.ServerValue.TIMESTAMP});
@@ -1127,12 +1192,19 @@ function renderMembers(v){
       return '<span class="mchip'+(me?' me':'')+'"><span class="dot"></span>'
         +esc(m.name||'名前未設定')+(me?'（あなた）':'')+'</span>';}).join('');
 }
-function fbStop(){
-  try{if(myPres)myPres.remove();}catch(e){}
+/* 共有の接続だけ切る（ルーム番号は残す＝設定を切り替えるときに使う） */
+function fbDetach(){
+  try{if(myPres){myPres.onDisconnect().cancel();myPres.remove();}}catch(e){}
   try{if(presRef)presRef.off();}catch(e){}
   try{if(fbRef)fbRef.off();}catch(e){}
+  try{if(typeof firebase!=='undefined'&&firebase.apps.length)firebase.database().ref('.info/connected').off();}catch(e){}
   fbRef=null;presRef=null;myPres=null;
-  S.room='';save();renderMembers({});fbStatus('共有オフ');
+  clearTimeout(pushT);applying=false;firstSnap=true;
+  renderMembers({});
+}
+function fbStop(){
+  fbDetach();
+  S.room='';save();fbStatus('共有オフ');
 }
 function applyRemote(v){
   applying=true;
@@ -1169,7 +1241,7 @@ function tryRoom(){
   const r=m[1];
   history.replaceState(null,'',location.href.split('#')[0]);
   if(r===S.room)return;
-  if(confirm('相手の共有に参加しますか？\nこれ以降、追加や変更が自動でやりとりされます。'))
+  if(confirm('相手の共有に参加しますか？\nいま選んでいる設定「'+profName(PROF.cur)+'」がつながります。\nこれ以降、追加や変更が自動でやりとりされます。'))
     {S.room=r;save();fbStart();}
 }
 document.getElementById('fbStartBtn').onclick=()=>{
@@ -1334,6 +1406,91 @@ document.getElementById('mapDay').addEventListener('click',e=>{
 document.getElementById('geoFetch').onclick=geoFetchAll;
 document.getElementById('locBtn').onclick=showLoc;
 
+/* ---------- 設定（スケジュール）の切り替え ---------- */
+function renderProfSel(){
+  const sel=document.getElementById('profSel');if(!sel)return;
+  sel.innerHTML=PROF.list.map(p=>'<option value="'+esc(p.id)+'"'+(p.id===PROF.cur?' selected':'')+'>'+esc(p.name)+'</option>').join('');
+  sel.value=PROF.cur;
+}
+/* 設定を読み込み直したあと、画面をまるごと作り直す */
+function refreshAll(msg){
+  document.getElementById('meBtn').textContent=S.me||'なまえ';
+  renderProfSel();bindFields();render();stat();fbButtons();
+  try{if(typeof map!=='undefined'&&map)drawMap();}catch(e){}
+  if(S.room)fbStart();else fbStatus('共有オフ');
+  if(msg)toast(msg);
+}
+function switchProf(id){
+  if(!id||id===PROF.cur){renderProfSel();return;}
+  if(!PROF.list.some(x=>x.id===id)){renderProfSel();return;}
+  save();fbDetach();
+  PROF.cur=id;saveProf();
+  load();scrollTo(0,0);
+  refreshAll('「'+profName(PROF.cur)+'」に切り替えました');
+}
+/* copy=1 なら、いまの設定の予定・メモをコピーして新しい設定を作る */
+function newProf(copy){
+  const nm=prompt(copy?'コピーして作る設定の名前を入力してください':'新しい設定の名前を入力してください（例：秋のディズニー）',
+    copy?(profName(PROF.cur)+' のコピー'):'');
+  if(nm===null)return;
+  const name=nm.trim()||('設定'+(PROF.list.length+1));
+  save();fbDetach();
+  let body;
+  if(copy){
+    body={};
+    Object.keys(S).forEach(k=>{if(SHARED.indexOf(k)<0)body[k]=JSON.parse(JSON.stringify(S[k]));});
+    body.room='';
+  }else{
+    body={room:'',items:[],slots:[],info:{},v:2};
+  }
+  const id=uid();
+  try{localStorage.setItem(pKey(id),JSON.stringify(body));}catch(e){}
+  PROF.list.push({id:id,name:name});PROF.cur=id;saveProf();
+  load();scrollTo(0,0);
+  refreshAll('「'+name+'」を作りました');
+}
+function renameProf(){
+  const p=PROF.list.find(x=>x.id===PROF.cur);if(!p)return;
+  const nm=prompt('設定の名前を変えます',p.name);
+  if(nm===null)return;
+  p.name=nm.trim()||p.name;saveProf();renderProfSel();stat();toast('名前を変えました');
+}
+function deleteProf(){
+  if(PROF.list.length<2){toast('設定がひとつだけのときは削除できません');return;}
+  const nm=profName(PROF.cur);
+  if(!confirm('設定「'+nm+'」を削除します。\nこの設定の予定とメモは元に戻せません。よろしいですか？'))return;
+  fbDetach();
+  try{localStorage.removeItem(pKey(PROF.cur));localStorage.removeItem(bakKey());}catch(e){}
+  PROF.list=PROF.list.filter(x=>x.id!==PROF.cur);
+  PROF.cur=PROF.list[0].id;saveProf();
+  load();scrollTo(0,0);
+  refreshAll('「'+nm+'」を削除しました');
+}
+function openProfMenu(){
+  const box=document.getElementById('sheetBox');
+  box.innerHTML='<p>設定「<b>'+esc(profName(PROF.cur))+'</b>」</p>'
+    +'<button class="big b1" data-pm="new">新しい設定を作る<small>まっさらな予定表を追加します</small></button>'
+    +'<button class="big b2" data-pm="copy">この設定を複製する<small>いまの予定とメモをコピーします</small></button>'
+    +'<button class="big b2" data-pm="rename">名前を変える<small>いまの名前：'+esc(profName(PROF.cur))+'</small></button>'
+    +'<button class="big bc" data-pm="del">この設定を削除する</button>'
+    +'<button class="big bc" data-pm="">閉じる</button>';
+  document.getElementById('sheet').classList.add('on');
+}
+document.getElementById('sheet').addEventListener('click',e=>{
+  const b=e.target.closest('button');
+  if(!b||b.dataset.pm===undefined)return;
+  document.getElementById('sheet').classList.remove('on');
+  const a=b.dataset.pm;
+  setTimeout(()=>{
+    if(a==='new')newProf(0);
+    else if(a==='copy')newProf(1);
+    else if(a==='rename')renameProf();
+    else if(a==='del')deleteProf();
+  },30);
+});
+document.getElementById('profSel').onchange=e=>switchProf(e.target.value);
+document.getElementById('profMenu').onclick=openProfMenu;
+
 /* ---------- 起動 ---------- */
 document.querySelector('.tabbar').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
@@ -1352,6 +1509,7 @@ document.getElementById('undoBtn').onclick=undo;
 setTimeout(()=>{if(!S.me)toast('右上から自分の名前を設定すると、誰が登録したか分かります');},900);
 load();
 if(S.me)document.getElementById('meBtn').textContent=S.me;
+renderProfSel();
 bindFilters();bindParkSel();bindFields();render();stat();
 fbButtons();tryRoom();if(S.room)fbStart();else fbStatus('共有オフ');
 tryHash();
