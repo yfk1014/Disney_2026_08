@@ -171,6 +171,15 @@ input.timefield{width:112px;text-align:center;}
 .fac .act{display:flex;flex:none;}
 .fac .act button{border:0;background:none;font-size:15px;color:#A6BDD3;padding:5px 6px;cursor:pointer;font-family:inherit;}
 .cnt{font-size:11.5px;color:var(--ink-l);margin:2px 2px 8px;}
+/* ---- モバイルオーダー ---- */
+.mo{display:inline-block;font-size:10.5px;border-radius:999px;padding:3px 9px;margin-top:5px;
+ font-family:inherit;border:1.5px solid transparent;line-height:1.4;white-space:nowrap;}
+button.mo{cursor:pointer;}
+button.mo:active{transform:scale(.97);}
+.mo.only{background:var(--lav-l);color:var(--lav-d);border-color:var(--lav);}
+.mo.ok{background:var(--mint-l);color:var(--mint-d);border-color:var(--mint);}
+.mo.no{background:#EDF2F7;color:#8AA1B7;}
+.slot .ttl .mo,.item .txt .mo{margin:4px 0 0 0;}
 /* ---- 混雑 ---- */
 .cwhead{font-size:11.5px;color:var(--ink-l);margin:0 2px 9px;line-height:1.5;}
 .cwhead b{color:var(--ink);font-weight:normal;}
@@ -259,6 +268,7 @@ input.timefield{width:112px;text-align:center;}
 
   <!-- ===== 施設データベース ===== -->
   <section class="view" id="v-db">
+    <div class="hint" id="dateHintDb" style="display:none"></div>
     <div class="filters" id="fPark">
       <button data-p="" class="on">両パーク</button>
       <button data-p="L">ランド</button>
@@ -362,6 +372,7 @@ input.timefield{width:112px;text-align:center;}
   <!-- ===== パス ===== -->
   <section class="view" id="v-pass">
     <div class="hint">DPA・PP・抽選で<b>とりたいものの候補</b>を、日ごとに並べておく画面です。施設タブの <b>🎟️</b> から追加できます。上にあるものほど優先。当日は結果（取れた／外れた）と時間をここに記録します。</div>
+    <div class="hint" id="dateHintPass" style="display:none"></div>
     <div id="passWrap"></div>
     <div class="card">
       <b style="font-size:13px;color:var(--lav-d);font-weight:normal">📖 参考：2026年8月時点の対象</b>
@@ -402,7 +413,7 @@ input.timefield{width:112px;text-align:center;}
 
   <!-- ===== 同期 ===== -->
   <section class="view" id="v-sync">
-    <div class="hint">同期は「送る側が送信 → 相手が開く」で片方向です。<b>お互いに1回ずつ</b>送れば両方が最新になります。<br><br><b>取り込みの決まり</b><br>・ふたりは対等。追加・変更・削除がそのまま伝わります<br>・同じ項目を両方が触った場合は<b>あとに操作したほうが残ります</b><br>・相手が削除した予定は<b>すぐには消さず、グレー表示</b>にします。「自分も消す」か「残す」を選べます<br>・メモと自作の施設は、相手が消しても自分側では消えません<br>・同じ日・同じ時刻・同じ場所の予定は足しません<br><br><b>やりとりされる内容</b><br>・メモ（行きたい／食べたい／買いたい）<br>・予定と、各予定の時間・滞在時間・メモ・登録者名<br>・DAY1／DAY2 の日付と<b>ランド／シーの設定</b><br>・ホテル欄、食事・レストラン予約欄<br>・パスの候補（DPA・PP・抽選）と、その結果・時間・メモ<br>・自分で追加した施設と、施設メモの書き換え<br><br>内蔵の施設データは送らないので、データは軽いままです。<br><br><b>設定（画面上部）との関係</b><br>共有は<b>設定ごと</b>です。設定Aで共有を始めても設定Bはつながりません。それぞれの設定で「共有を始める」を押し、相手を招待してください。<br>自分で追加した施設と施設メモは、どの設定でも共通です。</div>
+    <div class="hint">同期は「送る側が送信 → 相手が開く」で片方向です。<b>お互いに1回ずつ</b>送れば両方が最新になります。<br><br><b>取り込みの決まり</b><br>・ふたりは対等。追加・変更・削除がそのまま伝わります<br>・同じ項目を両方が触った場合は<b>あとに操作したほうが残ります</b><br>・相手が削除した予定は<b>すぐには消さず、グレー表示</b>にします。「自分も消す」か「残す」を選べます<br>・メモと自作の施設は、相手が消しても自分側では消えません<br>・同じ日・同じ時刻・同じ場所の予定は足しません<br><br><b>やりとりされる内容</b><br>・メモ（行きたい／食べたい／買いたい）<br>・予定と、各予定の時間・滞在時間・メモ・登録者名<br>・DAY1／DAY2 の日付と<b>ランド／シーの設定</b><br>・ホテル欄、食事・レストラン予約欄<br>・パスの候補（DPA・PP・抽選）と、その結果・時間・メモ<br>・モバイルオーダーの手直し<br>・自分で追加した施設と、施設メモの書き換え<br><br>内蔵の施設データは送らないので、データは軽いままです。<br><br><b>設定（画面上部）との関係</b><br>共有は<b>設定ごと</b>です。設定Aで共有を始めても設定Bはつながりません。それぞれの設定で「共有を始める」を押し、相手を招待してください。<br>自分で追加した施設と施設メモは、どの設定でも共通です。</div>
 
     <div class="syncstep" id="fbBox">
       <b>ふたりで自動同期</b>
@@ -658,6 +669,15 @@ const FAC=[
 ["L","e","ホテル","ディズニーランドホテル ドリーマーズ・ラウンジ","宿泊者に便利。軽食とドリンク"],
 ["L","e","ホテル","ディズニーランドホテル シャーウッドガーデン・レストラン","ブッフェ。朝食にも"],
 ["L","s","ホテル","ディズニーランドホテル ディズニーギフト","チェックアウト前に買える"],
+["L","e","アドベンチャーランド","スキッパーズ・ギャレー","モバイルオーダー対象"],
+["L","e","ウエスタンランド","カウボーイ・クックハウス","モバイルオーダー対象"],
+["L","e","ファンタジーランド","トルバドールタバン","モバイルオーダー対象"],
+["S","e","ロストリバーデルタ","リフレスコス","モバイルオーダー対象"],
+["S","e","アメリカンウォーターフロント","ドックサイドダイナー","モバイルオーダー対象"],
+["S","e","アメリカンウォーターフロント","ハドソンリバー・ハーベスト","モバイルオーダー対象"],
+["S","e","ロストリバーデルタ","ミゲルズ・エルドラド・キャンティーナ","モバイルオーダー対象"],
+["S","e","ロストリバーデルタ","ユカタン・ベースキャンプ・グリル（テイクアウトカウンター）","モバイルオーダー対象"],
+["S","e","ファンタジースプリングス","オーケンのオーケーフード","モバイルオーダー対象"],
 ["L","h","ショー","ミッキーのマジカルミュージックワールド","抽選対象。DPAは2,500円/回"],
 ["L","h","ショー","ジャンボリミッキー！レッツ・ダンス！","抽選対象。2026年7月1日〜9月14日は2階席が自由席"],
 ["L","h","パレード","ディズニー・ハーモニー・イン・カラー","昼のパレード。DPA 2,500円/回"],
@@ -676,7 +696,7 @@ const KEY='futaritabi_v2';
 const PKEY=KEY+'_profiles';   /* 設定の一覧と、いま選んでいる設定 */
 const SKEY=KEY+'_shared';     /* 全設定で共通に持つデータ */
 /* 下の項目は設定を切り替えても共通。それ以外（予定・メモ・日付・共有ルーム）は設定ごと */
-const SHARED=['me','cid','dbAdd','dbMemo','geo'];
+const SHARED=['me','cid','dbAdd','dbMemo','geo','mo'];
 function pKey(id){return KEY+'_p_'+id;}
 const CATN={go:'行きたい',eat:'食べたい',buy:'買いたい'};
 const C2M={a:'go',e:'eat',s:'buy',h:'go'};
@@ -687,9 +707,24 @@ const PKIND=[['dpa','DPA','ディズニー・プレミアアクセス（有料�
              ['lot','抽選','エントリー受付']];
 const PKN={dpa:'DPA',pp:'PP',lot:'抽選'};
 const PST=['未','取れた','外れた'];
+/* モバイルオーダー。公式の対象レストラン（並べるかどうかは公式に記載がないため、既定は「可能」） */
+const MOLIST=['グレートアメリカン・ワッフルカンパニー','リフレッシュメントコーナー','カフェ・オーリンズ',
+'スキッパーズ・ギャレー','スクウィーザーズ・トロピカル・ジュースバー','ボイラールーム・バイツ',
+'カウボーイ・クックハウス','キャンプ・ウッドチャック・キッチン','ハングリーベア・レストラン',
+'ペコスビル・カフェ','グランマ・サラのキッチン','ラケッティのラクーンサルーン','キャプテンフックス・ギャレー',
+'トルバドールタバン','ヒューイ・デューイ・ルーイのグッドタイム・カフェ','トゥモローランド・テラス',
+'ビッグポップ','プラズマ・レイズ・ダイナー',
+'ザンビーニ・ブラザーズ・リストランテ','リフレスコス','ケープコッド・クックオフ','ドックサイドダイナー',
+'ニューヨーク・デリ','ハドソンリバー・ハーベスト','ベイサイド・テイクアウト','ミゲルズ・エルドラド・キャンティーナ',
+'ユカタン・ベースキャンプ・グリル','ユカタン・ベースキャンプ・グリル（テイクアウトカウンター）',
+'アレンデール・ロイヤルバンケット','オーケンのオーケーフード','スナグリーダックリング','ルックアウト・クックアウト',
+'カスバ・フードコート','セバスチャンのカリプソキッチン','ノーチラスギャレー'];
+const MOSET={};MOLIST.forEach(n=>MOSET[n]=1);
+const MOLBL={only:'モバイルオーダーのみ',ok:'モバイルオーダー可能',no:'モバイルオーダー不可'};
+const MONEXT={ok:'only',only:'no',no:'ok'};
 const PARKN={L:'ディズニーランド',S:'ディズニーシー'};
 const PARKS={L:'ランド',S:'シー'};
-function blankS(){return {me:'',room:'',cid:'',items:[],slots:[],pass:[],info:{},dbAdd:[],dbMemo:{},geo:{},v:2};}
+function blankS(){return {me:'',room:'',cid:'',items:[],slots:[],pass:[],info:{},dbAdd:[],dbMemo:{},geo:{},mo:{},v:2};}
 let S=blankS();
 let PROF={list:[],cur:''};
 
@@ -738,7 +773,7 @@ function load(){
   try{const r=localStorage.getItem(pKey(PROF.cur));if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}
   try{const r=localStorage.getItem(SKEY);if(r)Object.assign(S,JSON.parse(r));}catch(e){}
   if(!S.info)S.info={}; if(!S.dbAdd)S.dbAdd=[]; if(!S.dbMemo)S.dbMemo={}; if(!S.geo)S.geo={};
-  if(!S.items)S.items=[]; if(!S.slots)S.slots=[]; if(!S.pass)S.pass=[];
+  if(!S.items)S.items=[]; if(!S.slots)S.slots=[]; if(!S.pass)S.pass=[]; if(!S.mo)S.mo={};
   /* 設定ごとに一度だけ：すでに予定へ入れてあるメモをメモ一覧から消す */
   if(!S.mcln){
     const n=syncMemoHidden();
@@ -766,6 +801,27 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 function dayPark(d){const o=S.info['d'+d+'park'];return o?o.v:'';}
 function dayLabel(d){const o=S.info['d'+d+'date'];return o&&o.v?o.v:'';}
 
+/* ---------- モバイルオーダー ---------- */
+/* レストランの状態を返す。手で変えていればそれを、なければ公式リストから判定 */
+function moState(name){
+  const o=S.mo&&S.mo[name];
+  if(o&&MOLBL[o.v])return o.v;
+  return MOSET[name]?'ok':'no';
+}
+function moSet(name,v){S.mo[name]={v:v,at:now()};save();}
+/* 表示用のバッジ。tap=true なら押して切り替えられる */
+function moBadge(name,tap){
+  const v=moState(name);
+  const e=document.createElement(tap?'button':'span');
+  e.className='mo '+v;
+  e.textContent=MOLBL[v];
+  if(tap){
+    e.title='押すと切り替わります（可能 → のみ → 不可）';
+    e.onclick=ev=>{ev.stopPropagation();moSet(name,MONEXT[v]);render();toast(MOLBL[MONEXT[v]]+'にしました');};
+  }
+  return e;
+}
+
 /* ---------- 施設データベース ---------- */
 function allFac(){
   const built=FAC.map((f,i)=>({key:'f'+i,p:f[0],c:f[1],a:f[2],n:f[3],m:f[4],y:f[5]||'',own:0}));
@@ -789,6 +845,7 @@ function renderDB(){
     const d=document.createElement('div');d.className='fac '+f.p;
     const b=document.createElement('div');b.className='fb';
     b.innerHTML='<div class="fn">'+esc(f.n)+'</div><div class="fa">'+PARKS[f.p]+(f.a?' / '+esc(f.a):'')+(f.own?' ・自分で追加':'')+'</div>'+(f.m?'<div class="fm">'+esc(f.m)+'</div>':'');
+    if(f.c==='e')b.appendChild(moBadge(f.n,true));
     d.appendChild(b);
     const act=document.createElement('div');act.className='act';
     const plus=document.createElement('button');plus.textContent='＋';plus.title='予定に追加';
@@ -803,9 +860,13 @@ function renderDB(){
       const v=prompt('この施設のメモ',f.m||'');
       if(v!==null){S.dbMemo[f.key]={v:v,at:now()};save();renderDB();}
     };
-    const tik=document.createElement('button');tik.textContent='🎟️';tik.title='DPA・PP・抽選の候補に追加';
-    tik.onclick=()=>openPassPicker(f);
-    act.appendChild(plus);act.appendChild(heart);act.appendChild(tik);act.appendChild(pen);
+    act.appendChild(plus);act.appendChild(heart);
+    if(passAny(f.n)){
+      const tik=document.createElement('button');tik.textContent='🎟️';tik.title='DPA・PP・抽選の候補に追加';
+      tik.onclick=()=>openPassPicker(f);
+      act.appendChild(tik);
+    }
+    act.appendChild(pen);
     if(f.own){
       const x=document.createElement('button');x.textContent='×';
       x.onclick=()=>{if(confirm('削除しますか？')){const o=S.dbAdd.find(v=>v.id===f.key);if(o){o.del=1;o.at=now();}save();renderDB();}};
@@ -860,6 +921,7 @@ function itemEl(it,forPlan){
   d.innerHTML='<div class="grip">⠿</div><div class="txt"></div>';
   const tx=d.querySelector('.txt');
   tx.textContent=it.text;
+  if(it.cat==='eat')tx.appendChild(moBadge(it.text,false));
   const s=document.createElement('small');
   s.textContent=CATN[it.cat]+(it.park?' / '+PARKS[it.park]:'')+(it.by?' / '+it.by:'')+(used?' ・予定に追加済み':'');
   tx.appendChild(s);
@@ -955,11 +1017,8 @@ const TJA={
 let cwDay=0,cwMode='free',cwData=null,cwLoading=false,cwErr='',cwAuto=0;
 /* 今日の日付が DAY1／DAY2 のどちらかに一致するか調べる */
 function cwToday(){
-  const n=new Date(),m=n.getMonth()+1,d=n.getDate();
-  for(const day of [1,2]){
-    const r=/(\d{1,2})\s*月\s*(\d{1,2})\s*日/.exec(dayLabel(day)||'');
-    if(r&&+r[1]===m&&+r[2]===d)return day;
-  }
+  const s=ymd(new Date());
+  for(const day of [1,2]){const t=dayDate(day);if(t&&ymd(t)===s)return day;}
   return 0;
 }
 function cwNowDay(){cwAuto=cwToday();return cwDay||cwAuto||1;}
@@ -1081,6 +1140,80 @@ document.getElementById('cwMode').addEventListener('click',e=>{
 });
 
 /* ---------- パス（DPA・PP・抽選） ---------- */
+/* 対象施設と対象期間。[種類, 開始日, 終了日] で null は制限なし。公式サイトの記載にもとづく */
+const PASSOK={
+/* --- ランド アトラクション --- */
+'美女と野獣“魔法のものがたり”':[['dpa',null,null]],
+'ベイマックスのハッピーライド':[['dpa',null,null]],
+'スプラッシュ・マウンテン':[['dpa',null,null]],
+'ビッグサンダー・マウンテン':[['dpa','2026-09-01',null],['pp',null,'2026-08-31']],
+'プーさんのハニーハント':[['dpa','2026-09-01',null],['pp',null,'2026-08-31']],
+'モンスターズ・インク“ライド&ゴーシーク！”':[['dpa','2026-09-01',null],['pp',null,'2026-08-31']],
+'ホーンテッドマンション':[['dpa','2026-09-15','2027-01-07'],['pp',null,'2026-08-31']],
+'スター・ツアーズ：ザ・アドベンチャーズ・コンティニュー':[['pp',null,'2026-08-31']],
+/* --- シー アトラクション --- */
+'アナとエルサのフローズンジャーニー':[['dpa',null,null]],
+'ラプンツェルのランタンフェスティバル':[['dpa',null,null]],
+'ピーターパンのネバーランドアドベンチャー':[['dpa',null,null]],
+'ソアリン：ファンタスティック・フライト':[['dpa',null,null]],
+'トイ・ストーリー・マニア！':[['dpa',null,null]],
+'タワー・オブ・テラー':[['dpa',null,null]],
+'センター・オブ・ジ・アース':[['dpa',null,null]],
+'レイジングスピリッツ':[['dpa','2026-09-01',null],['pp',null,'2026-08-31']],
+'インディ・ジョーンズ・アドベンチャー：クリスタルスカルの魔宮':[['dpa','2026-11-30',null],['pp',null,'2026-08-31']],
+'タートル・トーク':[['pp',null,'2026-08-31']],
+'ニモ＆フレンズ・シーライダー':[['pp',null,'2026-08-31']],
+'マジックランプシアター':[['pp',null,'2026-08-31']],
+'海底2万マイル':[['pp',null,'2026-08-31']],
+/* --- ランド ショー・パレード --- */
+'ミッキーのマジカルミュージックワールド':[['dpa',null,null],['lot',null,null]],
+'ジャンボリミッキー！レッツ・ダンス！':[['lot',null,null]],
+'ディズニー・ハーモニー・イン・カラー':[['dpa',null,null]],
+'東京ディズニーランド・エレクトリカルパレード・ドリームライツ':[['dpa',null,null]],
+'Reach for the Stars: Everlasting Dreams':[['dpa',null,null]],
+'ザ・ヴィランズ・ハロウィーン“Into the Frenzy”':[['dpa','2026-09-16','2026-10-31']],
+'The D-Groovationz4 Live: Happy! Funky! Groovy! Tour':[['dpa','2026-09-30',null],['lot','2026-09-30',null]],
+/* --- シー ショー --- */
+'ビリーヴ！～シー・オブ・ドリームス～':[['dpa',null,null]],
+'ダンス・ザ・グローブ！':[['dpa','2026-01-14','2027-03-31'],['lot','2026-01-14','2027-03-31']],
+'ドリームス・テイク・フライト':[['dpa',null,null],['lot',null,null]]
+};
+function ymd(t){return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');}
+/* DAYの日付欄から実際の日付を求める。読めなければ null */
+function dayDate(d){
+  /* ８月２４日 のような全角数字も読めるようにする */
+  const raw=String(dayLabel(d)||'').replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0));
+  const r=/(\d{1,2})\s*月\s*(\d{1,2})\s*日/.exec(raw);
+  if(!r)return null;
+  const m=+r[1],dd=+r[2];
+  if(m<1||m>12||dd<1||dd>31)return null;
+  const n=new Date(),y=n.getFullYear();
+  let t=new Date(y,m-1,dd);
+  /* 4か月以上前の日付なら翌年ぶんとみなす（年をまたぐ日程のため） */
+  if((n-t)>1000*60*60*24*120)t=new Date(y+1,m-1,dd);
+  return t;
+}
+function hasAnyDate(){return !!(dayDate(1)||dayDate(2));}
+/* その施設をその日に取れる種類（dpa/pp/lot）を返す */
+function passKinds(name,day){
+  const rules=PASSOK[name];if(!rules)return [];
+  const t=dayDate(day);if(!t)return [];
+  const s=ymd(t);
+  return rules.filter(r=>(!r[1]||s>=r[1])&&(!r[2]||s<=r[2])).map(r=>r[0]);
+}
+function passAny(name){return passKinds(name,1).length>0||passKinds(name,2).length>0;}
+/* 日付が入っていないと🎟️が出せないので、その理由を画面に出す */
+function renderDateHint(){
+  const on=!hasAnyDate();
+  const msg='<b>🎟️ が出ていないのは日付が未設定だからです。</b><br>'
+    +'「予定」タブで DAY1・DAY2 の日付を入れると、その日に取れるパス（DPA・PP・抽選）を 🎟️ から選べるようになります。'
+    +'<br>日付は <b>8月24日</b> のように「◯月◯日」の形で入れてください。8/24 のような書き方は読み取れません。';
+  [['dateHintDb'],['dateHintPass']].forEach(([id])=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.style.display=on?'block':'none';
+    if(on)el.innerHTML=msg;
+  });
+}
 function passList(day,kind){
   return S.pass.filter(p=>!p.del&&p.day===day&&p.kind===kind).sort((a,b)=>a.ord-b.ord);
 }
@@ -1185,12 +1318,15 @@ function openPassPicker(f){
   const box=document.getElementById('sheetBox');
   let h='<p>どこの候補に入れますか？<b>'+esc(f.n)+'</b></p>';
   [1,2].forEach(d=>{
+    const ks=passKinds(f.n,d);
+    if(!ks.length)return;   /* その日に取れないDAYは出さない */
     const dp=dayPark(d),mis=f.p&&dp&&f.p!==dp;
     h+='<div style="font-size:11.5px;color:#8AA1B7;margin:8px 2px 4px">DAY'+d+'　'
-      +esc(dayLabel(d)||'日付未設定')+(dp?'・'+PARKS[dp]:'・パーク未定')
+      +esc(dayLabel(d))+(dp?'・'+PARKS[dp]:'・パーク未定')
       +(mis?'　⚠ '+PARKS[f.p]+'の施設です':'')+'</div>';
     h+='<div style="display:flex;gap:6px;margin-bottom:2px">'
-      +PKIND.map(([k,l])=>'<button class="big '+(d===1?'b1':'b2')+'" style="flex:1;margin:0" data-pk="'+d+':'+k+'">'+l+'</button>').join('')
+      +PKIND.filter(x=>ks.indexOf(x[0])>=0)
+        .map(x=>'<button class="big '+(d===1?'b1':'b2')+'" style="flex:1;margin:0" data-pk="'+d+':'+x[0]+'">'+x[1]+'</button>').join('')
       +'</div>';
   });
   h+='<button class="big bc" data-pk="">キャンセル</button>';
@@ -1297,6 +1433,7 @@ function slotEl(s,bad,dp){
     wb.textContent=wv+'分待ち';
     ttl.appendChild(wb);
   }
+  if(s.cat==='eat')ttl.appendChild(moBadge(s.title,false));
   const sm=document.createElement('small');
   const en=tmin(s.time)!==null&&s.dur?('〜'+String(Math.floor((tmin(s.time)+s.dur)/60)%24).padStart(2,'0')+':'+String((tmin(s.time)+s.dur)%60).padStart(2,'0')):'';
   sm.textContent=[CATN[s.cat]||'',s.park?PARKS[s.park]:'',s.area||'',en,s.by?('登録：'+s.by):''].filter(Boolean).join(' / ');
@@ -1350,7 +1487,7 @@ function bindParkSel(){
     S.info['d'+ps.dataset.day+'park']={v:b.dataset.p,at:now()};save();render();
   }));
 }
-function render(){clearDragUI();renderMemo();renderPlan();renderDB();renderPass();renderCrowd();bindDrag();}
+function render(){clearDragUI();renderDateHint();renderMemo();renderPlan();renderDB();renderPass();renderCrowd();bindDrag();}
 
 /* ---------- ドラッグ＆ドロップ ---------- */
 let drag=null,autoT=null;
@@ -1458,14 +1595,19 @@ function bindFields(){
   F.forEach(k=>{const e=document.getElementById(k);
     const v=(S.info[k]&&S.info[k].v)||'';
     e.value=(e.type==='time'&&!/^\d{2}:\d{2}$/.test(v))?'':v;
-    const h=()=>{S.info[k]={v:e.value,at:now()};save();};
+    const isDate=(k==='d1date'||k==='d2date');
+    const h=()=>{S.info[k]={v:e.value,at:now()};save();
+      /* 日付を入れ替えたら、パスの対象判定をやり直す */
+      if(isDate){clearTimeout(e._rt);e._rt=setTimeout(()=>{
+        renderDateHint();renderDB();renderPass();renderCrowd();renderWaitNote();},500);}
+    };
     e.oninput=h;e.onchange=h;});
 }
 
 /* ---------- 同期 ---------- */
 function payload(){
   return LZString.compressToEncodedURIComponent(JSON.stringify(
-    {m:S.me,i:S.items,s:S.slots,k:S.pass,f:S.info,d:S.dbAdd,x:S.dbMemo,g:S.geo}));
+    {m:S.me,i:S.items,s:S.slots,k:S.pass,f:S.info,d:S.dbAdd,x:S.dbMemo,g:S.geo,o:S.mo}));
 }
 function shareURL(){return location.href.split('#')[0]+'#d='+payload();}
 function nt(t){const m=/^(\d{1,2}):(\d{2})$/.exec(t||'');return m?String(+m[1]).padStart(2,'0')+':'+m[2]:'';}
@@ -1502,6 +1644,7 @@ function mergeCore(p){
       if(lbl&&LBL[k]&&(!e||e.v!==o.v))chg.push(LBL[k]);
       dst[k]=o;upd++;}});
   mo(S.info,p.f,1);mo(S.dbMemo,p.x,0);if(!S.geo)S.geo={};mo(S.geo,p.g,0);
+  if(!S.mo)S.mo={};mo(S.mo,p.o,0);
   syncMemoHidden();   /* 相手から届いた予定の分も、メモ一覧から外す */
   normalize();pnorm();
   return {add,upd,skip,gray,chg};
@@ -1656,7 +1799,8 @@ function applyRemote(v){
   applying=true;
   const before=JSON.stringify([S.items,S.slots,S.pass,S.info,S.dbAdd,S.dbMemo]);
   const g={};Object.keys(v.geo||{}).forEach(k=>{try{g[decodeURIComponent(k)]=v.geo[k];}catch(e){}});
-  const c=mergeCore({i:arrOf(v.items),s:arrOf(v.slots),k:arrOf(v.pass),d:arrOf(v.dbAdd),f:v.info||{},x:v.dbMemo||{},g:g});
+  const mo={};Object.keys(v.mo||{}).forEach(k=>{try{mo[decodeURIComponent(k)]=v.mo[k];}catch(e){}});
+  const c=mergeCore({i:arrOf(v.items),s:arrOf(v.slots),k:arrOf(v.pass),d:arrOf(v.dbAdd),f:v.info||{},x:v.dbMemo||{},g:g,o:mo});
   const changed=JSON.stringify([S.items,S.slots,S.pass,S.info,S.dbAdd,S.dbMemo])!==before;
   if(changed){save();bindFields();render();stat();}
   applying=false;
@@ -1680,6 +1824,7 @@ function pushAll(){
   Object.keys(S.info).forEach(k=>u['info/'+k]=clean(S.info[k]));
   Object.keys(S.dbMemo).forEach(k=>u['dbMemo/'+k]=clean(S.dbMemo[k]));
   Object.keys(S.geo||{}).forEach(k=>u['geo/'+fbKey(k)]=clean(S.geo[k]));
+  Object.keys(S.mo||{}).forEach(k=>u['mo/'+fbKey(k)]=clean(S.mo[k]));
   fbRef.update(u).catch(e=>fbStatus('保存できません：'+e.message));
 }
 function tryRoom(){
