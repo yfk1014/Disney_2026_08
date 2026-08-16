@@ -160,7 +160,7 @@ input.timefield{width:112px;text-align:center;}
 .filters{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap;}
 .filters button{font-family:inherit;font-size:12px;border:1.5px solid var(--line);background:#fff;color:var(--ink-l);border-radius:999px;padding:6px 13px;cursor:pointer;}
 .filters button.on{border-color:transparent;color:#fff;background:var(--ink-l);}
-.filters button.on[data-p=L]{background:var(--pink-d);} .filters button.on[data-p=S]{background:var(--sky-d);}
+.filters button.on[data-p=L]{background:var(--pink-d);} .filters button.on[data-p=S]{background:var(--sky-d);} .filters button.on[data-p=H]{background:var(--org-d);}
 .filters button.on[data-c=a]{background:var(--sky-d);} .filters button.on[data-c=e]{background:var(--yellow-d);} .filters button.on[data-c=s]{background:var(--mint-d);} .filters button.on[data-c=h]{background:var(--lav-d);}
 .fac{background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 8px 9px 12px;margin-bottom:7px;display:flex;align-items:flex-start;gap:6px;}
 .fac.L{border-left:5px solid var(--pink);} .fac.S{border-left:5px solid var(--sky);}
@@ -270,9 +270,10 @@ button.mo:active{transform:scale(.97);}
   <section class="view" id="v-db">
     <div class="hint" id="dateHintDb" style="display:none"></div>
     <div class="filters" id="fPark">
-      <button data-p="" class="on">両パーク</button>
+      <button data-p="" class="on">すべて</button>
       <button data-p="L">ランド</button>
       <button data-p="S">シー</button>
+      <button data-p="H">ホテル</button>
     </div>
     <div class="filters" id="fCat">
       <button data-c="a" class="on">アトラクション</button>
@@ -289,6 +290,7 @@ button.mo:active{transform:scale(.97);}
       <div class="filters" id="nPark" style="margin-bottom:6px">
         <button data-p="L" class="on">ランド</button>
         <button data-p="S">シー</button>
+        <button data-p="H">ホテル</button>
       </div>
       <div class="filters" id="nCat" style="margin-bottom:8px">
         <button data-c="a" class="on">アトラクション</button>
@@ -666,9 +668,23 @@ const FAC=[
 ["S","s","マーメイドラグーン","スリーピーホエール・ショップ","雑貨・お菓子"],
 ["S","s","ミステリアスアイランド","ノーチラスギフト","ネモ船長の世界観"],
 /* ===== ホテル・その他 ===== */
-["L","e","ホテル","ディズニーランドホテル ドリーマーズ・ラウンジ","宿泊者に便利。軽食とドリンク"],
-["L","e","ホテル","ディズニーランドホテル シャーウッドガーデン・レストラン","ブッフェ。朝食にも"],
-["L","s","ホテル","ディズニーランドホテル ディズニーギフト","チェックアウト前に買える"],
+["H","e","東京ディズニーランドホテル","シャーウッドガーデン・レストラン","ブッフェ。朝食にも"],
+["H","e","東京ディズニーランドホテル","カンナ","エッセンス・オブ・スタイリッシュキュイジーヌ"],
+["H","e","東京ディズニーランドホテル","ドリーマーズ・ラウンジ","ロビーラウンジ。軽食とドリンク"],
+["H","e","東京ディズニーシー・ホテルミラコスタ","オチェーアノ","地中海料理。ブッフェとコース"],
+["H","e","東京ディズニーシー・ホテルミラコスタ","シルクロードガーデン","本格中国料理"],
+["H","e","東京ディズニーシー・ホテルミラコスタ","ベッラヴィスタ・ラウンジ","イタリア料理。ハーバーを望む"],
+["H","e","ファンタジースプリングスホテル","ファンタジースプリングス・レストラン","オールデイ・ダイニング。ブッフェ"],
+["H","e","ファンタジースプリングスホテル","グランパラディ・ラウンジ","ロビーラウンジ。宿泊者向け"],
+["H","e","ファンタジースプリングスホテル","ラ・リベリュール","フレンチ。グランドシャトー宿泊者限定"],
+["H","e","ディズニーアンバサダーホテル","シェフ・ミッキー","キャラクターダイニング。ブッフェ"],
+["H","e","ディズニーアンバサダーホテル","エンパイア・グリル","カリフォルニア料理"],
+["H","e","ディズニーアンバサダーホテル","チックタック・ダイナー","デリカフェ。軽食向き"],
+["H","e","ディズニーアンバサダーホテル","ハイピリオン・ラウンジ","ロビーラウンジ"],
+["H","e","トイ・ストーリーホテル","ロッツォ・ガーデンカフェ","ブッフェ。朝食と夕食"],
+["H","e","東京ディズニーセレブレーションホテル","ウィッシュ・カフェ","ウィッシュ棟のカフェ"],
+["H","e","東京ディズニーセレブレーションホテル","ディスカバー・カフェ","ディスカバー棟のカフェ"],
+["H","s","東京ディズニーランドホテル","ディズニーギフト","チェックアウト前に買える"],
 ["L","e","アドベンチャーランド","スキッパーズ・ギャレー","モバイルオーダー対象"],
 ["L","e","ウエスタンランド","カウボーイ・クックハウス","モバイルオーダー対象"],
 ["L","e","ファンタジーランド","トルバドールタバン","モバイルオーダー対象"],
@@ -722,8 +738,8 @@ const MOLIST=['グレートアメリカン・ワッフルカンパニー','リ�
 const MOSET={};MOLIST.forEach(n=>MOSET[n]=1);
 const MOLBL={only:'モバイルオーダーのみ',ok:'モバイルオーダー可能',no:'モバイルオーダー不可'};
 const MONEXT={ok:'only',only:'no',no:'ok'};
-const PARKN={L:'ディズニーランド',S:'ディズニーシー'};
-const PARKS={L:'ランド',S:'シー'};
+const PARKN={L:'ディズニーランド',S:'ディズニーシー',H:'ディズニーホテル'};
+const PARKS={L:'ランド',S:'シー',H:'ホテル'};
 function blankS(){return {me:'',room:'',cid:'',items:[],slots:[],pass:[],info:{},dbAdd:[],dbMemo:{},geo:{},mo:{},v:2};}
 let S=blankS();
 let PROF={list:[],cur:''};
@@ -780,6 +796,36 @@ function load(){
     S.mcln=1;save();
     if(n)setTimeout(()=>toast('予定に入っているメモ '+n+'件をメモ一覧から外しました'),1200);
   }
+  /* ホテルの施設をランドからホテルへ移す（設定ごとに一度だけ） */
+  if(!S.hcln){
+    const n=fixHotel();
+    S.hcln=1;save();
+    if(n)setTimeout(()=>toast('ホテルの施設を「ホテル」に移しました'),1600);
+  }
+}
+/* ホテルの施設をランド扱いから移す。設定ごとに一度だけ */
+const HREN={'ディズニーランドホテル ドリーマーズ・ラウンジ':'ドリーマーズ・ラウンジ',
+ 'ディズニーランドホテル シャーウッドガーデン・レストラン':'シャーウッドガーデン・レストラン',
+ 'ディズニーランドホテル ディズニーギフト':'ディズニーギフト'};
+function hotelNames(){
+  const m={};FAC.forEach(f=>{if(f[0]==='H')m[f[3]]=1;});return m;
+}
+function fixHotel(){
+  const H=hotelNames();let n=0;
+  const fix=(o,key)=>{
+    let t=o[key];
+    if(HREN[t]){o[key]=t=HREN[t];n++;}
+    if(H[t]&&o.park!=='H'){o.park='H';o.at=now();n++;}
+  };
+  (S.slots||[]).forEach(o=>fix(o,'title'));
+  (S.items||[]).forEach(o=>fix(o,'text'));
+  (S.pass||[]).forEach(o=>fix(o,'title'));
+  /* 施設メモとモバイルオーダーの手直しも名前を移す */
+  Object.keys(HREN).forEach(k=>{
+    if(S.mo&&S.mo[k]){S.mo[HREN[k]]=S.mo[k];delete S.mo[k];n++;}
+    if(S.geo&&S.geo[k]){delete S.geo[k];n++;}
+  });
+  return n;
 }
 /* 予定に入っているメモをメモ一覧から外す。外した件数を返す */
 function syncMemoHidden(){
@@ -880,7 +926,15 @@ function bindFilters(){
     const b=e.target.closest('button');if(!b)return;
     [...e.currentTarget.children].forEach(x=>x.classList.toggle('on',x===b));fn(b);
   });
-  wire('fPark',b=>{fp=b.dataset.p;renderDB();});
+  wire('fPark',b=>{
+    fp=b.dataset.p;
+    /* ホテルを選んだら、カテゴリはレストランに自動で合わせる */
+    if(fp==='H'&&fc!=='e'){
+      fc='e';
+      document.querySelectorAll('#fCat button').forEach(x=>x.classList.toggle('on',x.dataset.c==='e'));
+    }
+    renderDB();
+  });
   wire('fCat',b=>{fc=b.dataset.c;renderDB();});
   wire('nPark',b=>{np=b.dataset.p;});
   wire('nCat',b=>{nc=b.dataset.c;});
@@ -961,7 +1015,7 @@ function openPicker(it){
   const box=document.getElementById('sheetBox');
   let h='<p>どちらの日に追加しますか？<b>'+esc(it.text)+'</b></p>';
   [1,2].forEach(d=>{
-    const dp=dayPark(d),mis=it.park&&dp&&it.park!==dp;
+    const dp=dayPark(d),mis=it.park&&it.park!=='H'&&dp&&it.park!==dp;
     h+='<button class="big '+(mis?'warnb':(d===1?'b1':'b2'))+'" data-d="'+d+'">DAY '+d
       +'<small>'+esc(dayLabel(d))+(dp?'・'+PARKS[dp]:'・パーク未定')
       +(mis?' ⚠ '+PARKS[it.park]+'の施設です':'')+'</small></button>';
@@ -979,7 +1033,7 @@ document.getElementById('sheet').addEventListener('click',e=>{
   const it=picking;closePicker();
   addSlot(d,it,-1);
   const dp=dayPark(d);
-  toast(it.park&&dp&&it.park!==dp?('DAY'+d+'に追加（'+PARKS[it.park]+'の施設です）'):('DAY'+d+'に追加しました'));
+  toast(it.park&&it.park!=='H'&&dp&&it.park!==dp?('DAY'+d+'に追加（'+PARKS[it.park]+'の施設です）'):('DAY'+d+'に追加しました'));
 });
 
 /* ---------- 混雑（当日の待ち時間） ---------- */
@@ -1394,7 +1448,7 @@ const openNotes={};
 const NMAX=1000;
 const DURS=(()=>{const a=[[0,'時間未設定']];for(let m=10;m<=240;m+=10)a.push([m,m<60?m+'分':(m%60?Math.floor(m/60)+'時間'+(m%60)+'分':m/60+'時間')]);return a;})();
 function slotEl(s,bad,dp){
-  const mis=s.park&&dp&&s.park!==dp;
+  const mis=s.park&&s.park!=='H'&&dp&&s.park!==dp;
   const d=document.createElement('div');
   d.className='slot'+(s.rdel?' rdel':(bad||mis?' warn':''));
   d.dataset.id=s.id;d.dataset.kind='slot';
@@ -1579,7 +1633,7 @@ function drop(host,t){
     const it=S.items.find(i=>i.id===host.dataset.id);if(!it)return;
     addSlot(day,it,idx);
     const dp=dayPark(day);
-    toast(it.park&&dp&&it.park!==dp?('DAY'+day+'に追加（'+PARKS[it.park]+'の施設です）'):('DAY'+day+'に追加しました'));
+    toast(it.park&&it.park!=='H'&&dp&&it.park!==dp?('DAY'+day+'に追加（'+PARKS[it.park]+'の施設です）'):('DAY'+day+'に追加しました'));
   }else{
     const s=S.slots.find(v=>v.id===host.dataset.id);if(!s)return;
     const arr=S.slots.filter(v=>!v.del&&v.day===day&&v!==s).sort((a,b)=>a.ord-b.ord);
@@ -1882,12 +1936,14 @@ function initMap(){
     toast(n+' の位置を登録しました');drawMap();
   });
 }
+/* ホテルはパーク外なので地図・経路の対象から外す */
+function inPark(s){return s.park!=='H';}
 function dayPts(day){
-  return daySlots(day).filter(s=>!s.del&&!s.rdel)
+  return daySlots(day).filter(s=>!s.del&&!s.rdel&&inPark(s))
     .map(s=>({s:s,c:geoOf(s.title)})).filter(x=>x.c);
 }
 function dayMissing(day){
-  return daySlots(day).filter(s=>!s.del&&!s.rdel&&!geoOf(s.title));
+  return daySlots(day).filter(s=>!s.del&&!s.rdel&&inPark(s)&&!geoOf(s.title));
 }
 async function drawMap(){
   if(!map||drawing)return;
