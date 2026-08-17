@@ -171,6 +171,30 @@ input.timefield{width:112px;text-align:center;}
 .fac .act{display:flex;flex:none;}
 .fac .act button{border:0;background:none;font-size:15px;color:#A6BDD3;padding:5px 6px;cursor:pointer;font-family:inherit;}
 .cnt{font-size:11.5px;color:var(--ink-l);margin:2px 2px 8px;}
+/* ---- 荷物 ---- */
+.bag{background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 8px 9px 10px;margin-bottom:7px;}
+.bag.done{background:var(--mint-l);border-color:var(--mint);}
+.bag .top{display:flex;align-items:center;gap:8px;}
+.bag .ck{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--line);background:#fff;
+ color:transparent;font-size:14px;line-height:1;cursor:pointer;font-family:inherit;padding:0;}
+.bag.done .ck{background:var(--mint-d);border-color:var(--mint-d);color:#fff;}
+.bag .bt{flex:1;min-width:0;font-size:14.5px;word-break:break-word;}
+.bag.done .bt{color:#5B8C81;text-decoration:line-through;}
+.bag .bt small{display:block;font-size:10.5px;color:#8AA1B7;text-decoration:none;}
+.bag.done .bt small{color:#7FA79C;}
+.bag .x{flex:none;border:0;background:none;font-size:15px;color:#A6BDD3;padding:3px 5px;cursor:pointer;font-family:inherit;}
+.bag .btm{display:flex;align-items:center;gap:6px;margin:7px 0 0 34px;flex-wrap:wrap;}
+.bag .who{display:flex;gap:3px;}
+.bag .who button{font-family:inherit;font-size:11.5px;border:1.5px solid var(--line);background:#fff;color:var(--ink-l);
+ border-radius:999px;padding:5px 11px;cursor:pointer;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bag .who button.on{border-color:transparent;color:#fff;}
+.bag .who button.on[data-w=me]{background:var(--pink-d);}
+.bag .who button.on[data-w=you]{background:var(--lav-d);}
+.bag .who button.on[data-w=both]{background:var(--sky-d);}
+.bag .qty{display:flex;align-items:center;gap:0;margin-left:auto;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;}
+.bag .qty button{font-family:inherit;font-size:15px;border:0;background:#fff;color:var(--pink-d);width:32px;height:30px;cursor:pointer;line-height:1;padding:0;}
+.bag .qty button:disabled{color:#C9D6E2;}
+.bag .qty span{font-size:12px;padding:0 8px;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums;}
 /* ---- モバイルオーダー ---- */
 .mo{display:inline-block;font-size:10.5px;border-radius:999px;padding:3px 9px;margin-top:5px;
  font-family:inherit;border:1.5px solid transparent;line-height:1.4;white-space:nowrap;}
@@ -413,9 +437,24 @@ button.mo:active{transform:scale(.97);}
     <div style="height:20px"></div>
   </section>
 
+  <!-- ===== 荷物 ===== -->
+  <section class="view" id="v-bag">
+    <div class="card">
+      <div class="addrow">
+        <input type="text" id="bagText" placeholder="持ち物を入力（例：モバイルバッテリー）" enterkeyhint="done">
+        <button class="btn" id="bagAdd">追加</button>
+      </div>
+    </div>
+    <div class="hint">左の丸をタップすると「入れた」印になります。誰が持つか、いくつ持つかも記録できます。</div>
+    <h2 class="sec">持ち物リスト</h2>
+    <div class="cnt" id="bagCount"></div>
+    <div id="bagList"></div>
+    <div style="height:20px"></div>
+  </section>
+
   <!-- ===== 同期 ===== -->
   <section class="view" id="v-sync">
-    <div class="hint">同期は「送る側が送信 → 相手が開く」で片方向です。<b>お互いに1回ずつ</b>送れば両方が最新になります。<br><br><b>取り込みの決まり</b><br>・ふたりは対等。追加・変更・削除がそのまま伝わります<br>・同じ項目を両方が触った場合は<b>あとに操作したほうが残ります</b><br>・相手が削除した予定は<b>すぐには消さず、グレー表示</b>にします。「自分も消す」か「残す」を選べます<br>・メモと自作の施設は、相手が消しても自分側では消えません<br>・同じ日・同じ時刻・同じ場所の予定は足しません<br><br><b>やりとりされる内容</b><br>・メモ（行きたい／食べたい／買いたい）<br>・予定と、各予定の時間・滞在時間・メモ・登録者名<br>・DAY1／DAY2 の日付と<b>ランド／シーの設定</b><br>・ホテル欄、食事・レストラン予約欄<br>・パスの候補（DPA・PP・抽選）と、その結果・時間・メモ<br>・モバイルオーダーの手直し<br>・自分で追加した施設と、施設メモの書き換え<br><br>内蔵の施設データは送らないので、データは軽いままです。<br><br><b>設定（画面上部）との関係</b><br>共有は<b>設定ごと</b>です。設定Aで共有を始めても設定Bはつながりません。それぞれの設定で「共有を始める」を押し、相手を招待してください。<br>自分で追加した施設と施設メモは、どの設定でも共通です。</div>
+    <div class="hint">同期は「送る側が送信 → 相手が開く」で片方向です。<b>お互いに1回ずつ</b>送れば両方が最新になります。<br><br><b>取り込みの決まり</b><br>・ふたりは対等。追加・変更・削除がそのまま伝わります<br>・同じ項目を両方が触った場合は<b>あとに操作したほうが残ります</b><br>・相手が削除した予定は<b>すぐには消さず、グレー表示</b>にします。「自分も消す」か「残す」を選べます<br>・メモと自作の施設は、相手が消しても自分側では消えません<br>・同じ日・同じ時刻・同じ場所の予定は足しません<br><br><b>やりとりされる内容</b><br>・メモ（行きたい／食べたい／買いたい）<br>・予定と、各予定の時間・滞在時間・メモ・登録者名<br>・DAY1／DAY2 の日付と<b>ランド／シーの設定</b><br>・ホテル欄、食事・レストラン予約欄<br>・パスの候補（DPA・PP・抽選）と、その結果・時間・メモ<br>・持ち物リスト（誰が持つか・数量・入れた印）<br>・モバイルオーダーの手直し<br>・自分で追加した施設と、施設メモの書き換え<br><br>内蔵の施設データは送らないので、データは軽いままです。<br><br><b>設定（画面上部）との関係</b><br>共有は<b>設定ごと</b>です。設定Aで共有を始めても設定Bはつながりません。それぞれの設定で「共有を始める」を押し、相手を招待してください。<br>自分で追加した施設と施設メモは、どの設定でも共通です。</div>
 
     <div class="syncstep" id="fbBox">
       <b>ふたりで自動同期</b>
@@ -466,6 +505,7 @@ button.mo:active{transform:scale(.97);}
   <button data-v="crowd"><span class="ic">📶</span>混雑</button>
   <button data-v="pass"><span class="ic">🎟️</span>パス</button>
   <button data-v="map"><span class="ic">🗺️</span>地図</button>
+  <button data-v="bag"><span class="ic">🎒</span>荷物</button>
   <button data-v="sync"><span class="ic">🔄</span>同期</button>
 </div>
 
@@ -740,7 +780,7 @@ const MOLBL={only:'モバイルオーダーのみ',ok:'モバイルオーダー�
 const MONEXT={ok:'only',only:'no',no:'ok'};
 const PARKN={L:'ディズニーランド',S:'ディズニーシー',H:'ディズニーホテル'};
 const PARKS={L:'ランド',S:'シー',H:'ホテル'};
-function blankS(){return {me:'',room:'',cid:'',items:[],slots:[],pass:[],info:{},dbAdd:[],dbMemo:{},geo:{},mo:{},v:2};}
+function blankS(){return {me:'',room:'',cid:'',items:[],slots:[],pass:[],bag:[],info:{},dbAdd:[],dbMemo:{},geo:{},mo:{},v:2};}
 let S=blankS();
 let PROF={list:[],cur:''};
 
@@ -789,7 +829,7 @@ function load(){
   try{const r=localStorage.getItem(pKey(PROF.cur));if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}
   try{const r=localStorage.getItem(SKEY);if(r)Object.assign(S,JSON.parse(r));}catch(e){}
   if(!S.info)S.info={}; if(!S.dbAdd)S.dbAdd=[]; if(!S.dbMemo)S.dbMemo={}; if(!S.geo)S.geo={};
-  if(!S.items)S.items=[]; if(!S.slots)S.slots=[]; if(!S.pass)S.pass=[]; if(!S.mo)S.mo={};
+  if(!S.items)S.items=[]; if(!S.slots)S.slots=[]; if(!S.pass)S.pass=[]; if(!S.mo)S.mo={}; if(!S.bag)S.bag=[];
   /* 設定ごとに一度だけ：すでに予定へ入れてあるメモをメモ一覧から消す */
   if(!S.mcln){
     const n=syncMemoHidden();
@@ -846,6 +886,71 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m;t.cla
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function dayPark(d){const o=S.info['d'+d+'park'];return o?o.v:'';}
 function dayLabel(d){const o=S.info['d'+d+'date'];return o&&o.v?o.v:'';}
+
+/* ---------- 荷物（持ち物リスト） ---------- */
+const WHO=[['me','自分'],['you','相手'],['both','ふたり']];
+let otherName='';
+function whoLabel(w){
+  if(w==='me')return S.me||'自分';
+  if(w==='you')return otherName||'相手';
+  return 'ふたり';
+}
+function bagList(){return (S.bag||[]).filter(b=>!b.del);}
+function addBag(){
+  const e=document.getElementById('bagText'),t=e.value.trim();
+  if(!t){toast('持ち物を入れてください');return;}
+  if(!S.bag)S.bag=[];
+  S.bag.push({id:uid(),text:t,qty:1,who:'both',done:0,by:S.me||'',at:now(),del:0});
+  e.value='';save();renderBag();toast('追加しました');
+}
+function bagEl(b){
+  const d=document.createElement('div');
+  d.className='bag'+(b.done?' done':'');
+  const top=document.createElement('div');top.className='top';
+  const ck=document.createElement('button');ck.className='ck';ck.textContent='✓';
+  ck.title=b.done?'入れた印を外す':'入れた印をつける';
+  ck.onclick=()=>{b.done=b.done?0:1;b.at=now();save();renderBag();};
+  top.appendChild(ck);
+  const tx=document.createElement('div');tx.className='bt';tx.textContent=b.text;
+  const sm=document.createElement('small');
+  sm.textContent='数量：'+(b.qty||1)+'　'+whoLabel(b.who)+'が持つ'+(b.by?('　登録：'+b.by):'');
+  tx.appendChild(sm);top.appendChild(tx);
+  const x=document.createElement('button');x.className='x';x.textContent='×';
+  x.onclick=()=>{if(!confirm('この持ち物を削除しますか？\n\n'+b.text))return;
+    b.del=1;b.at=now();save();renderBag();stat();toast('削除しました');};
+  top.appendChild(x);
+  d.appendChild(top);
+  const btm=document.createElement('div');btm.className='btm';
+  const who=document.createElement('div');who.className='who';
+  WHO.forEach(([w])=>{
+    const btn=document.createElement('button');btn.dataset.w=w;btn.textContent=whoLabel(w);
+    if((b.who||'both')===w)btn.classList.add('on');
+    btn.onclick=()=>{b.who=w;b.at=now();save();renderBag();};
+    who.appendChild(btn);
+  });
+  btm.appendChild(who);
+  const q=document.createElement('div');q.className='qty';
+  const mk=(lbl,dv)=>{const t=document.createElement('button');t.textContent=lbl;
+    t.disabled=(dv<0&&(b.qty||1)<=1)||(dv>0&&(b.qty||1)>=99);
+    t.onclick=()=>{b.qty=Math.min(99,Math.max(1,(b.qty||1)+dv));b.at=now();save();renderBag();};
+    return t;};
+  const nv=document.createElement('span');nv.textContent='数量：'+(b.qty||1);
+  q.appendChild(mk('−',-1));q.appendChild(nv);q.appendChild(mk('＋',1));
+  btm.appendChild(q);
+  d.appendChild(btm);
+  return d;
+}
+function renderBag(){
+  const el=document.getElementById('bagList');if(!el)return;
+  const l=bagList();
+  const cnt=document.getElementById('bagCount');
+  const done=l.filter(b=>b.done).length;
+  if(cnt)cnt.textContent=l.length?('全 '+l.length+'件 / 入れた '+done+'件 / 残り '+(l.length-done)+'件'):'';
+  el.innerHTML='';
+  if(!l.length){el.innerHTML='<div class="empty">まだ持ち物がありません。<br>上の欄から追加してみましょう。</div>';return;}
+  /* 未チェックを上に、その中は登録順 */
+  l.slice().sort((a,b)=>(a.done?1:0)-(b.done?1:0)).forEach(b=>el.appendChild(bagEl(b)));
+}
 
 /* ---------- モバイルオーダー ---------- */
 /* レストランの状態を返す。手で変えていればそれを、なければ公式リストから判定 */
@@ -1541,7 +1646,7 @@ function bindParkSel(){
     S.info['d'+ps.dataset.day+'park']={v:b.dataset.p,at:now()};save();render();
   }));
 }
-function render(){clearDragUI();renderDateHint();renderMemo();renderPlan();renderDB();renderPass();renderCrowd();bindDrag();}
+function render(){clearDragUI();renderDateHint();renderMemo();renderPlan();renderDB();renderPass();renderCrowd();renderBag();bindDrag();}
 
 /* ---------- ドラッグ＆ドロップ ---------- */
 let drag=null,autoT=null;
@@ -1661,7 +1766,7 @@ function bindFields(){
 /* ---------- 同期 ---------- */
 function payload(){
   return LZString.compressToEncodedURIComponent(JSON.stringify(
-    {m:S.me,i:S.items,s:S.slots,k:S.pass,f:S.info,d:S.dbAdd,x:S.dbMemo,g:S.geo,o:S.mo}));
+    {m:S.me,i:S.items,s:S.slots,k:S.pass,b:S.bag,f:S.info,d:S.dbAdd,x:S.dbMemo,g:S.geo,o:S.mo}));
 }
 function shareURL(){return location.href.split('#')[0]+'#d='+payload();}
 function nt(t){const m=/^(\d{1,2}):(\d{2})$/.exec(t||'');return m?String(+m[1]).padStart(2,'0')+':'+m[2]:'';}
@@ -1691,6 +1796,8 @@ function mergeCore(p){
   soft(S.dbAdd,p.d,(x,o)=>x.p===o.p&&x.c===o.c&&x.n===o.n);
   if(!S.pass)S.pass=[];
   soft(S.pass,p.k,(x,o)=>x.day===o.day&&x.kind===o.kind&&x.title===o.title);
+  if(!S.bag)S.bag=[];
+  soft(S.bag,p.b,(x,o)=>x.text===o.text);
   const chg=[];
   const LBL={d1park:'DAY1のパーク',d2park:'DAY2のパーク',d1date:'DAY1の日付',d2date:'DAY2の日付'};
   const mo=(dst,src,lbl)=>Object.keys(src||{}).forEach(k=>{const o=src[k],e=dst[k];
@@ -1728,6 +1835,7 @@ function stat(){
   el.textContent='設定「'+profName(PROF.cur)+'」の件数：予定 '+S.slots.filter(s=>!s.del).length
     +'件 / メモ '+S.items.filter(i=>!i.del).length
     +'件 / パス候補 '+(S.pass||[]).filter(p=>!p.del).length
+    +'件 / 持ち物 '+(S.bag||[]).filter(b=>!b.del).length
     +'件（自作の施設 '+S.dbAdd.filter(d=>!d.del).length+'件は全設定で共通）';
 }
 function tryHash(){
@@ -1830,6 +1938,8 @@ function renderMembers(v){
   const el=document.getElementById('fbMembers');if(!el)return;
   const ks=Object.keys(v||{});
   if(!S.room||!ks.length){el.innerHTML='';return;}
+  ks.forEach(k=>{if(k!==S.cid){const m=v[k]||{};if(m.name&&m.name!=='名前未設定')otherName=m.name;}});
+  renderBag();
   el.innerHTML='<div class="mlbl">いま参加している人（'+ks.length+'人）</div>'
     +ks.map(k=>{const m=v[k]||{},me=k===S.cid;
       return '<span class="mchip'+(me?' me':'')+'"><span class="dot"></span>'
@@ -1851,11 +1961,11 @@ function fbStop(){
 }
 function applyRemote(v){
   applying=true;
-  const before=JSON.stringify([S.items,S.slots,S.pass,S.info,S.dbAdd,S.dbMemo]);
+  const before=JSON.stringify([S.items,S.slots,S.pass,S.bag,S.info,S.dbAdd,S.dbMemo]);
   const g={};Object.keys(v.geo||{}).forEach(k=>{try{g[decodeURIComponent(k)]=v.geo[k];}catch(e){}});
   const mo={};Object.keys(v.mo||{}).forEach(k=>{try{mo[decodeURIComponent(k)]=v.mo[k];}catch(e){}});
-  const c=mergeCore({i:arrOf(v.items),s:arrOf(v.slots),k:arrOf(v.pass),d:arrOf(v.dbAdd),f:v.info||{},x:v.dbMemo||{},g:g,o:mo});
-  const changed=JSON.stringify([S.items,S.slots,S.pass,S.info,S.dbAdd,S.dbMemo])!==before;
+  const c=mergeCore({i:arrOf(v.items),s:arrOf(v.slots),k:arrOf(v.pass),b:arrOf(v.bag),d:arrOf(v.dbAdd),f:v.info||{},x:v.dbMemo||{},g:g,o:mo});
+  const changed=JSON.stringify([S.items,S.slots,S.pass,S.bag,S.info,S.dbAdd,S.dbMemo])!==before;
   if(changed){save();bindFields();render();stat();}
   applying=false;
   if(changed&&!firstSnap){
@@ -1874,6 +1984,7 @@ function pushAll(){
   S.items.forEach(o=>u['items/'+o.id]=clean(o));
   S.slots.forEach(o=>{if(!o.rdel)u['slots/'+o.id]=clean(o);});
   (S.pass||[]).forEach(o=>u['pass/'+o.id]=clean(o));
+  (S.bag||[]).forEach(o=>u['bag/'+o.id]=clean(o));
   S.dbAdd.forEach(o=>u['dbAdd/'+o.id]=clean(o));
   Object.keys(S.info).forEach(k=>u['info/'+k]=clean(S.info[k]));
   Object.keys(S.dbMemo).forEach(k=>u['dbMemo/'+k]=clean(S.dbMemo[k]));
@@ -2089,7 +2200,7 @@ function newProf(copy){
     Object.keys(S).forEach(k=>{if(SHARED.indexOf(k)<0)body[k]=JSON.parse(JSON.stringify(S[k]));});
     body.room='';
   }else{
-    body={room:'',items:[],slots:[],pass:[],info:{},v:2};
+    body={room:'',items:[],slots:[],pass:[],bag:[],info:{},v:2};
   }
   const id=uid();
   try{localStorage.setItem(pKey(id),JSON.stringify(body));}catch(e){}
@@ -2154,6 +2265,8 @@ document.getElementById('meBtn').onclick=()=>{
     if(typeof pushName==='function')pushName();}
 };
 document.getElementById('nAdd').onclick=addFac;
+document.getElementById('bagAdd').onclick=addBag;
+document.getElementById('bagText').addEventListener('keydown',e=>{if(e.key==='Enter')addBag();});
 document.getElementById('undoBtn').onclick=undo;
 setTimeout(()=>{if(!S.me)toast('右上から自分の名前を設定すると、誰が登録したか分かります');},900);
 load();
