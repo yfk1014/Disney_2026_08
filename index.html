@@ -780,7 +780,7 @@ const MOLBL={only:'モバイルオーダーのみ',ok:'モバイルオーダー�
 const MONEXT={ok:'only',only:'no',no:'ok'};
 const PARKN={L:'ディズニーランド',S:'ディズニーシー',H:'ディズニーホテル'};
 const PARKS={L:'ランド',S:'シー',H:'ホテル'};
-function blankS(){return {me:'',room:'',cid:'',items:[],slots:[],pass:[],bag:[],info:{},dbAdd:[],dbMemo:{},geo:{},mo:{},v:2};}
+function blankS(){return {me:'',room:'',cid:'',items:[],slots:[],pass:[],bag:[],mates:{},info:{},dbAdd:[],dbMemo:{},geo:{},mo:{},v:2};}
 let S=blankS();
 let PROF={list:[],cur:''};
 
@@ -829,7 +829,7 @@ function load(){
   try{const r=localStorage.getItem(pKey(PROF.cur));if(r)S=Object.assign(S,JSON.parse(r));}catch(e){}
   try{const r=localStorage.getItem(SKEY);if(r)Object.assign(S,JSON.parse(r));}catch(e){}
   if(!S.info)S.info={}; if(!S.dbAdd)S.dbAdd=[]; if(!S.dbMemo)S.dbMemo={}; if(!S.geo)S.geo={};
-  if(!S.items)S.items=[]; if(!S.slots)S.slots=[]; if(!S.pass)S.pass=[]; if(!S.mo)S.mo={}; if(!S.bag)S.bag=[];
+  if(!S.items)S.items=[]; if(!S.slots)S.slots=[]; if(!S.pass)S.pass=[]; if(!S.mo)S.mo={}; if(!S.bag)S.bag=[]; if(!S.mates)S.mates={};
   /* 設定ごとに一度だけ：すでに予定へ入れてあるメモをメモ一覧から消す */
   if(!S.mcln){
     const n=syncMemoHidden();
@@ -888,12 +888,48 @@ function dayPark(d){const o=S.info['d'+d+'park'];return o?o.v:'';}
 function dayLabel(d){const o=S.info['d'+d+'date'];return o&&o.v?o.v:'';}
 
 /* ---------- 荷物（持ち物リスト） ---------- */
-const WHO=[['me','自分'],['you','相手'],['both','ふたり']];
-let otherName='';
+/* 共有した相手の名前を設定ごとに覚えておく（オフラインでも名前で出すため） */
+function mates(){
+  const m=S.mates||{};
+  return Object.keys(m).filter(k=>m[k]&&m[k].n)
+    .map(k=>({k:k,n:m[k].n,at:m[k].at||0})).sort((a,b)=>a.at-b.at);
+}
+function noteMate(key,name){
+  name=String(name||'').trim();
+  if(!name||name==='名前未設定')return false;
+  if(name===String(S.me||'').trim())return false;
+  if(!S.mates)S.mates={};
+  const o=S.mates[key];
+  if(o&&o.n===name)return false;
+  S.mates[key]={n:name,at:now()};
+  return true;
+}
+/* 担当ボタンの並び。相手が分かっていれば名前、いなければ「相手」 */
+function whoOpts(){
+  const ms=mates(),o=[['me',S.me||'自分']];
+  if(!ms.length)o.push(['you','相手']);
+  else ms.forEach(m=>o.push(['u:'+m.k,m.n]));
+  o.push(['both',ms.length>=2?'みんな':'ふたり']);
+  return o;
+}
 function whoLabel(w){
+  const ms=mates();
   if(w==='me')return S.me||'自分';
-  if(w==='you')return otherName||'相手';
-  return 'ふたり';
+  if(w==='both')return ms.length>=2?'みんな':'ふたり';
+  if(w&&w.indexOf('u:')===0){
+    const o=(S.mates||{})[w.slice(2)];
+    if(o&&o.n)return o.n;
+  }
+  return ms.length?ms[0].n:'相手';   /* 旧データの「you」もここに来る */
+}
+/* 旧データの who='you' は、分かっている相手に読み替える */
+function whoKey(b){
+  let w=b.who||'both';
+  if(w==='you'){const ms=mates();if(ms.length)w='u:'+ms[0].k;}
+  if(w.indexOf('u:')===0&&!(S.mates||{})[w.slice(2)]){
+    const ms=mates();w=ms.length?('u:'+ms[0].k):'you';
+  }
+  return w;
 }
 function bagList(){return (S.bag||[]).filter(b=>!b.del);}
 function addBag(){
@@ -913,7 +949,7 @@ function bagEl(b){
   top.appendChild(ck);
   const tx=document.createElement('div');tx.className='bt';tx.textContent=b.text;
   const sm=document.createElement('small');
-  sm.textContent='数量：'+(b.qty||1)+'　'+whoLabel(b.who)+'が持つ'+(b.by?('　登録：'+b.by):'');
+  sm.textContent='数量：'+(b.qty||1)+'　'+whoLabel(whoKey(b))+'が持つ'+(b.by?('　登録：'+b.by):'');
   tx.appendChild(sm);top.appendChild(tx);
   const x=document.createElement('button');x.className='x';x.textContent='×';
   x.onclick=()=>{if(!confirm('この持ち物を削除しますか？\n\n'+b.text))return;
@@ -922,9 +958,11 @@ function bagEl(b){
   d.appendChild(top);
   const btm=document.createElement('div');btm.className='btm';
   const who=document.createElement('div');who.className='who';
-  WHO.forEach(([w])=>{
-    const btn=document.createElement('button');btn.dataset.w=w;btn.textContent=whoLabel(w);
-    if((b.who||'both')===w)btn.classList.add('on');
+  const cur=whoKey(b);
+  whoOpts().forEach(([w,lbl])=>{
+    const btn=document.createElement('button');
+    btn.dataset.w=(w.indexOf('u:')===0?'you':w);btn.textContent=lbl;
+    if(cur===w)btn.classList.add('on');
     btn.onclick=()=>{b.who=w;b.at=now();save();renderBag();};
     who.appendChild(btn);
   });
@@ -1812,6 +1850,7 @@ function mergeCore(p){
 }
 function merge(p){
   backup();
+  if(p&&p.m&&noteMate('l_'+p.m,p.m))toast('「'+p.m+'」さんの名前を覚えました');
   const c=mergeCore(p);
   save();bindFields();render();stat();
   let msg=(c.add+c.upd+c.skip+c.gray===0)?'取り込むものはありませんでした'
@@ -1938,8 +1977,9 @@ function renderMembers(v){
   const el=document.getElementById('fbMembers');if(!el)return;
   const ks=Object.keys(v||{});
   if(!S.room||!ks.length){el.innerHTML='';return;}
-  ks.forEach(k=>{if(k!==S.cid){const m=v[k]||{};if(m.name&&m.name!=='名前未設定')otherName=m.name;}});
-  renderBag();
+  let ch=false;
+  ks.forEach(k=>{if(k!==S.cid){const m=v[k]||{};if(noteMate(k,m.name))ch=true;}});
+  if(ch){save();renderBag();}
   el.innerHTML='<div class="mlbl">いま参加している人（'+ks.length+'人）</div>'
     +ks.map(k=>{const m=v[k]||{},me=k===S.cid;
       return '<span class="mchip'+(me?' me':'')+'"><span class="dot"></span>'
@@ -2200,7 +2240,7 @@ function newProf(copy){
     Object.keys(S).forEach(k=>{if(SHARED.indexOf(k)<0)body[k]=JSON.parse(JSON.stringify(S[k]));});
     body.room='';
   }else{
-    body={room:'',items:[],slots:[],pass:[],bag:[],info:{},v:2};
+    body={room:'',items:[],slots:[],pass:[],bag:[],mates:{},info:{},v:2};
   }
   const id=uid();
   try{localStorage.setItem(pKey(id),JSON.stringify(body));}catch(e){}
@@ -2261,7 +2301,7 @@ document.querySelector('.tabbar').addEventListener('click',e=>{
 });
 document.getElementById('meBtn').onclick=()=>{
   const v=prompt('あなたのお名前は？',S.me||'');
-  if(v!==null){S.me=v.trim();save();document.getElementById('meBtn').textContent=S.me||'なまえ';render();
+  if(v!==null){S.me=v.trim();save();document.getElementById('meBtn').textContent=S.me||'なまえ';render();renderBag();
     if(typeof pushName==='function')pushName();}
 };
 document.getElementById('nAdd').onclick=addFac;
