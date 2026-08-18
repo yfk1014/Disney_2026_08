@@ -171,6 +171,16 @@ input.timefield{width:112px;text-align:center;}
 .fac .act{display:flex;flex:none;}
 .fac .act button{border:0;background:none;font-size:15px;color:#A6BDD3;padding:5px 6px;cursor:pointer;font-family:inherit;}
 .cnt{font-size:11.5px;color:var(--ink-l);margin:2px 2px 8px;}
+/* ---- カウントダウン ---- */
+.cdown{background:linear-gradient(135deg,var(--pink-l),var(--sky-l));border:1px solid var(--line);
+ border-radius:16px;padding:10px 8px 11px;margin-bottom:10px;text-align:center;}
+.cdown .lb{font-size:11px;color:var(--ink-l);letter-spacing:.08em;}
+.cdown .tm{color:var(--pink-d);font-variant-numeric:tabular-nums;margin-top:2px;
+ line-height:1.08;white-space:nowrap;overflow:hidden;}
+.cdown .tm>span{display:inline-block;}
+.cdown .tm small{font-size:.5em;margin:0 .03em;}
+.cdown.off{background:#fff;padding:11px 14px 12px;}
+.cdown.off .tm{font-size:13px!important;color:var(--ink-l);line-height:1.6;white-space:normal;}
 /* ---- 荷物 ---- */
 .bag{background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 8px 9px 10px;margin-bottom:7px;}
 .bag.done{background:var(--mint-l);border-color:var(--mint);}
@@ -274,6 +284,7 @@ button.mo:active{transform:scale(.97);}
 
   <!-- ===== メモ ===== -->
   <section class="view on" id="v-memo">
+    <div class="cdown" id="cdown"></div>
     <div class="card">
       <div class="catsel" id="catsel">
         <button data-c="go" class="on">行きたい</button>
@@ -886,6 +897,56 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m;t.cla
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function dayPark(d){const o=S.info['d'+d+'park'];return o?o.v:'';}
 function dayLabel(d){const o=S.info['d'+d+'date'];return o&&o.v?o.v:'';}
+
+/* ---------- カウントダウン（DAY1の午前9時まで） ---------- */
+const CDHOUR=9;
+function cdTarget(){
+  const t=dayDate(1);
+  if(!t)return null;
+  return new Date(t.getFullYear(),t.getMonth(),t.getDate(),CDHOUR,0,0,0);
+}
+/* 横幅いっぱいになるよう文字サイズを合わせる。
+   桁数と枠の幅が変わったときだけ測り直す（毎秒の測定は無駄なので） */
+let cdFit={key:'',size:0};
+function fitCd(box){
+  const inner=box.firstElementChild;if(!inner)return;
+  const w=box.clientWidth;
+  if(w<=0)return;                       /* タブが非表示のときは測れない */
+  const key=inner.textContent.length+'@'+w;
+  if(cdFit.key===key&&cdFit.size){box.style.fontSize=cdFit.size+'px';return;}
+  box.style.fontSize='100px';
+  const tw=inner.scrollWidth||1;
+  const size=Math.max(12,Math.min(160,Math.floor(100*w/tw)));
+  box.style.fontSize=size+'px';
+  cdFit={key:key,size:size};
+}
+function renderCountdown(){
+  const el=document.getElementById('cdown');if(!el)return;
+  const t=cdTarget();
+  if(!t){
+    el.className='cdown off';
+    el.innerHTML='<div class="lb">DAY1 まで</div>'
+      +'<div class="tm">「予定」タブで DAY1 の日付を入れると<br>ここに残り時間が出ます</div>';
+    cdFit={key:'',size:0};return;
+  }
+  const when=(t.getMonth()+1)+'月'+t.getDate()+'日 '+CDHOUR+':00';
+  const ms=t.getTime()-Date.now();
+  if(ms<=0){
+    el.className='cdown off';
+    el.innerHTML='<div class="lb">DAY1（'+when+'）</div><div class="tm">開園の時間になりました！</div>';
+    cdFit={key:'',size:0};return;
+  }
+  const s=Math.floor(ms/1000);
+  const p2=v=>String(v).padStart(2,'0');
+  el.className='cdown';
+  el.innerHTML='<div class="lb">DAY1（'+when+'）まで</div>'
+    +'<div class="tm"><span>'+p2(Math.floor(s/3600))+'<small>時間</small>'
+    +p2(Math.floor(s%3600/60))+'<small>分</small>'
+    +p2(s%60)+'<small>秒</small></span></div>';
+  fitCd(el.querySelector('.tm'));
+}
+setInterval(renderCountdown,1000);
+addEventListener('resize',()=>{cdFit={key:'',size:0};renderCountdown();});
 
 /* ---------- 荷物（持ち物リスト） ---------- */
 /* 共有した相手の名前を設定ごとに覚えておく（オフラインでも名前で出すため） */
@@ -1684,7 +1745,7 @@ function bindParkSel(){
     S.info['d'+ps.dataset.day+'park']={v:b.dataset.p,at:now()};save();render();
   }));
 }
-function render(){clearDragUI();renderDateHint();renderMemo();renderPlan();renderDB();renderPass();renderCrowd();renderBag();bindDrag();}
+function render(){clearDragUI();renderCountdown();renderDateHint();renderMemo();renderPlan();renderDB();renderPass();renderCrowd();renderBag();bindDrag();}
 
 /* ---------- ドラッグ＆ドロップ ---------- */
 let drag=null,autoT=null;
@@ -1812,30 +1873,49 @@ function sameSlot(a,b){return a.day===b.day&&nt(a.time)===nt(b.time)&&(a.title||
 function backup(){try{localStorage.setItem(bakKey(),JSON.stringify(S));}catch(e){}}
 function mergeCore(p){
   let add=0,upd=0,skip=0,gray=0;
+  /* 同じ内容なのにIDが違うものを見つけたら、両端末で同じIDに揃える。
+     どちらの端末でも同じ結果になるよう、小さいほうのIDを採用する。
+     ren には「捨てた側のID」を記録し、あとで参照の付け替えと後始末に使う */
+  const ren={slots:{},items:{},dbAdd:{},pass:{},bag:{}};
+  const unify=(tag,cur,inc)=>{
+    const old=cur.id;
+    if((inc.at||0)>(cur.at||0))Object.assign(cur,inc);
+    cur.id=(String(inc.id)<String(old))?inc.id:old;
+    if(cur.id!==old)ren[tag][old]=cur.id;
+    else if(inc.id!==cur.id)ren[tag][inc.id]=cur.id;
+    upd++;
+  };
   (p.s||[]).forEach(o=>{
     const e=S.slots.find(x=>x.id===o.id);
     if(!e){
       if(o.del)return;
-      if(S.slots.some(x=>!x.del&&sameSlot(x,o))){skip++;return;}
+      const d0=S.slots.find(x=>!x.del&&sameSlot(x,o));
+      if(d0){unify('slots',d0,o);return;}
       S.slots.push(o);add++;return;
     }
     if((o.at||0)<=(e.at||0))return;
     if(o.del){if(!e.del&&!e.rdel){e.rdel=1;gray++;}return;}
     const kd=e.del;Object.assign(e,o);e.del=kd;e.rdel=0;upd++;
   });
-  const soft=(dst,src,dup)=>{(src||[]).forEach(o=>{
+  const soft=(dst,src,dup,tag)=>{(src||[]).forEach(o=>{
     if(o.del)return;
     const e=dst.find(x=>x.id===o.id);
     if(e){if(!e.del&&(o.at||0)>(e.at||0)){Object.assign(e,o);upd++;}return;}
-    if(dst.some(x=>!x.del&&dup(x,o))){skip++;return;}
+    const d0=dst.find(x=>!x.del&&dup(x,o));
+    if(d0){unify(tag,d0,o);return;}
     dst.push(o);add++;
   });};
-  soft(S.items,p.i,(x,o)=>x.cat===o.cat&&x.text===o.text);
-  soft(S.dbAdd,p.d,(x,o)=>x.p===o.p&&x.c===o.c&&x.n===o.n);
+  soft(S.items,p.i,(x,o)=>x.cat===o.cat&&x.text===o.text,'items');
+  soft(S.dbAdd,p.d,(x,o)=>x.p===o.p&&x.c===o.c&&x.n===o.n,'dbAdd');
   if(!S.pass)S.pass=[];
-  soft(S.pass,p.k,(x,o)=>x.day===o.day&&x.kind===o.kind&&x.title===o.title);
+  soft(S.pass,p.k,(x,o)=>x.day===o.day&&x.kind===o.kind&&x.title===o.title,'pass');
   if(!S.bag)S.bag=[];
-  soft(S.bag,p.b,(x,o)=>x.text===o.text);
+  soft(S.bag,p.b,(x,o)=>x.text===o.text,'bag');
+  /* IDを付け替えたぶん、それを指している側も直す */
+  Object.keys(ren.items).forEach(o=>{const n=ren.items[o];
+    S.slots.forEach(s=>{if(s.src===o)s.src=n;});});
+  Object.keys(ren.dbAdd).forEach(o=>{const n=ren.dbAdd[o];
+    if(S.dbMemo&&S.dbMemo[o]){S.dbMemo[n]=S.dbMemo[o];delete S.dbMemo[o];}});
   const chg=[];
   const LBL={d1park:'DAY1のパーク',d2park:'DAY2のパーク',d1date:'DAY1の日付',d2date:'DAY2の日付'};
   const mo=(dst,src,lbl)=>Object.keys(src||{}).forEach(k=>{const o=src[k],e=dst[k];
@@ -1846,13 +1926,20 @@ function mergeCore(p){
   if(!S.mo)S.mo={};mo(S.mo,p.o,0);
   syncMemoHidden();   /* 相手から届いた予定の分も、メモ一覧から外す */
   normalize();pnorm();
-  return {add,upd,skip,gray,chg};
+  return {add,upd,skip,gray,chg,ren};
+}
+/* IDを揃えたあと、共有先に残った古いIDのデータを片づける */
+function cleanRenamed(ren){
+  if(!ren||!fbRef)return;
+  Object.keys(ren).forEach(tag=>Object.keys(ren[tag]).forEach(old=>{
+    try{fbRef.child(tag+'/'+old).remove();}catch(e){}
+  }));
 }
 function merge(p){
   backup();
   if(p&&p.m&&noteMate('l_'+p.m,p.m))toast('「'+p.m+'」さんの名前を覚えました');
   const c=mergeCore(p);
-  save();bindFields();render();stat();
+  save();bindFields();render();stat();cleanRenamed(c.ren);
   let msg=(c.add+c.upd+c.skip+c.gray===0)?'取り込むものはありませんでした'
     :('追加 '+c.add+'件'+(c.upd?(' / 変更を反映 '+c.upd+'件'):'')
       +(c.skip?(' / 同じ内容 '+c.skip+'件はスキップ'):'')
@@ -2007,6 +2094,7 @@ function applyRemote(v){
   const c=mergeCore({i:arrOf(v.items),s:arrOf(v.slots),k:arrOf(v.pass),b:arrOf(v.bag),d:arrOf(v.dbAdd),f:v.info||{},x:v.dbMemo||{},g:g,o:mo});
   const changed=JSON.stringify([S.items,S.slots,S.pass,S.bag,S.info,S.dbAdd,S.dbMemo])!==before;
   if(changed){save();bindFields();render();stat();}
+  cleanRenamed(c.ren);
   applying=false;
   if(changed&&!firstSnap){
     let m='相手の変更を受け取りました';
@@ -2298,6 +2386,7 @@ document.querySelector('.tabbar').addEventListener('click',e=>{
   scrollTo(0,0);
   if(b.dataset.v==='map'){initMap();setTimeout(()=>{if(map){map.invalidateSize();drawMap();}},80);}
   if(b.dataset.v==='crowd'||b.dataset.v==='plan')cwLoad(false);
+  if(b.dataset.v==='memo')renderCountdown();
 });
 document.getElementById('meBtn').onclick=()=>{
   const v=prompt('あなたのお名前は？',S.me||'');
